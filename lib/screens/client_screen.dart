@@ -50,7 +50,6 @@ class _ClientScreenState extends State<ClientScreen> {
   }
 
   Widget _buildPageView() {
-    print('BUILD PAGE VIEW');
     List<Widget> children = [];
     List<Widget> widgets = [MenuScreen(), OrderScreen(), AccountScreen()];
 

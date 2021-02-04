@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/models/menu_model.dart';
 import 'package:sopi/models/product_item_model.dart';
 import 'package:sopi/screens/menu/menu_list_products.dart';
 import 'menu_list_products.dart';
+import 'package:sopi/common/scripts.dart' as scripts;
 
 class MenuScreen extends StatefulWidget {
   @override
@@ -15,6 +17,7 @@ class _ProductsScreenState extends State<MenuScreen>
   TabController _tabController;
   TextEditingController _searchController;
   bool _searchActive = false;
+  List<ProductItemModel> _searchResult = [];
 
   @override
   void initState() {
@@ -23,6 +26,7 @@ class _ProductsScreenState extends State<MenuScreen>
         TabController(length: MenuModel.productsTypes.length, vsync: this);
     _tabController.addListener(() {
       setState(() {
+        _searchClear();
         _selectedIndex = _tabController.index;
       });
     });
@@ -37,7 +41,24 @@ class _ProductsScreenState extends State<MenuScreen>
   }
 
   void _onSearchTextChange(String text) {
-    ///TODO
+    setState(() {
+      _searchResult.clear();
+      if (text.isEmpty) {
+        return;
+      }
+      GenericItemModel openedProducts = MenuModel.productsTypes[_selectedIndex];
+      List<ProductItemModel> productsByType =
+          MenuModel.getSortedProductsByType(openedProducts.id);
+      _searchResult = productsByType
+          .where((product) => scripts.containsIgnoreCase(product.name, text))
+          .toList();
+    });
+  }
+
+  void _searchClear() {
+    _searchActive = false;
+    _searchResult.clear();
+    _searchController.clear();
   }
 
   @override
@@ -60,7 +81,6 @@ class _ProductsScreenState extends State<MenuScreen>
               setState(() {
                 _searchActive = true;
               });
-              print('11');
             },
           )
         ],
@@ -99,8 +119,13 @@ class _ProductsScreenState extends State<MenuScreen>
 
   List<Widget> _buildTabsContent() {
     List<Widget> tabsContent = MenuModel.productsTypes.map((type) {
-      List<ProductItemModel> productsByType =
-          MenuModel.getSortedProductsByType(type.id);
+      List<ProductItemModel> productsByType = [];
+
+      if (_searchResult.length != 0 || _searchController.text.isNotEmpty) {
+        productsByType = _searchResult;
+      } else {
+        productsByType = MenuModel.getSortedProductsByType(type.id);
+      }
       return MenuListProducts(productsByType);
     }).toList();
     return tabsContent;
@@ -109,14 +134,12 @@ class _ProductsScreenState extends State<MenuScreen>
   Widget _buildSearchSection() {
     return TextField(
       controller: _searchController,
-      onEditingComplete: () => setState(() {
-        _searchActive = false;
-      }),
+      onEditingComplete: () => setState(() {}),
       decoration: InputDecoration(
         icon: IconButton(
           onPressed: () {
             setState(() {
-              _searchController.clear();
+              _searchClear();
             });
           },
           icon: Icon(

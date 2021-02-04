@@ -54,7 +54,9 @@ class _ProductItemScreenState extends State<ProductItemScreen> {
                     child: Text(_product.description),
                   ),
                 ),
-                FormBuilderTouchSpin(initialValue: 1,),
+                FormBuilderTouchSpin(
+                  initialValue: 1,
+                ),
               ],
             ),
           ),
