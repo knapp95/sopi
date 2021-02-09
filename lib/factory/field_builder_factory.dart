@@ -27,6 +27,7 @@ class FieldBuilderFactory {
     return !isVisible
         ? Container()
         : FormBuilderTextField(
+            name: fieldName,
             controller: controller,
             style: TextStyle(
               color: Colors.white,
@@ -48,10 +49,12 @@ class FieldBuilderFactory {
     bool isVisible = true,
     String labelText,
     List<GenericItemModel> items,
+    Function onChanged,
   }) {
     return !isVisible
         ? Container()
         : FormBuilderDropdown(
+            name: labelText,
             decoration: InputDecoration(
               labelText: labelText,
               labelStyle: TextStyle(
@@ -62,11 +65,13 @@ class FieldBuilderFactory {
                 .map((GenericItemModel item) => DropdownMenuItem(
                       child: Text(
                         item.name,
-                        style: TextStyle(color: Colors.red),
+                        style: TextStyle(color: Colors.white),
                       ),
                       value: item.id,
                     ))
                 .toList(),
+            dropdownColor: Colors.lightGreen,
+            onChanged: onChanged,
           );
   }
 }

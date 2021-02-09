@@ -1,7 +1,9 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
-import 'package:sopi/providers/Auth.dart';
+import 'package:sopi/models/user/user_model.dart';
+import 'package:sopi/services/auth_service.dart';
 import 'package:sopi/widgets/dialogs/info_dialog.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 
@@ -25,9 +27,10 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   AuthMode _authMode = AuthMode.singIn;
 
   TextEditingController _emailController = TextEditingController();
+
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-
+  String _typeAccount = 'client';
   bool _passwordVisible = false;
 
   void _submit() async {
@@ -52,6 +55,14 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
               _emailController.text,
               _passwordController.text,
             );
+
+            if (auth.isAuth) {
+              print(auth.userId);
+               DatabaseReference _dbReference = FirebaseDatabase.instance.reference().child('test');
+//               _dbReference.set('testowa wartość -- ${auth.userId}');
+
+            }
+
           }
           break;
         case AuthMode.resetPassword:
@@ -66,8 +77,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
       showDialog(
         context: context,
         builder: (ctx) => InfoDialog(
-            title: 'Error',
-            content: 'The data you\'ve entered is incorrect.'),
+            title: 'Error', content: 'The data you\'ve entered is incorrect.'),
       );
     }
   }
@@ -76,7 +86,13 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     return _authMode == AuthMode.singIn;
   }
 
+  void _onChangeTypeAccount(value) {
+    _typeAccount = value;
+  }
+
   void _switchAuthMode({AuthMode resetPassword}) {
+    UserModel.test();
+
     if (resetPassword != null) {
       setState(() {
         _authMode = AuthMode.resetPassword;
@@ -99,17 +115,17 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
     switch (_authMode) {
       case AuthMode.singIn:
         {
-          name = 'Logowanie';
+          name = 'Sign in';
         }
         break;
       case AuthMode.singUp:
         {
-          name = 'Rejestracja';
+          name = 'Registration';
         }
         break;
       case AuthMode.resetPassword:
         {
-          name = 'Przypomnij hasło';
+          name = 'Forget password';
         }
         break;
     }
@@ -145,29 +161,30 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Bogate smaki i niepowtarzalne wnętrza,\n restauracja z głębokimi tradycjami.',
+                  'Rich flavors and unique interiors, \n a restaurant with deep traditions.',
                   style: TextStyle(color: Colors.white),
                 ),
                 _formFactory.buildTextField(
                   controller: _emailController,
-                  labelText: 'Adres e-mail',
+                  labelText: 'Adress e-mail',
                 ),
-                _formFactory.buildDropdownField(
-                  isVisible: _authMode != AuthMode.singUp,
-                  labelText: 'Typ konta',
-                  items: accountTypes,
-                ),
+                if (_authMode == AuthMode.singUp)
+                  _formFactory.buildDropdownField(
+                    labelText: 'Type account',
+                    items: accountTypes,
+                    onChanged: _onChangeTypeAccount,
+                  ),
                 _formFactory.buildTextField(
                   isVisible: _authMode != AuthMode.resetPassword,
                   controller: _passwordController,
-                  labelText: 'Hasło',
+                  labelText: 'Password',
                   suffixIcon: _buildSuffixIconPassword(),
                   obscureText: !_passwordVisible,
                 ),
                 _formFactory.buildTextField(
                   isVisible: _authMode == AuthMode.singUp,
                   controller: _confirmPasswordController,
-                  labelText: 'Powtórz hasło',
+                  labelText: 'Repeat password',
                   suffixIcon: _buildSuffixIconPassword(),
                   obscureText: !_passwordVisible,
                 ),
@@ -189,7 +206,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                     onPressed: () =>
                         _switchAuthMode(resetPassword: AuthMode.resetPassword),
                     child: Text(
-                      'Zapomniałem hasła',
+                      'Forgot password',
                       style: TextStyle(
                         color: Theme.of(context).accentColor,
                       ),
@@ -198,7 +215,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                 FlatButton(
                   onPressed: _switchAuthMode,
                   child: Text(
-                    _isSingInShow ? 'Nie mam jeszcze konta' : 'Logowanie',
+                    _isSingInShow ? 'Register' : 'Log in',
                     style: TextStyle(
                       color: Theme.of(context).accentColor,
                     ),

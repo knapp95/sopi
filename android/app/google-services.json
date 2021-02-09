@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "44913462752",
+    "firebase_url": "https://sopi-app.firebaseio.com",
+    "project_id": "sopi-app",
+    "storage_bucket": "sopi-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:44913462752:android:5427eeb9a784c58a90ef85",
+        "android_client_info": {
+          "package_name": "com.knapp.sopi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "44913462752-3g519nce1n1cgbvt4fufareulru5qta3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrWJEon4a3yUZpwOup-PpBdNpfQ9duI8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "44913462752-3g519nce1n1cgbvt4fufareulru5qta3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
