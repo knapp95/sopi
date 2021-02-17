@@ -1,11 +1,12 @@
-import 'package:firebase_database/firebase_database.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
-import 'package:sopi/models/user/user_model.dart';
-import 'package:sopi/services/auth_service.dart';
+import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/widgets/dialogs/info_dialog.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
+import 'package:sopi/services/authentication_service.dart';
+
 
 class AuthorizationScreen extends StatefulWidget {
   @override
@@ -33,54 +34,50 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   String _typeAccount = 'client';
   bool _passwordVisible = false;
 
-  void _submit() async {
+  void _submit(BuildContext context) async {
     if (!_formKey.currentState.validate()) {
       return;
     }
+
     _formKey.currentState.save();
-    try {
-      Auth auth = Provider.of<Auth>(context, listen: false);
+    GenericResponseModel responseMessage;
       switch (_authMode) {
         case AuthMode.singIn:
           {
-            await auth.login(
-              _emailController.text,
-              _passwordController.text,
+            responseMessage =    await context.read<AuthenticationService>().signIn(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim(),
             );
           }
           break;
         case AuthMode.singUp:
           {
-            await auth.signUp(
-              _emailController.text,
-              _passwordController.text,
+            responseMessage =  await context.read<AuthenticationService>().signUp(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim(),
             );
-
-            if (auth.isAuth) {
-              print(auth.userId);
-               DatabaseReference _dbReference = FirebaseDatabase.instance.reference().child('test');
-//               _dbReference.set('testowa wartość -- ${auth.userId}');
-
-            }
 
           }
           break;
         case AuthMode.resetPassword:
           {
-            await auth.resetPassword(
-              _passwordController.text,
+            responseMessage = await context.read<AuthenticationService>().resetPassword(
+              email: _passwordController.text.trim(),
             );
           }
           break;
       }
-    } catch (error) {
-      showDialog(
-        context: context,
-        builder: (ctx) => InfoDialog(
-            title: 'Error', content: 'The data you\'ve entered is incorrect.'),
-      );
-    }
+      /// TODO notacja o powodzeniu / nie powodzeniu
+//    showDialog(
+//      context: context,
+//      builder: (ctx) => InfoDialog(
+//          title: 'Error', content: 'The data you\'ve entered is incorrect.'),
+//    );
   }
+
+
+
+
 
   bool get _isSingInShow {
     return _authMode == AuthMode.singIn;
@@ -91,8 +88,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   }
 
   void _switchAuthMode({AuthMode resetPassword}) {
-    UserModel.test();
-
     if (resetPassword != null) {
       setState(() {
         _authMode = AuthMode.resetPassword;
@@ -196,7 +191,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                         fontSize: 20,
                         color: Colors.black,
                       )),
-                  onPressed: _submit,
+                  onPressed: () => _submit(context),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),

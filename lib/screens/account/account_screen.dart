@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sopi/services/authentication_service.dart';
 
 class AccountScreen extends StatelessWidget {
   @override
@@ -45,6 +47,12 @@ class AccountScreen extends StatelessWidget {
                   ),
                 ),
                 Text('Hi, Thomas'),
+                RaisedButton(
+                  onPressed: () {
+                    context.read<AuthenticationService>().signOut();
+                  },
+                  child: Text("Sign out"),
+                ),
               ],
             ),
           ),
