@@ -50,6 +50,7 @@ class FieldBuilderFactory {
     String labelText,
     List<GenericItemModel> items,
     Function onChanged,
+    String initialValue,
   }) {
     return !isVisible
         ? Container()
@@ -72,6 +73,7 @@ class FieldBuilderFactory {
                 .toList(),
             dropdownColor: Colors.lightGreen,
             onChanged: onChanged,
+          initialValue: initialValue,
           );
   }
 }

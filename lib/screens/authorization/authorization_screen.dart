@@ -1,12 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sopi/common/scripts.dart' as scripts;
 import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/models/generic/generic_response_model.dart';
-import 'package:sopi/widgets/dialogs/info_dialog.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/services/authentication_service.dart';
-
 
 class AuthorizationScreen extends StatefulWidget {
   @override
@@ -18,7 +16,7 @@ enum Field { mail, password, confirmPassword }
 
 final List<GenericItemModel> accountTypes = [
   GenericItemModel(id: 'client', name: 'Klient'),
-  GenericItemModel(id: 'menager', name: 'Menager'),
+  GenericItemModel(id: 'manager', name: 'Manager'),
   GenericItemModel(id: 'employee', name: 'Pracownik'),
 ];
 
@@ -41,43 +39,41 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
 
     _formKey.currentState.save();
     GenericResponseModel responseMessage;
-      switch (_authMode) {
-        case AuthMode.singIn:
-          {
-            responseMessage =    await context.read<AuthenticationService>().signIn(
+    switch (_authMode) {
+      case AuthMode.singIn:
+        {
+          responseMessage = await context.read<AuthenticationService>().signIn(
+                email: _emailController.text.trim(),
+                password: _passwordController.text.trim(),
+              );
+        }
+        break;
+      case AuthMode.singUp:
+        {
+          if (_confirmPasswordController.text != _passwordController.text) {
+            responseMessage =
+                GenericResponseModel("The password is not the same", false);
+          } else {
+            responseMessage =
+            await context.read<AuthenticationService>().signUp(
               email: _emailController.text.trim(),
               password: _passwordController.text.trim(),
+              typeAccount: _typeAccount,
             );
           }
-          break;
-        case AuthMode.singUp:
-          {
-            responseMessage =  await context.read<AuthenticationService>().signUp(
-              email: _emailController.text.trim(),
-              password: _passwordController.text.trim(),
-            );
-
-          }
-          break;
-        case AuthMode.resetPassword:
-          {
-            responseMessage = await context.read<AuthenticationService>().resetPassword(
-              email: _passwordController.text.trim(),
-            );
-          }
-          break;
-      }
-      /// TODO notacja o powodzeniu / nie powodzeniu
-//    showDialog(
-//      context: context,
-//      builder: (ctx) => InfoDialog(
-//          title: 'Error', content: 'The data you\'ve entered is incorrect.'),
-//    );
+        }
+        break;
+      case AuthMode.resetPassword:
+        {
+          responseMessage =
+              await context.read<AuthenticationService>().resetPassword(
+                    email: _emailController.text.trim(),
+                  );
+        }
+        break;
+    }
+    scripts.showBottomNotification(context, responseMessage);
   }
-
-
-
-
 
   bool get _isSingInShow {
     return _authMode == AuthMode.singIn;
@@ -167,6 +163,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                   _formFactory.buildDropdownField(
                     labelText: 'Type account',
                     items: accountTypes,
+                    initialValue: _typeAccount,
                     onChanged: _onChangeTypeAccount,
                   ),
                 _formFactory.buildTextField(

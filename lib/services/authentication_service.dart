@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sopi/models/generic/generic_response_model.dart';
+import 'package:sopi/models/user/user_model.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
@@ -21,9 +22,11 @@ class AuthenticationService {
     }
   }
 
-  Future<GenericResponseModel> signUp({String email, String password}) async {
+  Future<GenericResponseModel> signUp({String email, String password, String typeAccount}) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      final uid  =  _firebaseAuth.currentUser.uid;
+      UserModel.addUserToFirebase(uid, typeAccount);
       return GenericResponseModel("Signed up",false);
     } on FirebaseAuthException catch (e) {
       return GenericResponseModel(e.message,false);
@@ -33,6 +36,8 @@ class AuthenticationService {
   Future<GenericResponseModel> resetPassword({String email}) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
+
+
       return GenericResponseModel("Mail is sended",false);
     } on FirebaseAuthException catch (e) {
       return GenericResponseModel(e.message,false);

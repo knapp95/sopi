@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 class LoadingDataInProgress extends StatelessWidget {
   final String message;
-  LoadingDataInProgress({this.message = 'Loading data is progress'});
+  final bool withScaffold;
+  LoadingDataInProgress({this.message = 'Loading data is progress', this.withScaffold = false});
+
   @override
   Widget build(BuildContext context) {
+    return this.withScaffold
+        ? Scaffold(body: _buildLoadingDataInProgressBody())
+        : _buildLoadingDataInProgressBody();
+  }
+
+  Widget _buildLoadingDataInProgressBody() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -17,4 +25,5 @@ class LoadingDataInProgress extends StatelessWidget {
       ),
     );
   }
+
 }
