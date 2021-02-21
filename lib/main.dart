@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         Provider<AuthenticationService>(
           create: (_) => AuthenticationService(FirebaseAuth.instance),
         ),
-        Provider<UserModel>(
+        ChangeNotifierProvider<UserModel>(
           create: (_) => UserModel(),
         ),
         StreamProvider(
@@ -49,8 +49,10 @@ class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
+
     if (firebaseUser != null) {
-      context.watch<UserModel>().setUser(firebaseUser.uid);
+      Provider.of<UserModel>(context, listen: false).setUser(firebaseUser.uid);
+
       return HomePageScreen();
     }
     return AuthorizationScreen();

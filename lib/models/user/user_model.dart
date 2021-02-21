@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
-class UserModel {
+class UserModel with ChangeNotifier {
   String uid;
   String typeAccount;
 
@@ -31,6 +32,7 @@ class UserModel {
           FirebaseFirestore.instance.collection('users').doc(this.uid);
       final result = await user.get();
       this.typeAccount = result.data()['typeAccount'];
+      notifyListeners();
     } catch (e) {
       return e;
     }

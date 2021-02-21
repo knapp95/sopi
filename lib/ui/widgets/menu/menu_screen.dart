@@ -14,7 +14,7 @@ class MenuScreen extends StatefulWidget {
 
 class _ProductsScreenState extends State<MenuScreen>
     with TickerProviderStateMixin {
-
+  String _typeAccount;
   int _selectedIndex = 0;
   TabController _tabController;
   TextEditingController _searchController;
@@ -35,6 +35,11 @@ class _ProductsScreenState extends State<MenuScreen>
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    _typeAccount = Provider.of<UserModel>(context, listen: false).typeAccount;
+    super.didChangeDependencies();
+  }
   @override
   void dispose() {
     _searchController.dispose();
@@ -65,7 +70,6 @@ class _ProductsScreenState extends State<MenuScreen>
 
   @override
   Widget build(BuildContext context) {
-    final typeAccount = context.watch<UserModel>().typeAccount;
     return Scaffold(
       appBar: AppBar(
         title: _searchActive
@@ -97,7 +101,7 @@ class _ProductsScreenState extends State<MenuScreen>
         controller: _tabController,
         children: _buildTabsContent(),
       ),
-      floatingActionButton: typeAccount == "manager" ? MenuAddItem() : null,
+      floatingActionButton: _typeAccount == "manager" ? MenuAddItem() : null,
     );
   }
 
