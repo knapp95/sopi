@@ -1,47 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sopi/models/user/user_model.dart';
-import 'package:sopi/screens/client_screen.dart';
-import 'package:sopi/screens/employee_screen.dart';
-import 'package:sopi/screens/manager_screen.dart';
-import 'package:sopi/widgets/dialogs/loading_data_in_progress.dart';
+import 'package:sopi/ui/widgets/client_screen.dart';
+import 'package:sopi/ui/widgets/common/dialogs/loading_data_in_progress.dart';
+import 'package:sopi/ui/widgets/employee_screen.dart';
+import 'package:sopi/ui/widgets/manager_screen.dart';
 
-class HomePageScreen extends StatefulWidget {
-  final firebaseUser;
-  HomePageScreen(this.firebaseUser);
-  @override
-  _HomePageScreenState createState() => _HomePageScreenState();
-}
 
-class _HomePageScreenState extends State<HomePageScreen> {
-  String _typeAccount;
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    setState(() {
-      _isLoading = true;
-    });
-    _getTypeAccount();
-    super.initState();
-  }
-
-  _getTypeAccount() {
-
-    UserModel.getUserTypeAccountFromFirebase(widget.firebaseUser?.uid).then(
-      (value) => setState(() {
-        _typeAccount = value;
-        _isLoading = false;
-      }),
-    );
-  }
-
+class HomePageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? LoadingDataInProgress(withScaffold: true) : _buildPageForTypeAccount();
+    final typeAccount = context.watch<UserModel>().typeAccount;
+    return typeAccount == null
+        ? LoadingDataInProgress(withScaffold: true)
+        : _buildPageForTypeAccount(typeAccount);
   }
 
-  Widget _buildPageForTypeAccount() {
-    switch (_typeAccount) {
+  Widget _buildPageForTypeAccount(String typeAccount) {
+    switch (typeAccount) {
       case 'client':
         return ClientScreen();
       case 'manager':
@@ -52,5 +28,4 @@ class _HomePageScreenState extends State<HomePageScreen> {
         return Container(child: Text('No data'));
     }
   }
-
 }

@@ -3,7 +3,9 @@ import 'package:sopi/models/product_item_model.dart';
 
 class MenuModel {
   static const double maxAvailableRate = 6.0;
-  static List<GenericItemModel> productsTypes = [
+
+
+  static List<GenericItemModel> productsTypes =  [
     GenericItemModel(id: 'special', name: 'Special for your'),
     GenericItemModel(id: 'dessert', name: 'Desserts'),
     GenericItemModel(id: 'burger', name: 'Burger'),
@@ -13,11 +15,13 @@ class MenuModel {
     GenericItemModel(id: 'other', name: 'Other'),
   ];
 
+
+
   static const String imageUrl =
       'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg/800px-Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg';
-  static List<ProductItemModel> demoProducts = [
+  static List<ProductItemModel> mockedProducts = [
     ProductItemModel(
-      pid: 1124312,
+      pid: '1124312',
       name: "The Thunderbun",
       price: 25.99,
       imageUrl: imageUrl,
@@ -26,7 +30,7 @@ class MenuModel {
       type: 'burger',
     ),
     ProductItemModel(
-      pid: 1124316,
+      pid: '11243121432',
       name: "The Meltdown",
       price: 28.99,
       imageUrl: imageUrl,
@@ -35,7 +39,7 @@ class MenuModel {
       type: 'burger',
     ),
     ProductItemModel(
-      pid: 112412431,
+      pid: '5213',
       name: "BBQ Burger",
       price: 29.99,
       imageUrl: imageUrl,
@@ -44,7 +48,7 @@ class MenuModel {
       type: 'burger',
     ),
     ProductItemModel(
-      pid: 23661341,
+      pid: '51221',
       name: "Jackfruit Chipuffalo Burger",
       price: 22.99,
       imageUrl: imageUrl,
@@ -53,7 +57,7 @@ class MenuModel {
       isVeg: true,
     ),
     ProductItemModel(
-      pid: 243723,
+      pid: '2311212',
       name: "3 Jackfruit Wings",
       price: 9.99,
       imageUrl: imageUrl,
@@ -63,7 +67,7 @@ class MenuModel {
       isVeg: true,
     ),
     ProductItemModel(
-      pid: 164433,
+      pid: '222421',
       name: "Margherita",
       price: 19.99,
       imageUrl: imageUrl,
@@ -72,7 +76,7 @@ class MenuModel {
       type: 'pizza',
     ),
     ProductItemModel(
-      pid: 34343,
+      pid: '12522',
       name: "Salsiccia & Friarielli",
       price: 25.99,
       imageUrl: imageUrl,
@@ -81,7 +85,7 @@ class MenuModel {
       type: 'pizza',
     ),
     ProductItemModel(
-      pid: 856654,
+      pid: '435434',
       name: "Siciliana",
       price: 24.99,
       imageUrl: imageUrl,
@@ -90,7 +94,7 @@ class MenuModel {
       type: 'pizza',
     ),
     ProductItemModel(
-      pid: 14783343,
+      pid: '363412341',
       name: "Diavola",
       price: 29.99,
       imageUrl: imageUrl,
@@ -99,7 +103,7 @@ class MenuModel {
       type: 'pizza',
     ),
     ProductItemModel(
-      pid: 16121,
+      pid: '12521551',
       name: "Spaghetti Carbonara",
       price: 17.99,
       imageUrl: imageUrl,
@@ -108,7 +112,7 @@ class MenuModel {
       type: 'pasta',
     ),
     ProductItemModel(
-      pid: 34635643,
+      pid: '34543543',
       name: "Tagliatella Bolognese",
       price: 19.99,
       imageUrl: imageUrl,
@@ -124,13 +128,13 @@ class MenuModel {
     switch (type) {
       case 'vege':
         productsByType =
-            MenuModel.demoProducts.where((product) => product.isVeg).toList();
+            MenuModel.mockedProducts.where((product) => product.isVeg).toList();
         break;
       case 'special':
-        productsByType = MenuModel.demoProducts..shuffle();
+        productsByType = MenuModel.mockedProducts..shuffle();
         break;
       default:
-        productsByType = MenuModel.demoProducts
+        productsByType = MenuModel.mockedProducts
             .where((product) => product.type == type)
             .toList();
     }

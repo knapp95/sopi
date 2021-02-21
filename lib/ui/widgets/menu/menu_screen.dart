@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/models/menu_model.dart';
 import 'package:sopi/models/product_item_model.dart';
-import 'package:sopi/screens/menu/menu_list_products.dart';
-import 'menu_list_products.dart';
-import 'package:sopi/common/scripts.dart' as scripts;
-
+import 'package:sopi/models/user/user_model.dart';
+import 'package:sopi/ui/widgets/menu/menu_add_item.dart';
+import 'list/menu_list_products.dart';
+import 'package:sopi/common/scripts.dart';
+import 'package:provider/provider.dart';
 class MenuScreen extends StatefulWidget {
   @override
   _ProductsScreenState createState() => _ProductsScreenState();
@@ -13,6 +14,7 @@ class MenuScreen extends StatefulWidget {
 
 class _ProductsScreenState extends State<MenuScreen>
     with TickerProviderStateMixin {
+
   int _selectedIndex = 0;
   TabController _tabController;
   TextEditingController _searchController;
@@ -50,7 +52,7 @@ class _ProductsScreenState extends State<MenuScreen>
       List<ProductItemModel> productsByType =
           MenuModel.getSortedProductsByType(openedProducts.id);
       _searchResult = productsByType
-          .where((product) => scripts.containsIgnoreCase(product.name, text))
+          .where((product) => containsIgnoreCase(product.name, text))
           .toList();
     });
   }
@@ -63,6 +65,7 @@ class _ProductsScreenState extends State<MenuScreen>
 
   @override
   Widget build(BuildContext context) {
+    final typeAccount = context.watch<UserModel>().typeAccount;
     return Scaffold(
       appBar: AppBar(
         title: _searchActive
@@ -94,6 +97,7 @@ class _ProductsScreenState extends State<MenuScreen>
         controller: _tabController,
         children: _buildTabsContent(),
       ),
+      floatingActionButton: typeAccount == "manager" ? MenuAddItem() : null,
     );
   }
 

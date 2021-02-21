@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sopi/common/scripts.dart' as scripts;
+import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/services/authentication_service.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
 
 class AuthorizationScreen extends StatefulWidget {
   @override
@@ -55,11 +56,11 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                 GenericResponseModel("The password is not the same", false);
           } else {
             responseMessage =
-            await context.read<AuthenticationService>().signUp(
-              email: _emailController.text.trim(),
-              password: _passwordController.text.trim(),
-              typeAccount: _typeAccount,
-            );
+                await context.read<AuthenticationService>().signUp(
+                      email: _emailController.text.trim(),
+                      password: _passwordController.text.trim(),
+                      typeAccount: _typeAccount,
+                    );
           }
         }
         break;
@@ -72,7 +73,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         }
         break;
     }
-    scripts.showBottomNotification(context, responseMessage);
+    showBottomNotification(context, responseMessage);
   }
 
   bool get _isSingInShow {
@@ -134,7 +135,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: primaryColor,
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -158,18 +159,25 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                 _formFactory.buildTextField(
                   controller: _emailController,
                   labelText: 'Adress e-mail',
+                  labelColor: Colors.white24,
+                  valueColor: Colors.white,
                 ),
                 if (_authMode == AuthMode.singUp)
                   _formFactory.buildDropdownField(
                     labelText: 'Type account',
+                    labelColor: Colors.white24,
+                    labelDropdownColor: Colors.white,
+                    dropdownColor: primaryColor,
                     items: accountTypes,
                     initialValue: _typeAccount,
-                    onChanged: _onChangeTypeAccount,
+                    onChangedHandler: _onChangeTypeAccount,
                   ),
                 _formFactory.buildTextField(
                   isVisible: _authMode != AuthMode.resetPassword,
                   controller: _passwordController,
                   labelText: 'Password',
+                  labelColor: Colors.white24,
+                  valueColor: Colors.white,
                   suffixIcon: _buildSuffixIconPassword(),
                   obscureText: !_passwordVisible,
                 ),
@@ -177,12 +185,14 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                   isVisible: _authMode == AuthMode.singUp,
                   controller: _confirmPasswordController,
                   labelText: 'Repeat password',
+                  labelColor: Colors.white24,
+                  valueColor: Colors.white,
                   suffixIcon: _buildSuffixIconPassword(),
                   obscureText: !_passwordVisible,
                 ),
                 SizedBox(height: 20),
                 RaisedButton(
-                  color: Theme.of(context).accentColor,
+                  color: accentColor,
                   child: Text(_getNameForButton,
                       style: TextStyle(
                         fontSize: 20,
@@ -200,7 +210,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                     child: Text(
                       'Forgot password',
                       style: TextStyle(
-                        color: Theme.of(context).accentColor,
+                        color: accentColor,
                       ),
                     ),
                   ),
@@ -209,7 +219,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                   child: Text(
                     _isSingInShow ? 'Register' : 'Log in',
                     style: TextStyle(
-                      color: Theme.of(context).accentColor,
+                      color: accentColor,
                     ),
                   ),
                 ),

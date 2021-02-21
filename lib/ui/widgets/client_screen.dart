@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/basket_model.dart';
-import 'package:sopi/screens/basket/basket_bottom_widget.dart';
-
+import 'package:sopi/ui/shared/app_colors.dart';
 import 'account/account_screen.dart';
+import 'basket/basket_bottom_widget.dart';
 import 'menu/menu_screen.dart';
 import 'orders/order_screen.dart';
 
@@ -40,7 +40,7 @@ class _ClientScreenState extends State<ClientScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         onTap: _bottomTapped,
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: primaryColor,
         unselectedItemColor: Colors.white30,
         selectedItemColor: Colors.white,
         currentIndex: _bottomSelectedIndex,

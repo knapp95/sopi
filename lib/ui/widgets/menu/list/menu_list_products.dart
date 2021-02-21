@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/models/menu_model.dart';
 import 'package:sopi/models/product_item_model.dart';
-import 'package:sopi/screens/product_item_screen.dart';
-
+import 'package:sopi/ui/widgets/menu/dialogs/product_item_dialog.dart';
 import 'menu_list_noAvailable.dart';
 
 class MenuListProducts extends StatelessWidget {
@@ -11,8 +10,8 @@ class MenuListProducts extends StatelessWidget {
 
   MenuListProducts(this.displayProductsList);
 
-  void _openProductItemScreen(BuildContext ctx, ProductItemModel product) {
-    showDialog(context: ctx, child: ProductItemScreen(product));
+  void _openProductItemDialog(BuildContext ctx, ProductItemModel product) {
+    showDialog(context: ctx, child: ProductItemDialog(product));
   }
 
   @override
@@ -24,7 +23,7 @@ class MenuListProducts extends StatelessWidget {
             itemBuilder: (_, int index) {
               ProductItemModel product = displayProductsList[index];
               return InkWell(
-                onTap: () => _openProductItemScreen(context, product),
+                onTap: () => _openProductItemDialog(context, product),
                 child: Card(
                   child: Column(
                     children: [

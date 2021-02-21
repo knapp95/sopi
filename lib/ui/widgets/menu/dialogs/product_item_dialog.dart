@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sopi/models/basket_model.dart';
 import 'package:sopi/models/product_item_model.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
+import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:get/get.dart';
 
-class ProductItemScreen extends StatefulWidget {
+class ProductItemDialog extends StatefulWidget {
   final ProductItemModel product;
 
-  ProductItemScreen(this.product);
+  ProductItemDialog(this.product);
 
   @override
-  _ProductItemScreenState createState() =>
-      _ProductItemScreenState(this.product);
+  _ProductItemDialogState createState() =>
+      _ProductItemDialogState(this.product);
 }
 
-class _ProductItemScreenState extends State<ProductItemScreen> {
+class _ProductItemDialogState extends State<ProductItemDialog> {
   ProductItemModel _product;
 
-  _ProductItemScreenState(this._product);
+  _ProductItemDialogState(this._product);
 
   void _addToBasket() {
     if (BasketModel.products.containsKey(_product.pid)) {
@@ -26,17 +29,13 @@ class _ProductItemScreenState extends State<ProductItemScreen> {
       BasketModel.products[_product.pid] = _product;
       BasketModel.count = 5;
     }
-    Navigator.of(context).pop();
+    Get.back();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(8.0),
-        ),
-      ),
+      shape: shapeDialog,
       child: Column(
         children: [
           Image.network(
@@ -63,7 +62,7 @@ class _ProductItemScreenState extends State<ProductItemScreen> {
           Spacer(),
           FlatButton(
             minWidth: double.infinity,
-            color: Theme.of(context).primaryColor,
+            color: primaryColor,
             child: Text(
               'Add to basket',
               style: TextStyle(color: Colors.white),

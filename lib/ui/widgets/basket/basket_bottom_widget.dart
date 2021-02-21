@@ -6,7 +6,6 @@ class BasketBottomWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     String shortInfo = '${BasketModel.products.values.first.name}  ${BasketModel.count}'; ///TODO
     return Container(
-//      color: Theme.of(context).primaryColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(

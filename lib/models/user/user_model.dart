@@ -1,17 +1,23 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
+  String uid;
+  String typeAccount;
 
 
+  void setUser(String uid) {
+    this.uid = uid;
+    this.getUserTypeAccountFromFirebase();
+  }
 
 
   static void addUserToFirebase(String uid, typeAccount) {
     try {
-      DocumentReference user = FirebaseFirestore.instance.collection('users').doc(uid);
+      DocumentReference user =
+          FirebaseFirestore.instance.collection('users').doc(uid);
       final data = {
         'uid': uid,
-        'typeAccount' : typeAccount,
+        'typeAccount': typeAccount,
       };
       user.set(data);
     } catch (e) {
@@ -19,16 +25,14 @@ class UserModel {
     }
   }
 
-  static Future<String> getUserTypeAccountFromFirebase(String uid) async {
-    String typeAccount;
+  Future<void> getUserTypeAccountFromFirebase() async {
     try {
-      DocumentReference user = FirebaseFirestore.instance.collection('users').doc(uid);
+      DocumentReference user =
+          FirebaseFirestore.instance.collection('users').doc(this.uid);
       final result = await user.get();
-      typeAccount =  result.data()['typeAccount'];
+      this.typeAccount = result.data()['typeAccount'];
     } catch (e) {
       return e;
     }
-    return typeAccount;
   }
-
 }
