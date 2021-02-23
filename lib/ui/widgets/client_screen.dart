@@ -3,7 +3,7 @@ import 'package:sopi/models/basket_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'account/account_screen.dart';
 import 'basket/basket_bottom_widget.dart';
-import 'menu/menu_screen.dart';
+import 'products/menu_screen.dart';
 import 'orders/order_screen.dart';
 
 class ClientScreen extends StatefulWidget {

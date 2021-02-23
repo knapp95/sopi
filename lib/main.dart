@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:sopi/models/products_model.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/authentication_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,6 +27,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<UserModel>(
           create: (_) => UserModel(),
+        ),
+        ChangeNotifierProvider<ProductsModel>(
+          create: (_) => ProductsModel(),
         ),
         StreamProvider(
           create: (context) =>

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class MenuListNoAvailable extends StatelessWidget {
+class ProductListEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
-import 'package:sopi/models/menu_model.dart';
+import 'package:sopi/models/products_model.dart';
 import 'package:sopi/models/product_item_model.dart';
 import 'package:sopi/models/user/user_model.dart';
-import 'package:sopi/ui/widgets/menu/menu_add_item.dart';
-import 'list/menu_list_products.dart';
+import 'package:sopi/ui/widgets/products/product_item_add.dart';
+import 'list/products_list.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:provider/provider.dart';
 class MenuScreen extends StatefulWidget {
@@ -14,18 +14,21 @@ class MenuScreen extends StatefulWidget {
 
 class _ProductsScreenState extends State<MenuScreen>
     with TickerProviderStateMixin {
-  String _typeAccount;
+  bool _isManager = false;
+  bool _isInit = false;
   int _selectedIndex = 0;
   TabController _tabController;
   TextEditingController _searchController;
+
   bool _searchActive = false;
+  ProductsModel _products;
   List<ProductItemModel> _searchResult = [];
 
   @override
   void initState() {
     _searchController = TextEditingController();
     _tabController =
-        TabController(length: MenuModel.productsTypes.length, vsync: this);
+        TabController(length: ProductsModel.types.length, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _searchClear();
@@ -37,7 +40,12 @@ class _ProductsScreenState extends State<MenuScreen>
 
   @override
   void didChangeDependencies() {
-    _typeAccount = Provider.of<UserModel>(context, listen: false).typeAccount;
+    if (!_isInit) {
+      _products = Provider.of<ProductsModel>(context);
+      _products.fetchProducts();
+      _isInit = true;
+    }
+    _isManager = Provider.of<UserModel>(context, listen: false).typeAccount == 'manager';
     super.didChangeDependencies();
   }
   @override
@@ -53,9 +61,9 @@ class _ProductsScreenState extends State<MenuScreen>
       if (text.isEmpty) {
         return;
       }
-      GenericItemModel openedProducts = MenuModel.productsTypes[_selectedIndex];
+      GenericItemModel openedProducts = ProductsModel.types[_selectedIndex];
       List<ProductItemModel> productsByType =
-          MenuModel.getSortedProductsByType(openedProducts.id);
+      _products.getSortedProductsByType(openedProducts.id);
       _searchResult = productsByType
           .where((product) => containsIgnoreCase(product.name, text))
           .toList();
@@ -101,13 +109,13 @@ class _ProductsScreenState extends State<MenuScreen>
         controller: _tabController,
         children: _buildTabsContent(),
       ),
-      floatingActionButton: _typeAccount == "manager" ? MenuAddItem() : null,
+      floatingActionButton: _isManager  ? ProductItemAdd() : null,
     );
   }
 
   List<Widget> _buildTabs() {
     List<Widget> tabs = [];
-    MenuModel.productsTypes.forEach((tab) {
+    ProductsModel.types.forEach((tab) {
       tabs.add(
         Tab(
           child: Text(
@@ -126,15 +134,15 @@ class _ProductsScreenState extends State<MenuScreen>
   }
 
   List<Widget> _buildTabsContent() {
-    List<Widget> tabsContent = MenuModel.productsTypes.map((type) {
+    List<Widget> tabsContent = ProductsModel.types.map((type) {
       List<ProductItemModel> productsByType = [];
 
       if (_searchResult.length != 0 || _searchController.text.isNotEmpty) {
         productsByType = _searchResult;
       } else {
-        productsByType = MenuModel.getSortedProductsByType(type.id);
+        productsByType = _products.getSortedProductsByType(type.id);
       }
-      return MenuListProducts(productsByType);
+      return ProductsList(productsByType, isManager: _isManager);
     }).toList();
     return tabsContent;
   }

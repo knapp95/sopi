@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'menu/menu_screen.dart';
+import 'products/menu_screen.dart';
 
 class ManagerScreen extends StatefulWidget {
   @override

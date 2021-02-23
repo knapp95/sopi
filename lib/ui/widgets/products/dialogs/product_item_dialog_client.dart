@@ -6,20 +6,20 @@ import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:get/get.dart';
 
-class ProductItemDialog extends StatefulWidget {
+class ProductItemDialogClient extends StatefulWidget {
   final ProductItemModel product;
 
-  ProductItemDialog(this.product);
+  ProductItemDialogClient(this.product);
 
   @override
-  _ProductItemDialogState createState() =>
-      _ProductItemDialogState(this.product);
+  _ProductItemDialogClientState createState() =>
+      _ProductItemDialogClientState(this.product);
 }
 
-class _ProductItemDialogState extends State<ProductItemDialog> {
+class _ProductItemDialogClientState extends State<ProductItemDialogClient> {
   ProductItemModel _product;
 
-  _ProductItemDialogState(this._product);
+  _ProductItemDialogClientState(this._product);
 
   void _addToBasket() {
     if (BasketModel.products.containsKey(_product.pid)) {
@@ -38,9 +38,10 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
       shape: shapeDialog,
       child: Column(
         children: [
-          Image.network(
-            _product.imageUrl,
-            fit: BoxFit.contain,
+          _product.imageUrl != null
+              ? Image.network(_product.imageUrl, fit: BoxFit.cover)
+              : Image.asset(
+            'assets/images/no_photo.png',
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),

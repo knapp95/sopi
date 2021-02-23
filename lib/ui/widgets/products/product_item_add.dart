@@ -4,24 +4,25 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/widgets/menu/dialogs/product_item_manager_dialog.dart';
+import 'package:sopi/ui/widgets/products/dialogs/product_item_dialog_manager.dart';
+import 'package:get/get.dart';
 
-class MenuAddItem extends StatefulWidget {
+class ProductItemAdd extends StatefulWidget {
   @override
-  _MenuAddItemState createState() => _MenuAddItemState();
+  _ProductItemAddState createState() => _ProductItemAddState();
 }
 
-class _MenuAddItemState extends State<MenuAddItem> {
+class _ProductItemAddState extends State<ProductItemAdd> {
   Map<String, GenericItemModel> get allItems {
     Map<String, GenericItemModel> allItems = {};
     allItems['addProductManual'] = GenericItemModel(
       name: 'Add product manual',
       icon: Icons.add,
-      funHandler: () => showDialog(
-          context: context,
-          child: ProductItemManagerDialog(
-            isNew: true,
-          )),
+      funHandler: () => Get.dialog(
+        ProductItemDialogManager(
+          isNew: true,
+        ),
+      ),
       color: primaryColor,
     );
 
