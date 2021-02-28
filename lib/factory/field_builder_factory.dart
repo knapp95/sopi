@@ -5,6 +5,7 @@ import 'package:sopi/factory/field_validation_factory.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 
 class FieldBuilderFactory {
+  dynamic data;
   final FieldValidationFactory _fieldValidate = FieldValidationFactory();
   static final FieldBuilderFactory _singleton = FieldBuilderFactory._internal();
 
@@ -17,63 +18,94 @@ class FieldBuilderFactory {
   static FieldBuilderFactory get singleton => _singleton;
 
   Widget buildTextField({
+    String fieldName,
+    dynamic initialValue,
     bool isVisible = true,
+    Color valueColor,
+    TextInputType keyboardType,
     TextEditingController controller,
+    int maxLines = 1,
     String labelText,
+    Color labelColor,
     bool obscureText = false,
     Widget suffixIcon,
-    String fieldName,
   }) {
     return !isVisible
         ? Container()
-        : FormBuilderTextField(
-            name: fieldName,
-            controller: controller,
-            style: TextStyle(
-              color: Colors.white,
-            ),
-            obscureText: obscureText,
-            decoration: InputDecoration(
-              labelText: labelText,
-              labelStyle: TextStyle(
-                color: Colors.white24,
+        : Column(
+            children: [
+              FormBuilderTextField(
+                name: fieldName,
+                initialValue: initialValue,
+                keyboardType: keyboardType,
+                controller: controller,
+                maxLines: maxLines,
+                style: TextStyle(
+                  color: valueColor,
+                ),
+                obscureText: obscureText,
+                decoration: InputDecoration(
+                  labelText: labelText,
+                  labelStyle: TextStyle(
+                    color: labelColor,
+                  ),
+                  suffixIcon: suffixIcon,
+                ),
+                validator: (input) =>
+                    _fieldValidate.validateFields(fieldName, input),
+                onChanged: (value) => _onChanged(fieldName, value),
               ),
-              suffixIcon: suffixIcon,
-            ),
-            validator: (input) =>
-                _fieldValidate.validateFields(fieldName, input),
+              SizedBox(height: 10),
+            ],
           );
   }
 
   Widget buildDropdownField({
+    String fieldName,
     bool isVisible = true,
     String labelText,
+    Color labelColor,
+    Color labelDropdownColor,
+    Color dropdownColor,
     List<GenericItemModel> items,
-    Function onChanged,
+    Function onChangedHandler,
     String initialValue,
   }) {
     return !isVisible
         ? Container()
-        : FormBuilderDropdown(
-            name: labelText,
-            decoration: InputDecoration(
-              labelText: labelText,
-              labelStyle: TextStyle(
-                color: Colors.white24,
+        : Column(
+            children: [
+              FormBuilderDropdown(
+                name: labelText,
+                decoration: InputDecoration(
+                  labelText: labelText,
+                  labelStyle: TextStyle(
+                    color: labelColor,
+                  ),
+                ),
+                items: items
+                    .map((GenericItemModel item) => DropdownMenuItem(
+                          child: Text(
+                            item.name,
+                            style: TextStyle(color: labelDropdownColor),
+                          ),
+                          value: item.id,
+                        ))
+                    .toList(),
+                dropdownColor: dropdownColor,
+                onChanged: (value) => _onChanged(fieldName, value,
+                    onChangedHandler: onChangedHandler),
+                initialValue: initialValue,
               ),
-            ),
-            items: items
-                .map((GenericItemModel item) => DropdownMenuItem(
-                      child: Text(
-                        item.name,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      value: item.id,
-                    ))
-                .toList(),
-            dropdownColor: Colors.lightGreen,
-            onChanged: onChanged,
-          initialValue: initialValue,
+              SizedBox(height: 15),
+            ],
           );
+  }
+
+  void _onChanged(String fieldName, value, {Function onChangedHandler}) {
+    this.data?.changeValueInForm(fieldName, value);
+    if (onChangedHandler != null) {
+      onChangedHandler(value);
+    }
   }
 }

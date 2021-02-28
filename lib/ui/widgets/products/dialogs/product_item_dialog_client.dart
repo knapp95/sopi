@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sopi/models/basket_model.dart';
 import 'package:sopi/models/product_item_model.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
+import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:get/get.dart';
 
-class ProductItemScreen extends StatefulWidget {
+class ProductItemDialogClient extends StatefulWidget {
   final ProductItemModel product;
 
-  ProductItemScreen(this.product);
+  ProductItemDialogClient(this.product);
 
   @override
-  _ProductItemScreenState createState() =>
-      _ProductItemScreenState(this.product);
+  _ProductItemDialogClientState createState() =>
+      _ProductItemDialogClientState(this.product);
 }
 
-class _ProductItemScreenState extends State<ProductItemScreen> {
+class _ProductItemDialogClientState extends State<ProductItemDialogClient> {
   ProductItemModel _product;
 
-  _ProductItemScreenState(this._product);
+  _ProductItemDialogClientState(this._product);
 
   void _addToBasket() {
     if (BasketModel.products.containsKey(_product.pid)) {
@@ -26,22 +29,19 @@ class _ProductItemScreenState extends State<ProductItemScreen> {
       BasketModel.products[_product.pid] = _product;
       BasketModel.count = 5;
     }
-    Navigator.of(context).pop();
+    Get.back();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(8.0),
-        ),
-      ),
+      shape: shapeDialog,
       child: Column(
         children: [
-          Image.network(
-            _product.imageUrl,
-            fit: BoxFit.contain,
+          _product.imageUrl != null
+              ? Image.network(_product.imageUrl, fit: BoxFit.cover)
+              : Image.asset(
+            'assets/images/no_photo.png',
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -63,7 +63,7 @@ class _ProductItemScreenState extends State<ProductItemScreen> {
           Spacer(),
           FlatButton(
             minWidth: double.infinity,
-            color: Theme.of(context).primaryColor,
+            color: primaryColor,
             child: Text(
               'Add to basket',
               style: TextStyle(color: Colors.white),

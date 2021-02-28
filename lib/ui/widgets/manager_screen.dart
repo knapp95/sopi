@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sopi/models/basket_model.dart';
-import 'package:sopi/screens/basket/basket_bottom_widget.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
+import 'products/menu_screen.dart';
 
-import 'account/account_screen.dart';
-import 'menu/menu_screen.dart';
-import 'orders/order_screen.dart';
-
-class ClientScreen extends StatefulWidget {
+class ManagerScreen extends StatefulWidget {
   @override
-  _ClientScreenState createState() => _ClientScreenState();
+  _ManagerScreenState createState() => _ManagerScreenState();
 }
 
-class _ClientScreenState extends State<ClientScreen> {
+class _ManagerScreenState extends State<ManagerScreen> {
   PageController _pageController = PageController(
     initialPage: 0,
     keepPage: true,
@@ -40,7 +36,7 @@ class _ClientScreenState extends State<ClientScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         onTap: _bottomTapped,
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: primaryColor,
         unselectedItemColor: Colors.white30,
         selectedItemColor: Colors.white,
         currentIndex: _bottomSelectedIndex,
@@ -50,24 +46,7 @@ class _ClientScreenState extends State<ClientScreen> {
   }
 
   Widget _buildPageView() {
-    List<Widget> children = [];
-    List<Widget> widgets = [MenuScreen(), OrderScreen(), AccountScreen()];
-
-    /// If basket no empty add bottom widget with basket info
-    if (BasketModel.products.isEmpty) {
-      children = widgets;
-    } else {
-      widgets.forEach((element) {
-        children.add(
-          Column(
-            children: [
-              Expanded(child: element),
-              BasketBottomWidget(),
-            ],
-          ),
-        );
-      });
-    }
+    List<Widget> children = [MenuScreen()];
     return PageView(
       controller: _pageController,
       onPageChanged: (index) {
@@ -87,15 +66,21 @@ class _ClientScreenState extends State<ClientScreen> {
       ),
       BottomNavigationBarItem(
         icon: Icon(
+          Icons.supervised_user_circle,
+        ),
+        label: 'Employees',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
           Icons.list_alt,
         ),
         label: 'Orders',
       ),
       BottomNavigationBarItem(
         icon: Icon(
-          Icons.person,
+          Icons.pie_chart,
         ),
-        label: 'Account',
+        label: 'Statistics',
       ),
     ];
   }

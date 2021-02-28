@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/services/authentication_service.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
 
 class AccountScreen extends StatelessWidget {
   @override
@@ -23,7 +24,7 @@ class AccountScreen extends StatelessWidget {
                             shape: BoxShape.circle,
                             border: Border.all(
                               width: 1,
-                              color: Theme.of(context).primaryColor,
+                              color: primaryColor,
                             ),
                           ),
                           child: CircleAvatar(

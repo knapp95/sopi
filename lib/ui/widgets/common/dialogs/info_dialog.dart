@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sopi/common/scripts.dart';
+import 'package:sopi/ui/shared/shared_styles.dart';
 
 class InfoDialog extends StatelessWidget {
   final String title;
@@ -16,21 +18,10 @@ class InfoDialog extends StatelessWidget {
         title,
         textAlign: TextAlign.center,
       ),
-      content: content != null
-          ? Text(
-              content,
-            )
-          : null,
+      content: Text(getNotEmptyValue(content),
+      ),
       actions: [
-        FlatButton(
-          child: Text(
-            'Close',
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-
+        cancelDialogButton,
       ],
     );
   }

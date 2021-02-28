@@ -1,9 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:sopi/models/products_model.dart';
+import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/authentication_service.dart';
-import 'package:sopi/screens/authorization/authorization_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
+import 'package:sopi/ui/widgets/authorization/authorization_screen.dart';
 
 import 'home_page_screen.dart';
 
@@ -21,17 +25,23 @@ class MyApp extends StatelessWidget {
         Provider<AuthenticationService>(
           create: (_) => AuthenticationService(FirebaseAuth.instance),
         ),
+        ChangeNotifierProvider<UserModel>(
+          create: (_) => UserModel(),
+        ),
+        ChangeNotifierProvider<ProductsModel>(
+          create: (_) => ProductsModel(),
+        ),
         StreamProvider(
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
         )
       ],
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: 'Lato',
-          primaryColor: Colors.lightGreen,
-          accentColor: Color.fromRGBO(255, 241, 169, 1),
+          primaryColor: primaryColor,
+          accentColor: accentColor,
         ),
         home: AuthenticationWrapper(),
       ),
@@ -43,8 +53,11 @@ class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
+
     if (firebaseUser != null) {
-      return HomePageScreen(firebaseUser);
+      Provider.of<UserModel>(context, listen: false).setUser(firebaseUser.uid);
+
+      return HomePageScreen();
     }
     return AuthorizationScreen();
   }

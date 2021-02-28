@@ -1,56 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sopi/models/user/user_model.dart';
-import 'package:sopi/screens/client_screen.dart';
-import 'package:sopi/screens/employee_screen.dart';
-import 'package:sopi/screens/manager_screen.dart';
-import 'package:sopi/widgets/dialogs/loading_data_in_progress.dart';
+import 'package:sopi/services/authentication_service.dart';
+import 'package:sopi/ui/widgets/client_screen.dart';
+import 'package:sopi/ui/widgets/common/dialogs/loading_data_in_progress.dart';
+import 'package:sopi/ui/widgets/employee_screen.dart';
+import 'package:sopi/ui/widgets/manager_screen.dart';
 
 class HomePageScreen extends StatefulWidget {
-  final firebaseUser;
-  HomePageScreen(this.firebaseUser);
   @override
   _HomePageScreenState createState() => _HomePageScreenState();
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
   String _typeAccount;
-  bool _isLoading = false;
 
   @override
-  void initState() {
-    setState(() {
-      _isLoading = true;
-    });
-    _getTypeAccount();
-    super.initState();
-  }
-
-  _getTypeAccount() {
-
-    UserModel.getUserTypeAccountFromFirebase(widget.firebaseUser?.uid).then(
-      (value) => setState(() {
-        _typeAccount = value;
-        _isLoading = false;
-      }),
-    );
+  void didChangeDependencies() {
+    _typeAccount = Provider.of<UserModel>(context).typeAccount;
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? LoadingDataInProgress(withScaffold: true) : _buildPageForTypeAccount();
+    return _typeAccount == null
+        ? LoadingDataInProgress(withScaffold: true)
+        : _buildPageForTypeAccount(context);
   }
 
-  Widget _buildPageForTypeAccount() {
+  Widget _buildPageForTypeAccount(BuildContext context) {
     switch (_typeAccount) {
       case 'client':
-        return ClientScreen();
+        return Column(
+          children: [
+            RaisedButton(
+              onPressed: () {
+                context.read<AuthenticationService>().signOut();
+              },
+              child: Text("Sign out -- tmp $_typeAccount"),
+            ),
+            Expanded(child: ClientScreen()),
+          ],
+        );
       case 'manager':
-        return ManagerScreen();
+        return Column(
+          children: [
+            RaisedButton(
+              onPressed: () {
+                context.read<AuthenticationService>().signOut();
+              },
+              child: Text("Sign out -- tmp $_typeAccount"),
+            ),
+            Expanded(child: ManagerScreen()),
+          ],
+        );
+      //  return ManagerScreen();
       case 'employee':
+        return Column(
+          children: [
+            RaisedButton(
+              onPressed: () {
+                context.read<AuthenticationService>().signOut();
+              },
+              child: Text("Sign out -- tmp $_typeAccount"),
+            ),
+            Expanded(child: EmployeeScreen()),
+          ],
+        );
         return EmployeeScreen();
       default:
         return Container(child: Text('No data'));
     }
   }
-
 }

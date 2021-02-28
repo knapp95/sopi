@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/factory/order_factory.dart';
 import 'package:sopi/models/order_item_model.dart';
-import 'package:sopi/screens/orders/order_noAvailable.dart';
+
+import 'order_noAvailable.dart';
 
 class OrderScreen extends StatefulWidget {
   @override
