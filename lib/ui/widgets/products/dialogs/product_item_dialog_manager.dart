@@ -11,7 +11,7 @@ import 'package:sopi/models/product_item_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:get/get.dart';
-import 'file:///C:/Users/tomas/AndroidStudioProjects/sopi/lib/ui/widgets/common/images/image_source_sheet.dart';
+import 'package:sopi/ui/widgets/common/images/image_source_sheet.dart';
 
 class ProductItemDialogManager extends StatefulWidget {
   final bool isNew;
