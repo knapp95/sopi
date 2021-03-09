@@ -21,7 +21,6 @@ class ProductItemModel {
     this.description,
     this.price,
     this.type,
-    this.count = 1,
   });
 
   double get rate {
@@ -43,7 +42,7 @@ class ProductItemModel {
       this.description = data['description'];
       this.price = data['price'];
       this.type = data['type'];
-      this.count = data['count'];
+      this.count = data['count'] ?? 1;
     } catch (e) {
       throw e;
     }

@@ -1,26 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:sopi/models/products_model.dart';
-import 'package:sopi/models/product_item_model.dart';
+import 'package:sopi/factory/order_factory.dart';
+import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/products/product_item_model.dart';
+import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
-import 'package:sopi/ui/widgets/products/dialogs/product_item_dialog_client.dart';
-import 'package:sopi/ui/widgets/products/dialogs/product_item_dialog_manager.dart';
+import 'package:sopi/ui/widgets/common/products/dialogs/product_item_dialog_client.dart';
+import 'package:sopi/ui/widgets/common/products/dialogs/product_item_dialog_manager.dart';
 import 'products_list_empty.dart';
 import 'package:get/get.dart';
 
-class ProductsList extends StatelessWidget {
+class ProductsList extends StatefulWidget {
   final List<ProductItemModel> displayProductsList;
   final bool isManager;
 
   ProductsList(this.displayProductsList, {this.isManager = false});
 
+  @override
+  _ProductsListState createState() => _ProductsListState();
+}
+
+/// TODO when mocked orders done back to stateless widget
+class _ProductsListState extends State<ProductsList> {
+  OrderItemModel _mockedOrder = OrderItemModel(products: []);
+
   void _editProduct(String pid) {
     Get.dialog(ProductItemDialogManager(pid: pid));
   }
 
+  void _addToOrderListMocked(String pid) {
+    ProductItemModel product = widget.displayProductsList.firstWhere((element) => element.pid == pid);
+    if(_mockedOrder.products.isNotEmpty) {
+      print(_mockedOrder.products.first.count);
+    }
+    if (_mockedOrder.products.contains(product)) {
+      product.count = product.count + 1;
+    } else {
+      _mockedOrder.products.add(product);
+    }
+
+
+  }
+
+  void _submitOrderMocked(String pid) {
+    _mockedOrder.createDate = DateTime.now();
+
+    OrderFactory _ordersFactory = OrderFactory();
+
+    _ordersFactory.addOrderToQueue(_mockedOrder);
+
+  }
+
   void _removeProduct(String pid) {
-    displayProductsList
+    widget.displayProductsList
         .firstWhere((element) => element.pid == pid)
         .removeProduct();
     Provider.of<ProductsModel>(Get.context, listen: false).fetchProducts();
@@ -28,14 +61,14 @@ class ProductsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return displayProductsList.length == 0
+    return widget.displayProductsList.length == 0
         ? ProductListEmpty()
         : ListView.builder(
-            itemCount: displayProductsList.length,
+            itemCount: widget.displayProductsList.length,
             itemBuilder: (_, int index) {
-              ProductItemModel product = displayProductsList[index];
+              ProductItemModel product = widget.displayProductsList[index];
               return InkWell(
-                onTap: () => !isManager
+                onTap: () => !widget.isManager
                     ? Get.dialog(ProductItemDialogClient(product))
                     : null,
                 child: Card(
@@ -84,28 +117,59 @@ class ProductsList extends StatelessWidget {
                           )
                         ],
                       ),
-                      if (this.isManager)
+                      if (this.widget.isManager)
                         Column(
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  _buildButtonWithLabel(
-                                    product.pid,
-                                    _editProduct,
-                                    FontAwesomeIcons.pencilAlt,
-                                    'Edit',
-                                    Colors.blue,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+
+                                      _buildButtonWithLabel(
+                                        product.pid,
+                                        _editProduct,
+                                        FontAwesomeIcons.pencilAlt,
+                                        'Edit',
+                                        Colors.blue,
+                                      ),
+                                      _buildButtonWithLabel(
+                                        product.pid,
+                                        _removeProduct,
+                                        FontAwesomeIcons.times,
+                                        'Remove',
+                                        Colors.red,
+                                      ),
+                                    ],
                                   ),
-                                  _buildButtonWithLabel(
-                                    product.pid,
-                                    _removeProduct,
-                                    FontAwesomeIcons.times,
-                                    'Remove',
-                                    Colors.red,
+                                  /// MOCKED TO DELETE
+                                  Column(
+                                    children: [
+                                      Text('ORDER :'),
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                        children: <Widget>[
+                                          _buildButtonWithLabel(
+                                            product.pid,
+                                            _addToOrderListMocked,
+                                            FontAwesomeIcons.plus,
+                                            'Add to order list',
+                                            Colors.red,
+                                          ),
+                                          _buildButtonWithLabel(
+                                            product.pid,
+                                            _submitOrderMocked,
+                                            FontAwesomeIcons.equals,
+                                            'Submit order',
+                                            Colors.red,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

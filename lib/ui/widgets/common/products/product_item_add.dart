@@ -4,8 +4,9 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/widgets/products/dialogs/product_item_dialog_manager.dart';
 import 'package:get/get.dart';
+
+import 'dialogs/product_item_dialog_manager.dart';
 
 class ProductItemAdd extends StatefulWidget {
   @override

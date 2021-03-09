@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'products/menu_screen.dart';
+import 'package:sopi/ui/widgets/client/account/account_screen.dart';
+import 'package:sopi/ui/widgets/common/products/menu_screen.dart';
+import 'package:sopi/ui/widgets/manager/employees/employees_screen.dart';
+import 'package:sopi/ui/widgets/manager/orders/order_screen.dart';
+import 'package:sopi/ui/widgets/manager/statistics/statistics_screen.dart';
 
 class ManagerScreen extends StatefulWidget {
   @override
@@ -46,7 +50,13 @@ class _ManagerScreenState extends State<ManagerScreen> {
   }
 
   Widget _buildPageView() {
-    List<Widget> children = [MenuScreen()];
+    List<Widget> children = [
+      MenuScreen(),
+      EmployeesScreen(),
+      OrderScreen(),
+      StatisticsScreen(),
+      AccountScreen()
+    ];
     return PageView(
       controller: _pageController,
       onPageChanged: (index) {
@@ -81,6 +91,12 @@ class _ManagerScreenState extends State<ManagerScreen> {
           Icons.pie_chart,
         ),
         label: 'Statistics',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
+          Icons.person,
+        ),
+        label: 'Account',
       ),
     ];
   }

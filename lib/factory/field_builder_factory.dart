@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:sopi/factory/field_validation_factory.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 
@@ -58,6 +59,33 @@ class FieldBuilderFactory {
               SizedBox(height: 10),
             ],
           );
+  }
+
+  Widget buildTouchSpinField({
+    String fieldName,
+    dynamic initialValue,
+    bool isVisible = true,
+    Widget suffixIcon,
+    String labelText,
+  }) {
+    return !isVisible
+        ? Container()
+        : Column(
+      children: [
+        FormBuilderTouchSpin(
+          name: fieldName,
+          displayFormat: NumberFormat.decimalPattern(),
+          initialValue: initialValue,
+          decoration: InputDecoration(
+            labelText: labelText,
+
+            suffixIcon: suffixIcon,
+          ),
+          //onChanged: (value) => _onChanged(fieldName, value),
+        ),
+        SizedBox(height: 10),
+      ],
+    );
   }
 
   Widget buildDropdownField({

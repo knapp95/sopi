@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/factory/order_factory.dart';
-import 'package:sopi/models/order_item_model.dart';
+import 'package:sopi/models/orders/order_item_model.dart';
 
 import 'order_noAvailable.dart';
 
@@ -15,22 +15,18 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   void didChangeDependencies() {
-    _pastOrders = [OrderFactory.singleton.upcomingOrder];
+  //  _pastOrders = [OrderFactory.singleton.upcomingOrder];
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    final double statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.only(top: statusBarHeight),
-        child: Column(
-          children: [
-            Expanded(child: _buildUpcomingOrderWidget()),
-            Expanded(flex: 2, child: _buildPastOrdersWidget()),
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(child: _buildUpcomingOrderWidget()),
+          Expanded(flex: 2, child: _buildPastOrdersWidget()),
+        ],
       ),
     );
   }
@@ -60,4 +56,5 @@ class _OrderScreenState extends State<OrderScreen> {
       ],
     );
   }
+
 }

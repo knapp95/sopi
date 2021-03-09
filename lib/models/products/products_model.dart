@@ -1,7 +1,7 @@
 import 'package:sopi/models/generic/generic_item_model.dart';
-import 'package:sopi/models/product_item_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sopi/models/products/product_item_model.dart';
 
 class ProductsModel with ChangeNotifier {
   static const double maxAvailableRate = 6.0;

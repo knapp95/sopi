@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sopi/models/basket_model.dart';
+import 'package:provider/provider.dart';
+import 'package:sopi/common/scripts.dart';
+import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
+import 'package:sopi/ui/widgets/common/orders/order_screen.dart';
+import 'package:sopi/ui/widgets/common/products/menu_screen.dart';
+
 import 'account/account_screen.dart';
 import 'basket/basket_bottom_widget.dart';
-import 'products/menu_screen.dart';
-import 'orders/order_screen.dart';
 
 class ClientScreen extends StatefulWidget {
   @override
@@ -16,9 +19,15 @@ class _ClientScreenState extends State<ClientScreen> {
     initialPage: 0,
     keepPage: true,
   );
+  BasketModel _basket;
 
   int _bottomSelectedIndex = 0;
 
+  @override
+  void didChangeDependencies() {
+    _basket = Provider.of<BasketModel>(context);
+    super.didChangeDependencies();
+  }
   void _bottomTapped(int index) {
     setState(() {
       _bottomSelectedIndex = index;
@@ -54,7 +63,7 @@ class _ClientScreenState extends State<ClientScreen> {
     List<Widget> widgets = [MenuScreen(), OrderScreen(), AccountScreen()];
 
     /// If basket no empty add bottom widget with basket info
-    if (BasketModel.products.isEmpty) {
+    if (isNullOrEmpty(_basket.products)) {
       children = widgets;
     } else {
       widgets.forEach((element) {

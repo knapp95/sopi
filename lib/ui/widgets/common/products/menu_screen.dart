@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
-import 'package:sopi/models/products_model.dart';
-import 'package:sopi/models/product_item_model.dart';
+import 'package:sopi/models/products/product_item_model.dart';
+import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/models/user/user_model.dart';
-import 'package:sopi/ui/widgets/products/product_item_add.dart';
+import 'package:sopi/ui/widgets/common/products/product_item_add.dart';
 import 'list/products_list.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:provider/provider.dart';
