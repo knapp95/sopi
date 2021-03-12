@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 
 class OrderFactory {
   static final OrderFactory _singleton = OrderFactory._internal();
+  final _ordersCollection = FirebaseFirestore.instance.collection('orders');
 
   factory OrderFactory() {
     return _singleton;
@@ -45,12 +47,34 @@ processOrders.forEach((order) {
   }
 
   ///Dodanie zamówienia
-  void addOrderToQueue(OrderItemModel order) {
-/*
+  Future<void> addOrder(OrderItemModel order) async {
+    order.humanNumber = await this.getHumanNumberForOrder();
 
-processOrders.add(order);
-calculateProcess();
- */
+    final document = _ordersCollection.doc();
+
+    final data = order.toJson();
+    document.set(data);
+
+    // processOrders.add(order);
+    // calculateProcess();
+  }
+
+  Future<int> getHumanNumberForOrder() async {
+    int humanNumber = 1;
+    QuerySnapshot query =
+        await _ordersCollection.orderBy('humanNumber').limitToLast(1).get();
+
+    /// After 99 order's increment's is reset
+    if (query.docs.isNotEmpty && query.docs.first['humanNumber'] < 99) {
+      humanNumber = query.docs.first['humanNumber'];
+    }
+    return humanNumber;
+  }
+
+  Stream<List<OrderItemModel>> getOrders() {
+    return _ordersCollection.snapshots().map((snapShot) => snapShot.docs
+        .map((document) => OrderItemModel.fromJson(document.data()))
+        .toList());
   }
 
   void calculateProcess() {

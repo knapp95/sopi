@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/common/scripts.dart';
+import 'package:sopi/factory/order_factory.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'package:sopi/models/orders/orders_model.dart';
 import 'dart:async';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/widgets/common/dialogs/loading_data_in_progress.dart';
 
 class OrderScreen extends StatefulWidget {
   @override
@@ -12,7 +14,7 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  List<OrderItemModel> _pastOrders;
+  OrderFactory _orderFactory = OrderFactory.singleton;
   Timer _timer;
   String _timeNow;
   String _prepareTime;
@@ -94,7 +96,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     child: Column(
                       children: [
                         Text(
-                          '#${order.oid}',
+                          '#${order.humanNumber}',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Row(
@@ -137,20 +139,34 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   List<Widget> _buildAssignedPersonToOrderWidget(List<String> assignedPerson) {
-    return assignedPerson
-        .map(
-          (person) => Row(
-            children: [
-              Icon(Icons.person, color: Colors.grey),
-              formSizedBoxWidth,
-              Text(
-                person,
-                style: TextStyle(color: Colors.grey),
+    return assignedPerson != null
+        ? assignedPerson
+            .map(
+              (person) => Row(
+                children: [
+                  Icon(Icons.person, color: Colors.grey),
+                  formSizedBoxWidth,
+                  Text(
+                    person,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
               ),
-            ],
-          ),
-        )
-        .toList();
+            )
+            .toList()
+        : [
+            Row(
+              children: [
+                Icon(Icons.person, color: Colors.grey),
+                formSizedBoxWidth,
+                Text(
+                  'Not assigned',
+                  style: TextStyle(
+                      color: Colors.grey, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ];
   }
 
   Widget _buildOrdersInQueueWidget() {
@@ -163,45 +179,60 @@ class _OrderScreenState extends State<OrderScreen> {
             style: TextStyle(color: Colors.grey),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: OrdersModel.mockedQueueOrders.length,
-              itemBuilder: (_, int index) {
-                OrderItemModel order = OrdersModel.mockedQueueOrders[index];
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          '#${order.oid}',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Center(
-                                child: Text(
-                                    '${formatDateToString(order.createDate, format: 'HH:mm')}',
-                                    style: _mainTimeStyle),
+            child: StreamBuilder(
+                stream: _orderFactory.getOrders(),
+                builder: (ctx, snapshot) {
+                  if (!snapshot.hasData) {
+                    return LoadingDataInProgress();
+                  }
+                  return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (_, int index) {
+                      OrderItemModel order = snapshot.data[index];
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Text(
+                                    '#${order.humanNumber}',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 5,
-                              child: Column(
-                                children: _buildAssignedPersonToOrderWidget(
-                                    order.assignedPerson),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Center(
+                                      child: Text(
+                                          '${formatDateToString(order.createDate, format: 'HH:mm')}',
+                                          style: _mainTimeStyle),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 5,
+                                    child: Column(
+                                      children:
+                                          _buildAssignedPersonToOrderWidget(
+                                              order.assignedPerson),
+                                    ),
+                                  ),
+                                  Expanded(child: Icon(Icons.settings))
+                                ],
                               ),
-                            ),
-                            Expanded(child: Icon(Icons.settings))
-                          ],
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                      );
+                    },
+                  );
+                }),
           ),
         ],
       ),

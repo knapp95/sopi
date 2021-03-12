@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sopi/factory/order_factory.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 
 import 'order_noAvailable.dart';
@@ -39,7 +38,7 @@ class _OrderScreenState extends State<OrderScreen> {
             ? OrderNoAvailable()
             : ListTile(
                 leading: Icon(Icons.timelapse),
-                title: Text('Order number #${_upcomingOrder.oid}'),
+                title: Text('Order number #${_upcomingOrder.humanNumber}'),
               ),
       ],
     );
@@ -51,7 +50,7 @@ class _OrderScreenState extends State<OrderScreen> {
         Text('Past orders'),
         ListTile(
           leading: Icon(Icons.timelapse),
-          title: Text('Order number #${_pastOrders.first.oid}'),
+          title: Text('Order number #${_pastOrders.first.humanNumber}'),
         ),
       ],
     );

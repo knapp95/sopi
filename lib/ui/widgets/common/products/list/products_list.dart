@@ -31,24 +31,18 @@ class _ProductsListState extends State<ProductsList> {
 
   void _addToOrderListMocked(String pid) {
     ProductItemModel product = widget.displayProductsList.firstWhere((element) => element.pid == pid);
-    if(_mockedOrder.products.isNotEmpty) {
-      print(_mockedOrder.products.first.count);
-    }
     if (_mockedOrder.products.contains(product)) {
       product.count = product.count + 1;
     } else {
       _mockedOrder.products.add(product);
     }
-
-
   }
 
   void _submitOrderMocked(String pid) {
     _mockedOrder.createDate = DateTime.now();
-
     OrderFactory _ordersFactory = OrderFactory();
 
-    _ordersFactory.addOrderToQueue(_mockedOrder);
+    _ordersFactory.addOrder(_mockedOrder);
 
   }
 

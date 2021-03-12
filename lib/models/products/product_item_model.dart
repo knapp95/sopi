@@ -12,7 +12,8 @@ class ProductItemModel {
   double price;
   String type;
 
-  int count;
+  int count = 1;
+  int prepareTime = 30;
 
   ProductItemModel({
     this.pid,
@@ -21,6 +22,7 @@ class ProductItemModel {
     this.description,
     this.price,
     this.type,
+    this.prepareTime,
   });
 
   double get rate {
@@ -28,11 +30,6 @@ class ProductItemModel {
     return rng.nextInt(6).toDouble();
   }
   bool get isVeg => this.type == 'vege';
-
-  int get prepareTime {
-    var rng = Random();
-    return rng.nextInt(90);
-  }
 
   ProductItemModel.fromJson(Map<String, dynamic> data) {
     try {
@@ -43,6 +40,7 @@ class ProductItemModel {
       this.price = data['price'];
       this.type = data['type'];
       this.count = data['count'] ?? 1;
+      this.prepareTime = data['prepareTime'];
     } catch (e) {
       throw e;
     }
@@ -56,6 +54,7 @@ class ProductItemModel {
       data['imageUrl'] = this.imageUrl;
       data['price'] = this.price;
       data['type'] = this.type;
+      data['prepareTime'] = this.prepareTime;
     } catch (e) {
       throw e;
     }
@@ -77,6 +76,9 @@ class ProductItemModel {
           break;
         case 'type':
           this.type = value;
+          break;
+        case 'prepareTime':
+          this.prepareTime = int.tryParse(value);
           break;
       }
     } catch (e) {

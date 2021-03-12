@@ -17,6 +17,18 @@ class ProductsModel with ChangeNotifier {
     GenericItemModel(id: 'other', name: 'Other'),
   ];
 
+  static List<GenericItemModel> times = [
+    GenericItemModel(id: '5', name: '5'),
+    GenericItemModel(id: '10', name: '10'),
+    GenericItemModel(id: '15', name: '15'),
+    GenericItemModel(id: '20', name: '20'),
+    GenericItemModel(id: '30', name: '30'),
+    GenericItemModel(id: '40', name: '40'),
+    GenericItemModel(id: '50', name: '50'),
+    GenericItemModel(id: '60', name: '60'),
+  ];
+
+
   List<ProductItemModel> products = [];
 
   Future<void> fetchProducts() async {

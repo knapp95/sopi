@@ -120,6 +120,13 @@ class _ProductItemDialogManagerState extends State<ProductItemDialogManager> {
                       initialValue: _product.description,
                       maxLines: 5,
                     ),
+                    _formFactory.buildTextField(
+                      fieldName: 'price',
+                      initialValue: _product.price?.toString(),
+                      labelText: 'Price',
+                      keyboardType: TextInputType.number,
+                      suffixIcon: Icon(Icons.attach_money),
+                    ),
                     Row(
                       children: [
                         Expanded(
@@ -132,12 +139,11 @@ class _ProductItemDialogManagerState extends State<ProductItemDialogManager> {
                         ),
                         formSizedBoxWidth,
                         Expanded(
-                          child: _formFactory.buildTextField(
-                            fieldName: 'price',
-                            initialValue: _product.price?.toString(),
-                            labelText: 'Price',
-                            keyboardType: TextInputType.number,
-                            suffixIcon: Icon(Icons.attach_money),
+                          child: _formFactory.buildDropdownField(
+                            fieldName: 'prepareTime',
+                            initialValue:  _product.prepareTime?.toString(),
+                            labelText: 'Prepare time',
+                            items: ProductsModel.times,
                           ),
                         ),
                       ],

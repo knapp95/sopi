@@ -97,7 +97,7 @@ class FieldBuilderFactory {
     Color dropdownColor,
     List<GenericItemModel> items,
     Function onChangedHandler,
-    String initialValue,
+    dynamic initialValue,
   }) {
     return !isVisible
         ? Container()
