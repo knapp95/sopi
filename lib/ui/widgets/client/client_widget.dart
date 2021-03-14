@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/widgets/common/orders/order_screen.dart';
-import 'package:sopi/ui/widgets/common/products/menu_screen.dart';
-
-import 'account/account_screen.dart';
+import 'package:sopi/ui/widgets/client/account/account_widget.dart';
+import 'package:sopi/ui/widgets/client/basket/basket_button_widget.dart';
+import 'package:sopi/ui/widgets/common/products/product_widget.dart';
 import 'basket/basket_bottom_widget.dart';
+import 'orders/order_widget.dart';
 
-class ClientScreen extends StatefulWidget {
+class ClientWidget extends StatefulWidget {
   @override
-  _ClientScreenState createState() => _ClientScreenState();
+  _ClientWidgetState createState() => _ClientWidgetState();
 }
 
-class _ClientScreenState extends State<ClientScreen> {
+class _ClientWidgetState extends State<ClientWidget> {
   PageController _pageController = PageController(
     initialPage: 0,
     keepPage: true,
@@ -28,6 +30,7 @@ class _ClientScreenState extends State<ClientScreen> {
     _basket = Provider.of<BasketModel>(context);
     super.didChangeDependencies();
   }
+
   void _bottomTapped(int index) {
     setState(() {
       _bottomSelectedIndex = index;
@@ -40,6 +43,15 @@ class _ClientScreenState extends State<ClientScreen> {
     setState(() {
       _bottomSelectedIndex = index;
     });
+  }
+
+  void _displaySummaryBasket() {
+    showMaterialModalBottomSheet(
+      expand: false,
+      context: Get.context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => BasketBottomWidget(),
+    );
   }
 
   @override
@@ -60,7 +72,7 @@ class _ClientScreenState extends State<ClientScreen> {
 
   Widget _buildPageView() {
     List<Widget> children = [];
-    List<Widget> widgets = [MenuScreen(), OrderScreen(), AccountScreen()];
+    List<Widget> widgets = [ProductWidget(), OrderWidget(), AccountWidget()];
 
     /// If basket no empty add bottom widget with basket info
     if (isNullOrEmpty(_basket.products)) {
@@ -71,7 +83,13 @@ class _ClientScreenState extends State<ClientScreen> {
           Column(
             children: [
               Expanded(child: element),
-              BasketBottomWidget(),
+              BasketButtonWidget(
+                'Display basket',
+                '\$${_basket.displaySummaryPrice}',
+                onPressedHandler: _displaySummaryBasket,
+                color: primaryColor,
+                backgroundColor: Colors.white,
+              ),
             ],
           ),
         );

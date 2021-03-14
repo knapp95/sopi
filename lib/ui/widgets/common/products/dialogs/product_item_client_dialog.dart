@@ -3,35 +3,39 @@ import 'package:provider/provider.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
-import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:get/get.dart';
+import 'package:sopi/ui/widgets/client/basket/basket_button_widget.dart';
 
-class ProductItemDialogClient extends StatefulWidget {
+class ProductItemClientDialog extends StatefulWidget {
   final ProductItemModel product;
 
-  ProductItemDialogClient(this.product);
+  ProductItemClientDialog(this.product);
 
   @override
-  _ProductItemDialogClientState createState() =>
-      _ProductItemDialogClientState(this.product);
+  _ProductItemClientDialogState createState() =>
+      _ProductItemClientDialogState(this.product);
 }
 
-class _ProductItemDialogClientState extends State<ProductItemDialogClient> {
+class _ProductItemClientDialogState extends State<ProductItemClientDialog> {
   final FieldBuilderFactory _formFactory = FieldBuilderFactory();
   ProductItemModel _product;
 
-  _ProductItemDialogClientState(this._product);
+  _ProductItemClientDialogState(this._product);
 
+  @override
+  void initState() {
+    _formFactory.data = _product;
+    super.initState();
+  }
 
   void _addToBasket() {
-    BasketModel _basket = Provider.of<BasketModel>(Get.context,listen: false);
+    BasketModel _basket = Provider.of<BasketModel>(Get.context, listen: false);
     if (_basket.products.containsKey(_product.pid)) {
       _basket.products[_product.pid].count =
           _basket.products[_product.pid].count + _product.count;
     } else {
       _basket.products[_product.pid] = _product;
-      _basket.count = 5;
     }
     _basket.notifyListenerHandler();
     Get.back();
@@ -62,19 +66,20 @@ class _ProductItemDialogClientState extends State<ProductItemDialogClient> {
                     ),
                   ),
                   _formFactory.buildTouchSpinField(
-                      initialValue: _product.count),
+                    fieldName: 'count',
+                    max: 10,
+                    initialValue: _product.count,
+                    onChangedHandler: (_) => setState(() {}),
+                  ),
                   _formFactory.buildTextField(
                     labelText: 'Add a note (extra sauce, no onions, etc.)',
                     maxLines: 5,
                   ),
-                  FlatButton(
-                    minWidth: double.infinity,
-                    color: primaryColor,
-                    child: Text(
-                      'Add to basket',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: _addToBasket,
+                  BasketButtonWidget(
+                    'Add (${_product.count}) to basket',
+                    '\$${_product.displayTotalPrice}',
+                    onPressedHandler: _addToBasket,
+                    color: Colors.white,
                   ),
                 ],
               ),

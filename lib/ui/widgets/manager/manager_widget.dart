@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/widgets/client/account/account_screen.dart';
-import 'package:sopi/ui/widgets/common/products/menu_screen.dart';
-import 'package:sopi/ui/widgets/manager/employees/employees_screen.dart';
-import 'package:sopi/ui/widgets/manager/orders/order_screen.dart';
-import 'package:sopi/ui/widgets/manager/statistics/statistics_screen.dart';
+import 'package:sopi/ui/widgets/client/account/account_widget.dart';
+import 'package:sopi/ui/widgets/common/products/product_widget.dart';
+import 'package:sopi/ui/widgets/manager/employees/employees_widget.dart';
+import 'package:sopi/ui/widgets/manager/orders/order_widget.dart';
+import 'package:sopi/ui/widgets/manager/statistics/statistics_widget.dart';
 
-class ManagerScreen extends StatefulWidget {
+class ManagerWidget extends StatefulWidget {
   @override
-  _ManagerScreenState createState() => _ManagerScreenState();
+  _ManagerWidgetState createState() => _ManagerWidgetState();
 }
 
-class _ManagerScreenState extends State<ManagerScreen> {
+class _ManagerWidgetState extends State<ManagerWidget> {
   PageController _pageController = PageController(
     initialPage: 0,
     keepPage: true,
@@ -51,11 +51,11 @@ class _ManagerScreenState extends State<ManagerScreen> {
 
   Widget _buildPageView() {
     List<Widget> children = [
-      MenuScreen(),
-      EmployeesScreen(),
-      OrderScreen(),
-      StatisticsScreen(),
-      AccountScreen()
+      ProductWidget(),
+      EmployeesWidget(),
+      OrderWidget(),
+      StatisticsWidget(),
+      AccountWidget()
     ];
     return PageView(
       controller: _pageController,

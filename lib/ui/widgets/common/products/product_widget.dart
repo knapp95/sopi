@@ -3,16 +3,16 @@ import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/models/user/user_model.dart';
-import 'package:sopi/ui/widgets/common/products/product_item_add.dart';
+import 'package:sopi/ui/widgets/common/products/buttons/product_buttons.dart';
 import 'list/products_list.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:provider/provider.dart';
-class MenuScreen extends StatefulWidget {
+class ProductWidget extends StatefulWidget {
   @override
   _ProductsScreenState createState() => _ProductsScreenState();
 }
 
-class _ProductsScreenState extends State<MenuScreen>
+class _ProductsScreenState extends State<ProductWidget>
     with TickerProviderStateMixin {
   bool _isManager = false;
   bool _isInit = false;
@@ -109,7 +109,7 @@ class _ProductsScreenState extends State<MenuScreen>
         controller: _tabController,
         children: _buildTabsContent(),
       ),
-      floatingActionButton: _isManager  ? ProductItemAdd() : null,
+      floatingActionButton: _isManager  ? ProductButtons() : null,
     );
   }
 

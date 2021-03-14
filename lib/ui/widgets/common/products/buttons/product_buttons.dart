@@ -3,24 +3,23 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
+import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:get/get.dart';
+import 'package:sopi/ui/widgets/common/products/dialogs/product_item_manager_dialog.dart';
 
-import 'dialogs/product_item_dialog_manager.dart';
-
-class ProductItemAdd extends StatefulWidget {
+class ProductButtons extends StatefulWidget {
   @override
-  _ProductItemAddState createState() => _ProductItemAddState();
+  _ProductButtonsState createState() => _ProductButtonsState();
 }
 
-class _ProductItemAddState extends State<ProductItemAdd> {
+class _ProductButtonsState extends State<ProductButtons> {
   Map<String, GenericItemModel> get allItems {
     Map<String, GenericItemModel> allItems = {};
     allItems['addProductManual'] = GenericItemModel(
       name: 'Add product manual',
       icon: Icons.add,
-      funHandler: () => Get.dialog(
-        ProductItemDialogManager(
+      funHandler: () => showScaleDialog(
+        ProductItemManagerDialog(
           isNew: true,
         ),
       ),
@@ -33,6 +32,7 @@ class _ProductItemAddState extends State<ProductItemAdd> {
       icon: Icons.file_upload,
       color: Colors.blue,
     );
+
     return allItems;
   }
 

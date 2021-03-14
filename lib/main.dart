@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:sopi/home_page_wrapper.dart';
 import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/authentication_service.dart';
@@ -7,9 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/widgets/authorization/authorization_screen.dart';
-
-import 'home_page_screen.dart';
+import 'package:sopi/ui/widgets/authorization/authorization_widget.dart';
 import 'models/products/products_model.dart';
 
 Future<void> main() async {
@@ -61,8 +60,8 @@ class AuthenticationWrapper extends StatelessWidget {
     if (firebaseUser != null) {
       Provider.of<UserModel>(context, listen: false).setUser(firebaseUser.uid);
 
-      return HomePageScreen();
+      return HomePageWrapper();
     }
-    return AuthorizationScreen();
+    return AuthorizationWidget();
   }
 }

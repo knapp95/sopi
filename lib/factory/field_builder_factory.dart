@@ -64,28 +64,31 @@ class FieldBuilderFactory {
   Widget buildTouchSpinField({
     String fieldName,
     dynamic initialValue,
+    num max = 1.0,
     bool isVisible = true,
     Widget suffixIcon,
     String labelText,
+    Function onChangedHandler,
   }) {
     return !isVisible
         ? Container()
         : Column(
-      children: [
-        FormBuilderTouchSpin(
-          name: fieldName,
-          displayFormat: NumberFormat.decimalPattern(),
-          initialValue: initialValue,
-          decoration: InputDecoration(
-            labelText: labelText,
-
-            suffixIcon: suffixIcon,
-          ),
-          //onChanged: (value) => _onChanged(fieldName, value),
-        ),
-        SizedBox(height: 10),
-      ],
-    );
+            children: [
+              FormBuilderTouchSpin(
+                name: fieldName,
+                displayFormat: NumberFormat.decimalPattern(),
+                initialValue: initialValue,
+                max: max,
+                decoration: InputDecoration(
+                  labelText: labelText,
+                  suffixIcon: suffixIcon,
+                ),
+                onChanged: (value) => _onChanged(fieldName, value,
+                    onChangedHandler: onChangedHandler),
+              ),
+              SizedBox(height: 10),
+            ],
+          );
   }
 
   Widget buildDropdownField({

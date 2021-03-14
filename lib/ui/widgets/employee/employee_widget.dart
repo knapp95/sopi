@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sopi/services/authentication_service.dart';
 
 
-class EmployeeScreen extends StatelessWidget {
+class EmployeeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

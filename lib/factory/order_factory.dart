@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:sopi/models/orders/enums.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/user/user_model.dart';
 
 class OrderFactory {
   static final OrderFactory _singleton = OrderFactory._internal();
@@ -49,14 +53,9 @@ processOrders.forEach((order) {
   ///Dodanie zamówienia
   Future<void> addOrder(OrderItemModel order) async {
     order.humanNumber = await this.getHumanNumberForOrder();
-
     final document = _ordersCollection.doc();
-
     final data = order.toJson();
     document.set(data);
-
-    // processOrders.add(order);
-    // calculateProcess();
   }
 
   Future<int> getHumanNumberForOrder() async {
@@ -66,15 +65,30 @@ processOrders.forEach((order) {
 
     /// After 99 order's increment's is reset
     if (query.docs.isNotEmpty && query.docs.first['humanNumber'] < 99) {
-      humanNumber = query.docs.first['humanNumber'];
+      humanNumber = query.docs.first['humanNumber'] + 1;
     }
     return humanNumber;
   }
 
-  Stream<List<OrderItemModel>> getOrders() {
+  Stream<List<OrderItemModel>> get orders {
     return _ordersCollection.snapshots().map((snapShot) => snapShot.docs
         .map((document) => OrderItemModel.fromJson(document.data()))
         .toList());
+  }
+
+  Future<OrderItemModel> get processingOrderForUser async {
+    OrderItemModel processingOrderForUser;
+    final clientID = Provider.of<UserModel>(Get.context, listen: false).uid;
+    QuerySnapshot query = await _ordersCollection
+        .where('clientID', isEqualTo: clientID)
+        .where('status', isEqualTo: Status.CREATE.toString())
+        .get();
+
+    if (query.docs.isNotEmpty) {
+      DocumentSnapshot doc = query.docs.first;
+      processingOrderForUser = OrderItemModel.fromJson(doc.data());
+    }
+    return processingOrderForUser;
   }
 
   void calculateProcess() {

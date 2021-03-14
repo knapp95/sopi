@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:sopi/common/scripts.dart';
 
 class ProductItemModel {
   final _documentsCollections = FirebaseFirestore.instance.collection('products');
@@ -11,6 +12,7 @@ class ProductItemModel {
   String description;
   double price;
   String type;
+
 
   int count = 1;
   int prepareTime = 30;
@@ -24,6 +26,9 @@ class ProductItemModel {
     this.type,
     this.prepareTime,
   });
+
+  String get displayTotalPrice  => fixedDouble(this.price * this.count);
+
 
   double get rate {
     var rng = Random();
@@ -49,11 +54,13 @@ class ProductItemModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     try {
+      data['pid'] = this.pid;
       data['name'] = this.name;
       data['description'] = this.description;
       data['imageUrl'] = this.imageUrl;
       data['price'] = this.price;
       data['type'] = this.type;
+      data['count'] = this.count;
       data['prepareTime'] = this.prepareTime;
     } catch (e) {
       throw e;
@@ -76,6 +83,9 @@ class ProductItemModel {
           break;
         case 'type':
           this.type = value;
+          break;
+        case 'count':
+          this.count = value?.toInt();
           break;
         case 'prepareTime':
           this.prepareTime = int.tryParse(value);

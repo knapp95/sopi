@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sopi/services/authentication_service.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;

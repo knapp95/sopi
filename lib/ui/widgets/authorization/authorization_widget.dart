@@ -7,9 +7,9 @@ import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/services/authentication_service.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 
-class AuthorizationScreen extends StatefulWidget {
+class AuthorizationWidget extends StatefulWidget {
   @override
-  _AuthorizationScreenState createState() => _AuthorizationScreenState();
+  _AuthorizationWidgetState createState() => _AuthorizationWidgetState();
 }
 
 enum AuthMode { singIn, singUp, resetPassword }
@@ -21,7 +21,7 @@ final List<GenericItemModel> accountTypes = [
   GenericItemModel(id: 'employee', name: 'Pracownik'),
 ];
 
-class _AuthorizationScreenState extends State<AuthorizationScreen> {
+class _AuthorizationWidgetState extends State<AuthorizationWidget> {
   final _formKey = GlobalKey<FormState>();
   final FieldBuilderFactory _formFactory = FieldBuilderFactory();
   AuthMode _authMode = AuthMode.singIn;

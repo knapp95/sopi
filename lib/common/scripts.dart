@@ -31,6 +31,10 @@ bool isNullOrEmpty(dynamic object) {
   return object == null || object.isEmpty;
 }
 
+String fixedDouble(double value, [fractionDigits = 2]) {
+  return value?.toStringAsFixed(fractionDigits);
+}
+
 String formatDateToString(DateTime date, {format = 'yyyy-MM-dd'}) {
   String result;
   if (date != null) {
