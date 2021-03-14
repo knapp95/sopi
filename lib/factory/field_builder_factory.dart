@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:sopi/factory/field_validation_factory.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 
@@ -60,6 +61,36 @@ class FieldBuilderFactory {
           );
   }
 
+  Widget buildTouchSpinField({
+    String fieldName,
+    dynamic initialValue,
+    num max = 1.0,
+    bool isVisible = true,
+    Widget suffixIcon,
+    String labelText,
+    Function onChangedHandler,
+  }) {
+    return !isVisible
+        ? Container()
+        : Column(
+            children: [
+              FormBuilderTouchSpin(
+                name: fieldName,
+                displayFormat: NumberFormat.decimalPattern(),
+                initialValue: initialValue,
+                max: max,
+                decoration: InputDecoration(
+                  labelText: labelText,
+                  suffixIcon: suffixIcon,
+                ),
+                onChanged: (value) => _onChanged(fieldName, value,
+                    onChangedHandler: onChangedHandler),
+              ),
+              SizedBox(height: 10),
+            ],
+          );
+  }
+
   Widget buildDropdownField({
     String fieldName,
     bool isVisible = true,
@@ -69,7 +100,7 @@ class FieldBuilderFactory {
     Color dropdownColor,
     List<GenericItemModel> items,
     Function onChangedHandler,
-    String initialValue,
+    dynamic initialValue,
   }) {
     return !isVisible
         ? Container()
