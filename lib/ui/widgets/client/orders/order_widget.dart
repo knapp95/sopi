@@ -6,6 +6,8 @@ import 'package:sopi/models/orders/order_item_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:sopi/ui/shared/systems_parameters.dart';
+import 'package:sopi/ui/widgets/client/orders/order_item_widget.dart';
+import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 
 class OrderWidget extends StatefulWidget {
   @override
@@ -13,16 +15,15 @@ class OrderWidget extends StatefulWidget {
 }
 
 class _OrderWidgetState extends State<OrderWidget> {
-  OrderItemModel _upcomingOrder;
-  List<OrderItemModel> _pastOrders;
+  OrderItemModel _prepareOrder;
   OrderFactory _orderFactory = OrderFactory.singleton;
 
   @override
   void didChangeDependencies() {
-    _orderFactory.processingOrderForUser.then(
+    _orderFactory.prepareOrderForUser.then(
       (value) => setState(
         () {
-          _upcomingOrder = value;
+          _prepareOrder = value;
         },
       ),
     );
@@ -37,7 +38,7 @@ class _OrderWidgetState extends State<OrderWidget> {
         padding: EdgeInsets.only(top: statusBarHeight),
         child: Column(
           children: [
-            _upcomingOrder != null ? Expanded(flex: 3, child: _buildUpcomingOrderWidget()) : Text('No order'),
+             Expanded(flex: 3, child: _prepareOrder == null ? Text('No order') : _buildPrepareOrderWidget()) ,
             Expanded(flex: 2, child: _buildPastOrdersWidget()),
           ],
         ),
@@ -45,7 +46,7 @@ class _OrderWidgetState extends State<OrderWidget> {
     );
   }
 
-  Widget _buildUpcomingOrderWidget() {
+  Widget _buildPrepareOrderWidget() {
     return Column(
       children: [
         Expanded(child: Lottie.asset('assets/animations/processing.json')),
@@ -59,12 +60,14 @@ class _OrderWidgetState extends State<OrderWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Text(
-                      '#${_upcomingOrder.humanNumber}',
+                      '#${_prepareOrder.humanNumber}',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 40),
                     ),
+                    Text('${_prepareOrder.status}', style: TextStyle(
+                      color: Colors.white,)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -75,7 +78,7 @@ class _OrderWidgetState extends State<OrderWidget> {
                         ),
                         formSizedBoxWidth,
                         Text(
-                          '${_upcomingOrder.createDate}',
+                          '${_prepareOrder.createDate}',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -110,14 +113,33 @@ class _OrderWidgetState extends State<OrderWidget> {
   }
 
   Widget _buildPastOrdersWidget() {
-    return Column(
-      children: [
-        Text('Past orders'),
-        ListTile(
-          leading: Icon(Icons.timelapse),
-          title: Text('Order number #11'),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Text(
+            'Past orders',
+            style: TextStyle(color: Colors.grey),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: _orderFactory.completedOrdersForUser,
+              builder: (ctx, snapshot) {
+                return !snapshot.hasData
+                    ? LoadingDataInProgressWidget()
+                    : ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (_, int index) {
+                    OrderItemModel order = snapshot.data[index];
+                    return OrderItemWidget(order);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
+
 }

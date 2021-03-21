@@ -7,21 +7,21 @@ import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:get/get.dart';
 import 'package:sopi/ui/widgets/client/basket/basket_button_widget.dart';
 
-class ProductItemClientDialog extends StatefulWidget {
+class ProductItemDialog extends StatefulWidget {
   final ProductItemModel product;
 
-  ProductItemClientDialog(this.product);
+  ProductItemDialog(this.product);
 
   @override
-  _ProductItemClientDialogState createState() =>
-      _ProductItemClientDialogState(this.product);
+  _ProductItemDialogState createState() =>
+      _ProductItemDialogState(this.product);
 }
 
-class _ProductItemClientDialogState extends State<ProductItemClientDialog> {
+class _ProductItemDialogState extends State<ProductItemDialog> {
   final FieldBuilderFactory _formFactory = FieldBuilderFactory();
   ProductItemModel _product;
 
-  _ProductItemClientDialogState(this._product);
+  _ProductItemDialogState(this._product);
 
   @override
   void initState() {

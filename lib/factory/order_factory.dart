@@ -17,45 +17,18 @@ class OrderFactory {
 
   static OrderFactory get singleton => _singleton;
 
-  List<OrderItemModel> actualProcessing;
-
-//VARIABLES
-  List<OrderItemModel> processOrders;
-
 //  ///Trzeba ustawić jakiś priorytet bo dłuższe zamówienia mogą czekać dłużej
 //  np. wchodzą zamówienia w kolejności 10min 50min 10min 10min 10min ..
-  void sortQueueByDurationTimesAndPriority() {
-/* processOrders.sort((a, b) =>
-a.time.waiting > b.time.waiting);
 
-processOrders.forEach((order) {
-  if (order.currentPositionInQueue == null) {
-    order.currentPositionInQueue = processOrders.indexOf(order);
-  } else {
-
-  }
-});
-*/
-  }
-
-  ///Klient anulował aktualnie przygotowywane zamówienie
-  void cancelOrder(OrderItemModel order) {
-/*
-  if (actualProccessing?.pid == order.pid) {
-  remove actualProccessing;
-  calculateProcess();
-} else {
-  processOrders.removeFirstWhere(el) => el.pid == pid;
-}
-*/
-  }
-
-  ///Dodanie zamówienia
-  Future<void> addOrder(OrderItemModel order) async {
-    order.humanNumber = await this.getHumanNumberForOrder();
-    final document = _ordersCollection.doc();
-    final data = order.toJson();
-    document.set(data);
+  /// If processing order's is empty, set first waiting as process.
+  Future<Null> trySetFirstUnProcessingOrder() async {
+    QuerySnapshot processingOrders = await this.processingOrders.get();
+    if (processingOrders.docs.isEmpty) {
+      QuerySnapshot waitingOrders = await this.waitingOrders.get();
+      _ordersCollection
+          .doc(waitingOrders.docs.first.id)
+          .update({'status': Status.PROCESSING.toString()});
+    } else {}
   }
 
   Future<int> getHumanNumberForOrder() async {
@@ -70,25 +43,45 @@ processOrders.forEach((order) {
     return humanNumber;
   }
 
-  Stream<List<OrderItemModel>> get orders {
-    return _ordersCollection.snapshots().map((snapShot) => snapShot.docs
-        .map((document) => OrderItemModel.fromJson(document.data()))
-        .toList());
+  Query get waitingOrders {
+    return _ordersCollection
+        .where('status', isEqualTo: Status.WAITING.toString())
+        .orderBy('prepareTime');
   }
 
-  Future<OrderItemModel> get processingOrderForUser async {
-    OrderItemModel processingOrderForUser;
-    final clientID = Provider.of<UserModel>(Get.context, listen: false).uid;
-    QuerySnapshot query = await _ordersCollection
-        .where('clientID', isEqualTo: clientID)
-        .where('status', isEqualTo: Status.CREATE.toString())
-        .get();
+  Query get processingOrders {
+    return _ordersCollection.where('status',
+        isEqualTo: Status.PROCESSING.toString());
+  }
 
+  Query get completedOrders {
+    return _ordersCollection.where('status',
+        isEqualTo: Status.COMPLETED.toString());
+  }
+
+  Future<List<OrderItemModel>> get completedOrdersForUser async {
+    List<OrderItemModel> completedOrdersForUser = [];
+    final clientID = Provider.of<UserModel>(Get.context, listen: false).uid;
+    QuerySnapshot query =
+        await completedOrders.where('clientID', isEqualTo: clientID).get();
+    query.docs.forEach((queryDoc) {
+      completedOrdersForUser.add(OrderItemModel.fromJson(queryDoc.data()));
+    });
+    return completedOrdersForUser;
+  }
+
+  Future<OrderItemModel> get prepareOrderForUser async {
+    OrderItemModel prepareOrderForUser;
+    final clientID = Provider.of<UserModel>(Get.context, listen: false).uid;
+    Query queryPrepareOrders = _ordersCollection.where('status',
+        whereIn: [Status.WAITING.toString(), Status.PROCESSING.toString()]);
+    QuerySnapshot query =
+        await queryPrepareOrders.where('clientID', isEqualTo: clientID).get();
     if (query.docs.isNotEmpty) {
       DocumentSnapshot doc = query.docs.first;
-      processingOrderForUser = OrderItemModel.fromJson(doc.data());
+      prepareOrderForUser = OrderItemModel.fromJson(doc.data());
     }
-    return processingOrderForUser;
+    return prepareOrderForUser;
   }
 
   void calculateProcess() {
@@ -98,6 +91,31 @@ if (actualProccessing == null) {
   actualProccessing = processOrders.first;
 }
 
+*/
+  }
+
+  Future<Null> addOrder(OrderItemModel order) async {
+    order.humanNumber = await this.getHumanNumberForOrder();
+    final document = _ordersCollection.doc();
+    final data = order.toJson();
+    document.set(data);
+    this.trySetFirstUnProcessingOrder();
+  }
+
+  Future<Null> completedOrder(String id) async {
+    await _ordersCollection.doc(id).update({'status': Status.COMPLETED.toString()});
+    await this.trySetFirstUnProcessingOrder();
+  }
+
+  ///Klient anulował aktualnie przygotowywane zamówienie
+  void cancelOrder(OrderItemModel order) {
+/*
+  if (actualProccessing?.pid == order.pid) {
+  remove actualProccessing;
+  calculateProcess();
+} else {
+  processOrders.removeFirstWhere(el) => el.pid == pid;
+}
 */
   }
 }

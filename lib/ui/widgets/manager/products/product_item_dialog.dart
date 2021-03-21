@@ -13,18 +13,20 @@ import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:get/get.dart';
 import 'package:sopi/ui/widgets/common/images/image_source_sheet.dart';
 
-class ProductItemManagerDialog extends StatefulWidget {
+class ProductItemDialog extends StatefulWidget {
   final bool isNew;
   final String pid;
 
-  ProductItemManagerDialog({this.isNew = false, this.pid});
+  ProductItemDialog({this.isNew = false, this.pid});
 
   @override
-  _ProductItemManagerDialogState createState() =>
-      _ProductItemManagerDialogState();
+  _ProductItemDialogState createState() =>
+      _ProductItemDialogState();
 }
 
-class _ProductItemManagerDialogState extends State<ProductItemManagerDialog> {
+
+
+class _ProductItemDialogState extends State<ProductItemDialog> {
   final FieldBuilderFactory _formFactory = FieldBuilderFactory();
   bool _isInit = false;
   ProductsModel _products;

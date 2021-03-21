@@ -1,4 +1,4 @@
-enum Status { PROCESSING, CREATE, COMPLETED }
+enum Status { WAITING, PROCESSING, COMPLETED, CANCELLED }
 
 Status getStatusFromString(String statusAsString) {
   for (Status element in Status.values) {

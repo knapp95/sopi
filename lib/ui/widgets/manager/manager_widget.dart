@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/widgets/client/account/account_widget.dart';
+import 'package:sopi/ui/widgets/common/account/account_widget.dart';
 import 'package:sopi/ui/widgets/common/products/product_widget.dart';
 import 'package:sopi/ui/widgets/manager/employees/employees_widget.dart';
 import 'package:sopi/ui/widgets/manager/orders/order_widget.dart';

@@ -13,7 +13,7 @@ class OrderNoAvailableWidget extends StatelessWidget {
             Icon(Icons.calendar_today, color: Colors.black12),
             SizedBox(width: 10),
             Text(
-              'No upcoming orders scheduled',
+              'No prepare orders scheduled',
               style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.black12),
             ),

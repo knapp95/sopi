@@ -1,15 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/factory/order_factory.dart';
-import 'package:sopi/models/orders/enums.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'dart:async';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:sopi/ui/shared/systems_parameters.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
-import 'package:sopi/ui/widgets/manager/orders/order_item_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sopi/models/orders/enums.dart';
+import 'package:sopi/ui/widgets/employee/orders/order_item_widget.dart';
 
 class OrderWidget extends StatefulWidget {
   @override
@@ -26,7 +27,6 @@ class _OrderWidgetState extends State<OrderWidget> {
   void initState() {
     _timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
     _timeNow = formatDateToString(DateTime.now(), format: 'HH:mm:ss');
-    _prepareTime = formatDateToString(DateTime.now(), format: 'mm:ss');
     super.initState();
   }
 
@@ -102,13 +102,46 @@ class _OrderWidgetState extends State<OrderWidget> {
                     : ListView.builder(
                         itemCount: snapshot.data.docs.length,
                         itemBuilder: (_, int index) {
-                          OrderItemModel order = OrderItemModel.fromJson(
-                              snapshot.data.docs[index].data());
-                          return OrderItemWidget(order);
+                          QueryDocumentSnapshot queryDoc =
+                              snapshot.data.docs[index];
+                          OrderItemModel order =
+                              OrderItemModel.fromJson(queryDoc.data());
+
+                          return Dismissible(
+                              key: UniqueKey(),
+                              child: OrderItemWidget(order),
+                              background: _buildDismissibleBackground(),
+                              resizeDuration: Duration(seconds: 1),
+                              direction: DismissDirection.startToEnd,
+                              onDismissed: (_) async {
+                                snapshot.data.removeAt(index);
+                                await _orderFactory.completedOrder(queryDoc.id);
+                              });
                         },
                       );
               },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDismissibleBackground() {
+    return Container(
+      color: Colors.green,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          formSizedBoxWidth,
+          FaIcon(
+            FontAwesomeIcons.check,
+            color: Colors.white,
+          ),
+          formSizedBoxWidth,
+          Text(
+            'Order is completed',
+            style: TextStyle(color: Colors.white),
           ),
         ],
       ),

@@ -9,12 +9,11 @@ class OrderItemModel {
   List<String> assignedPerson;
   int currentPositionInQueue;
   int humanNumber;
-
   List<ProductItemModel> products = [];
 
   OrderItemModel.fromBasket({
     this.createDate,
-    this.status = Status.CREATE,
+    this.status = Status.WAITING,
     this.clientID,
     this.assignedPerson,
     this.currentPositionInQueue,
@@ -38,6 +37,7 @@ class OrderItemModel {
         }
         this.products = productsTmp;
       }
+
     } catch (e) {
       throw e;
     }
@@ -51,6 +51,7 @@ class OrderItemModel {
       data['status'] = this.status.toString();
       data['clientID'] = this.clientID;
       data['humanNumber'] = this.humanNumber;
+      data['prepareTime'] = this.prepareTime;
       if (this.products != null) {
         List<dynamic> productsTmp = [];
         for (ProductItemModel product in this.products) {
@@ -63,4 +64,18 @@ class OrderItemModel {
     }
     return data;
   }
+
+
+  int get prepareTime {
+    int prepareTime = 0;
+    try {
+      this.products.forEach((product) {
+        prepareTime += product.count * product.prepareTime;
+      });
+    } catch (e) {
+      throw e;
+    }
+    return prepareTime;
+  }
+
 }

@@ -6,8 +6,10 @@ import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:get/get.dart';
-import 'package:sopi/ui/widgets/common/products/dialogs/product_item_client_dialog.dart';
-import 'package:sopi/ui/widgets/common/products/dialogs/product_item_manager_dialog.dart';
+import 'package:sopi/ui/widgets/client/products/product_item_dialog.dart'
+    as productClient;
+import 'package:sopi/ui/widgets/manager/products/product_item_dialog.dart'
+    as productManager;
 import 'package:sopi/ui/widgets/common/products/list/productsEmpty_list.dart';
 
 class ProductsList extends StatelessWidget {
@@ -17,7 +19,7 @@ class ProductsList extends StatelessWidget {
   ProductsList(this.displayProductsList, {this.isManager = false});
 
   void _editProduct(String pid) {
-    showScaleDialog(ProductItemManagerDialog(pid: pid));
+    showScaleDialog(productManager.ProductItemDialog(pid: pid));
   }
 
   void _removeProduct(String pid) {
@@ -38,7 +40,7 @@ class ProductsList extends StatelessWidget {
               ProductItemModel product = this.displayProductsList[index];
               return InkWell(
                 onTap: () => !this.isManager
-                    ? showScaleDialog(ProductItemClientDialog(product))
+                    ? showScaleDialog(productClient.ProductItemDialog(product))
                     : null,
                 child: Card(
                   child: Column(
