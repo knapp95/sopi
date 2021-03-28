@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/factory/order_factory.dart';
+import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'dart:async';
 import 'package:sopi/ui/shared/app_colors.dart';
@@ -9,7 +10,6 @@ import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:sopi/ui/shared/systems_parameters.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sopi/models/orders/enums.dart';
 import 'package:sopi/ui/widgets/employee/orders/order_item_widget.dart';
 
 class OrderWidget extends StatefulWidget {
@@ -47,8 +47,8 @@ class _OrderWidgetState extends State<OrderWidget> {
     });
   }
 
-  Query getSource(Status status) {
-    return status == Status.PROCESSING
+  Query getSource(OrderStatus status) {
+    return status == OrderStatus.PROCESSING
         ? _orderFactory.processingOrders
         : _orderFactory.waitingOrders;
   }
@@ -60,9 +60,9 @@ class _OrderWidgetState extends State<OrderWidget> {
         padding: EdgeInsets.only(top: statusBarHeight),
         child: Column(
           children: [
-            Expanded(flex: 3, child: _buildOrdersListWidget(Status.PROCESSING)),
+            Expanded(flex: 3, child: _buildOrdersListWidget(OrderStatus.PROCESSING)),
             _buildDateTimeNowWidget(),
-            Expanded(flex: 3, child: _buildOrdersListWidget(Status.WAITING)),
+            Expanded(flex: 3, child: _buildOrdersListWidget(OrderStatus.WAITING)),
           ],
         ),
       ),
@@ -77,20 +77,20 @@ class _OrderWidgetState extends State<OrderWidget> {
           child: Text(
             _timeNow,
             style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 40),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: fontSize40),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildOrdersListWidget(Status status) {
+  Widget _buildOrdersListWidget(OrderStatus status) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
           Text(
-            status == Status.PROCESSING ? 'Actual prepare' : 'In queque',
+            status == OrderStatus.PROCESSING ? 'Actual prepare' : 'In queque',
             style: TextStyle(color: Colors.grey),
           ),
           Expanded(

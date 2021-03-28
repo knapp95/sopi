@@ -1,24 +1,38 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:sopi/common/collections.dart';
+import 'package:sopi/models/user/enums/user_enum_type.dart';
+import 'package:sopi/services/authentication_service.dart';
 
 class UserModel with ChangeNotifier {
+  UserType typeAccount;
   String uid;
-  String typeAccount;
+  String name;
+  String email;
+  String username;
+  String status;
+  int state;
+  String profilePhoto;
 
+  UserModel();
 
-  void setUser(String uid) {
-    this.uid = uid;
-    this.getUserTypeAccountFromFirebase();
+  UserModel.fromJson(Map<String, dynamic> data) {
+    this.uid = data['uid'];
+    this.name = data['name'];
+    this.email = data['email'];
+    this.username = data['username'];
+    this.status = data['status'];
+    this.state = data['state'];
+    this.profilePhoto = data['profilePhoto'];
   }
 
-
-  static void addUserToFirebase(String uid, typeAccount) {
+  static void addUserToFirebase(String uid) {
     try {
-      DocumentReference user =
-          FirebaseFirestore.instance.collection('users').doc(uid);
+      DocumentReference user = usersCollection.doc(uid);
+
       final data = {
         'uid': uid,
-        'typeAccount': typeAccount,
+        'typeAccount': UserType.CLIENT.toString(),
       };
       user.set(data);
     } catch (e) {
@@ -28,13 +42,23 @@ class UserModel with ChangeNotifier {
 
   Future<void> getUserTypeAccountFromFirebase() async {
     try {
-      DocumentReference user =
-          FirebaseFirestore.instance.collection('users').doc(this.uid);
+      DocumentReference user = usersCollection
+          .doc(AuthenticationService.uid);
       final result = await user.get();
-      this.typeAccount = result.data()['typeAccount'];
+      this.typeAccount = getUserTypeFromString(result.data()['typeAccount']);
       notifyListeners();
     } catch (e) {
       return e;
     }
+  }
+
+  static Future<List<UserModel>> fetchAllEmployees() async {
+    List<UserModel> userList = List<UserModel>();
+    QuerySnapshot querySnapshot = await usersCollection
+        .where('typeAccount', isEqualTo: UserType.EMPLOYEE.toString()).get();
+    querySnapshot.docs.forEach((userDoc) {
+      userList.add(UserModel.fromJson(userDoc.data()));
+    });
+    return userList;
   }
 }

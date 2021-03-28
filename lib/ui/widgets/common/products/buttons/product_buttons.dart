@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/widgets/manager/products/product_item_dialog.dart';
+import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog.dart';
 
 class ProductButtons extends StatefulWidget {
   @override

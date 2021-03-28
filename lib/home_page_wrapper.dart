@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sopi/models/user/enums/user_enum_type.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/ui/widgets/client/client_widget.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
@@ -12,7 +13,7 @@ class HomePageWrapper extends StatefulWidget {
 }
 
 class _HomePageWrapperState extends State<HomePageWrapper> {
-  String _typeAccount;
+  UserType _typeAccount;
 
   @override
   void didChangeDependencies() {
@@ -29,11 +30,11 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
 
   Widget _buildPageForTypeAccount(BuildContext context) {
     switch (_typeAccount) {
-      case 'client':
+      case UserType.CLIENT:
          return ClientWidget();
-      case 'manager':
+      case UserType.MANAGER:
         return ManagerWidget();
-      case 'employee':
+      case UserType.EMPLOYEE:
         return EmployeeWidget();
       default:
         return Container(child: Text('No data'));

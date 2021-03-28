@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:sopi/home_page_wrapper.dart';
+import 'package:sopi/models/assets/assets_model.dart';
 import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/authentication_service.dart';
@@ -27,6 +28,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<UserModel>(
           create: (_) => UserModel(),
+        ),
+        ChangeNotifierProvider<AssetsModel>(
+          create: (_) => AssetsModel(),
         ),
         ChangeNotifierProvider<ProductsModel>(
           create: (_) => ProductsModel(),
@@ -58,7 +62,7 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<User>();
 
     if (firebaseUser != null) {
-      Provider.of<UserModel>(context, listen: false).setUser(firebaseUser.uid);
+      Provider.of<UserModel>(context, listen: false).getUserTypeAccountFromFirebase();
 
       return HomePageWrapper();
     }

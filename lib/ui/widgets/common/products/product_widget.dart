@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/models/products/products_model.dart';
-import 'package:sopi/models/user/user_model.dart';
-import 'package:sopi/ui/widgets/common/products/buttons/product_buttons.dart';
 import 'list/products_list.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +12,6 @@ class ProductWidget extends StatefulWidget {
 
 class _ProductsScreenState extends State<ProductWidget>
     with TickerProviderStateMixin {
-  bool _isManager = false;
   bool _isInit = false;
   int _selectedIndex = 0;
   TabController _tabController;
@@ -45,9 +42,9 @@ class _ProductsScreenState extends State<ProductWidget>
       _products.fetchProducts();
       _isInit = true;
     }
-    _isManager = Provider.of<UserModel>(context, listen: false).typeAccount == 'manager';
     super.didChangeDependencies();
   }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -109,7 +106,6 @@ class _ProductsScreenState extends State<ProductWidget>
         controller: _tabController,
         children: _buildTabsContent(),
       ),
-      floatingActionButton: _isManager  ? ProductButtons() : null,
     );
   }
 
@@ -142,7 +138,7 @@ class _ProductsScreenState extends State<ProductWidget>
       } else {
         productsByType = _products.getSortedProductsByType(type.id);
       }
-      return ProductsList(productsByType, isManager: _isManager);
+      return ProductsList(productsByType);
     }).toList();
     return tabsContent;
   }

@@ -1,9 +1,9 @@
-import 'package:sopi/models/orders/enums.dart';
+import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/models/products/product_item_model.dart';
-
+import 'package:sopi/services/authentication_service.dart';
 
 class OrderItemModel {
-  Status status;
+  OrderStatus status;
   DateTime createDate;
   String clientID;
   List<String> assignedPerson;
@@ -13,19 +13,20 @@ class OrderItemModel {
 
   OrderItemModel.fromBasket({
     this.createDate,
-    this.status = Status.WAITING,
-    this.clientID,
+    this.status = OrderStatus.WAITING,
     this.assignedPerson,
     this.currentPositionInQueue,
     this.humanNumber,
     this.products,
-  });
+  }) {
+    this.clientID = AuthenticationService.uid;
+  }
 
   OrderItemModel.fromJson(Map<String, dynamic> data) {
     try {
       this.createDate = data['createDate']?.toDate();
-      this.status = getStatusFromString(data['status']);
-      this.clientID = data['clientID']?.toString();
+      this.status = getOrderStatusFromString(data['status']);
+      this.clientID = data['clientID'];
 
       this.assignedPerson = data['assignedPerson'];
       this.humanNumber = data['humanNumber'];
@@ -37,12 +38,10 @@ class OrderItemModel {
         }
         this.products = productsTmp;
       }
-
     } catch (e) {
       throw e;
     }
   }
-
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
@@ -65,7 +64,6 @@ class OrderItemModel {
     return data;
   }
 
-
   int get prepareTime {
     int prepareTime = 0;
     try {
@@ -77,5 +75,4 @@ class OrderItemModel {
     }
     return prepareTime;
   }
-
 }

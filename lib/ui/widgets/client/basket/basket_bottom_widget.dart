@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:sopi/factory/order_factory.dart';
 import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
-import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
@@ -19,7 +18,6 @@ class BasketBottomWidget extends StatelessWidget {
     OrderItemModel newOrder = OrderItemModel.fromBasket(
       products: _basket.products.values.toList(),
       createDate: DateTime.now(),
-      clientID: Provider.of<UserModel>(Get.context, listen: false).uid,
     );
     OrderFactory _ordersFactory = OrderFactory();
 

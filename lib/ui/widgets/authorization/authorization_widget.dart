@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/common/scripts.dart';
-import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/services/authentication_service.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
+import 'package:sopi/ui/shared/shared_styles.dart';
 
 class AuthorizationWidget extends StatefulWidget {
   @override
@@ -14,12 +14,6 @@ class AuthorizationWidget extends StatefulWidget {
 
 enum AuthMode { singIn, singUp, resetPassword }
 enum Field { mail, password, confirmPassword }
-
-final List<GenericItemModel> accountTypes = [
-  GenericItemModel(id: 'client', name: 'Klient'),
-  GenericItemModel(id: 'manager', name: 'Manager'),
-  GenericItemModel(id: 'employee', name: 'Pracownik'),
-];
 
 class _AuthorizationWidgetState extends State<AuthorizationWidget> {
   final _formKey = GlobalKey<FormState>();
@@ -30,14 +24,12 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
 
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-  String _typeAccount = 'client';
   bool _passwordVisible = false;
 
   void _submit(BuildContext context) async {
     if (!_formKey.currentState.validate()) {
       return;
     }
-
     _formKey.currentState.save();
     GenericResponseModel responseMessage;
     switch (_authMode) {
@@ -59,7 +51,6 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
                 await context.read<AuthenticationService>().signUp(
                       email: _emailController.text.trim(),
                       password: _passwordController.text.trim(),
-                      typeAccount: _typeAccount,
                     );
           }
         }
@@ -78,10 +69,6 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
 
   bool get _isSingInShow {
     return _authMode == AuthMode.singIn;
-  }
-
-  void _onChangeTypeAccount(value) {
-    _typeAccount = value;
   }
 
   void _switchAuthMode({AuthMode resetPassword}) {
@@ -162,16 +149,6 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
                   labelColor: Colors.white24,
                   valueColor: Colors.white,
                 ),
-                if (_authMode == AuthMode.singUp)
-                  _formFactory.buildDropdownField(
-                    labelText: 'Type account',
-                    labelColor: Colors.white24,
-                    labelDropdownColor: Colors.white,
-                    dropdownColor: primaryColor,
-                    items: accountTypes,
-                    initialValue: _typeAccount,
-                    onChangedHandler: _onChangeTypeAccount,
-                  ),
                 _formFactory.buildTextField(
                   isVisible: _authMode != AuthMode.resetPassword,
                   controller: _passwordController,
@@ -195,7 +172,7 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
                   color: accentColor,
                   child: Text(_getNameForButton,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: fontSize20,
                         color: Colors.black,
                       )),
                   onPressed: () => _submit(context),

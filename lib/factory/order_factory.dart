@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
-import 'package:provider/provider.dart';
-import 'package:sopi/models/orders/enums.dart';
+import 'package:sopi/common/collections.dart';
+import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
-import 'package:sopi/models/user/user_model.dart';
+import 'package:sopi/services/authentication_service.dart';
 
 class OrderFactory {
   static final OrderFactory _singleton = OrderFactory._internal();
-  final _ordersCollection = FirebaseFirestore.instance.collection('orders');
 
   factory OrderFactory() {
     return _singleton;
@@ -25,16 +23,16 @@ class OrderFactory {
     QuerySnapshot processingOrders = await this.processingOrders.get();
     if (processingOrders.docs.isEmpty) {
       QuerySnapshot waitingOrders = await this.waitingOrders.get();
-      _ordersCollection
+      ordersCollection
           .doc(waitingOrders.docs.first.id)
-          .update({'status': Status.PROCESSING.toString()});
+          .update({'status': OrderStatus.PROCESSING.toString()});
     } else {}
   }
 
   Future<int> getHumanNumberForOrder() async {
     int humanNumber = 1;
     QuerySnapshot query =
-        await _ordersCollection.orderBy('humanNumber').limitToLast(1).get();
+        await ordersCollection.orderBy('humanNumber').limitToLast(1).get();
 
     /// After 99 order's increment's is reset
     if (query.docs.isNotEmpty && query.docs.first['humanNumber'] < 99) {
@@ -44,26 +42,26 @@ class OrderFactory {
   }
 
   Query get waitingOrders {
-    return _ordersCollection
-        .where('status', isEqualTo: Status.WAITING.toString())
+    return ordersCollection
+        .where('status', isEqualTo: OrderStatus.WAITING.toString())
         .orderBy('prepareTime');
   }
 
   Query get processingOrders {
-    return _ordersCollection.where('status',
-        isEqualTo: Status.PROCESSING.toString());
+    return ordersCollection.where('status',
+        isEqualTo: OrderStatus.PROCESSING.toString());
   }
 
   Query get completedOrders {
-    return _ordersCollection.where('status',
-        isEqualTo: Status.COMPLETED.toString());
+    return ordersCollection.where('status',
+        isEqualTo: OrderStatus.COMPLETED.toString());
   }
 
   Future<List<OrderItemModel>> get completedOrdersForUser async {
     List<OrderItemModel> completedOrdersForUser = [];
-    final clientID = Provider.of<UserModel>(Get.context, listen: false).uid;
+    final uid = AuthenticationService.uid;
     QuerySnapshot query =
-        await completedOrders.where('clientID', isEqualTo: clientID).get();
+        await completedOrders.where('clientID', isEqualTo: uid).get();
     query.docs.forEach((queryDoc) {
       completedOrdersForUser.add(OrderItemModel.fromJson(queryDoc.data()));
     });
@@ -72,11 +70,11 @@ class OrderFactory {
 
   Future<OrderItemModel> get prepareOrderForUser async {
     OrderItemModel prepareOrderForUser;
-    final clientID = Provider.of<UserModel>(Get.context, listen: false).uid;
-    Query queryPrepareOrders = _ordersCollection.where('status',
-        whereIn: [Status.WAITING.toString(), Status.PROCESSING.toString()]);
+    final uid = AuthenticationService.uid;
+    Query queryPrepareOrders = ordersCollection.where('status',
+        whereIn: [OrderStatus.WAITING.toString(), OrderStatus.PROCESSING.toString()]);
     QuerySnapshot query =
-        await queryPrepareOrders.where('clientID', isEqualTo: clientID).get();
+        await queryPrepareOrders.where('clientID', isEqualTo: uid).get();
     if (query.docs.isNotEmpty) {
       DocumentSnapshot doc = query.docs.first;
       prepareOrderForUser = OrderItemModel.fromJson(doc.data());
@@ -96,14 +94,14 @@ if (actualProccessing == null) {
 
   Future<Null> addOrder(OrderItemModel order) async {
     order.humanNumber = await this.getHumanNumberForOrder();
-    final document = _ordersCollection.doc();
+    final document = ordersCollection.doc();
     final data = order.toJson();
     document.set(data);
     this.trySetFirstUnProcessingOrder();
   }
 
   Future<Null> completedOrder(String id) async {
-    await _ordersCollection.doc(id).update({'status': Status.COMPLETED.toString()});
+    await ordersCollection.doc(id).update({'status': OrderStatus.COMPLETED.toString()});
     await this.trySetFirstUnProcessingOrder();
   }
 

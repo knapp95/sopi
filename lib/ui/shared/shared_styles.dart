@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
 
 const RoundedRectangleBorder shapeDialog = const RoundedRectangleBorder(
+  side: BorderSide(color: primaryColor, width: 1),
   borderRadius: const BorderRadius.all(
     Radius.circular(8.0),
   ),
 );
 
+const RoundedRectangleBorder shapeDialogRed = const RoundedRectangleBorder(
+  side: BorderSide(color: Colors.red, width: 1),
+  borderRadius: const BorderRadius.all(
+    Radius.circular(8.0),
+  ),
+);
+
+
 /// SIZED BOX
 const SizedBox formSizedBoxHeight = SizedBox(height: 10);
 const SizedBox formSizedBoxWidth = SizedBox(width: 10);
+
+///FONT SIZE
+const double fontSize20 = 20;
+const double fontSize40 = 40;
+
+TextStyle mainTimeStyle = TextStyle(fontSize: fontSize20, fontWeight: FontWeight.bold);
+
 
 FlatButton backDialogButton = FlatButton(
   child: Text(
@@ -59,4 +76,3 @@ Container getRoundedSquareButton(label) {
     ),
   );
 }
-

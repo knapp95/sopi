@@ -1,11 +1,11 @@
+import 'package:sopi/common/collections.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 
 class ProductsModel with ChangeNotifier {
+  bool isInit = false;
   static const double maxAvailableRate = 6.0;
-  final _productsCollection = FirebaseFirestore.instance.collection('products');
 
   static List<GenericItemModel> types = [
     GenericItemModel(id: 'special', name: 'Special for your'),
@@ -33,7 +33,7 @@ class ProductsModel with ChangeNotifier {
 
   Future<void> fetchProducts() async {
     try {
-      final docs = (await _productsCollection.get())?.docs;
+      final docs = (await productsCollection.get())?.docs;
 
       if (docs != null) {
         List<ProductItemModel> products = [];
@@ -42,6 +42,7 @@ class ProductsModel with ChangeNotifier {
           products.add(productTmp);
         });
         this.products = products;
+        this.isInit = true;
         notifyListeners();
       }
     } catch (e) {

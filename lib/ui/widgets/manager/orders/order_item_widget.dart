@@ -33,7 +33,7 @@ class OrderItemWidget extends StatelessWidget {
                   child: Center(
                     child: Text(
                         '${formatDateToString(order.createDate, format: 'HH:mm')}',
-                        style: _mainTimeStyle),
+                        style: mainTimeStyle),
                   ),
                 ),
                 Expanded(
@@ -85,4 +85,3 @@ class OrderItemWidget extends StatelessWidget {
   }
 }
 
-TextStyle _mainTimeStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);

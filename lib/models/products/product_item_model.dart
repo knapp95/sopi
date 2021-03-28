@@ -1,18 +1,16 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:sopi/common/collections.dart';
 import 'package:sopi/common/scripts.dart';
 
 class ProductItemModel {
-  final _documentsCollections = FirebaseFirestore.instance.collection('products');
   String pid;
   String imageUrl;
   String name;
   String description;
   double price;
   String type;
-
 
   int count = 1;
   int prepareTime = 30;
@@ -27,13 +25,13 @@ class ProductItemModel {
     this.prepareTime,
   });
 
-  String get displayTotalPrice  => fixedDouble(this.price * this.count);
-
+  String get displayTotalPrice => fixedDouble(this.price * this.count);
 
   double get rate {
     var rng = Random();
     return rng.nextInt(6).toDouble();
   }
+
   bool get isVeg => this.type == 'vege';
 
   ProductItemModel.fromJson(Map<String, dynamic> data) {
@@ -98,7 +96,7 @@ class ProductItemModel {
 
   Future<void> saveProductToFirebase({File image}) async {
     try {
-      final _document = _documentsCollections.doc(this.pid);
+      final _document = productsCollection.doc(this.pid);
       bool isNew = this.pid == null;
 
       if (isNew) {
@@ -120,13 +118,13 @@ class ProductItemModel {
 
   Future<void> removeProduct() async {
     try {
-      _documentsCollections.doc(this.pid).delete();
+      productsCollection.doc(this.pid).delete();
     } catch (e) {
       return e;
     }
   }
 
-  Future<void> putImage(File file) async{
+  Future<void> putImage(File file) async {
     try {
       final FirebaseStorage _storage = FirebaseStorage.instance;
       String filePath = '${DateTime.now()}.png';
@@ -136,7 +134,5 @@ class ProductItemModel {
     } catch (e) {
       throw e;
     }
-
   }
-
 }

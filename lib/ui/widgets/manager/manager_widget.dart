@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/widgets/common/account/account_widget.dart';
-import 'package:sopi/ui/widgets/common/products/product_widget.dart';
-import 'package:sopi/ui/widgets/manager/employees/employees_widget.dart';
+import 'package:sopi/ui/widgets/manager/company/company_widget.dart';
 import 'package:sopi/ui/widgets/manager/orders/order_widget.dart';
 import 'package:sopi/ui/widgets/manager/statistics/statistics_widget.dart';
 
@@ -51,9 +50,8 @@ class _ManagerWidgetState extends State<ManagerWidget> {
 
   Widget _buildPageView() {
     List<Widget> children = [
-      ProductWidget(),
-      EmployeesWidget(),
       OrderWidget(),
+      CompanyWidget(),
       StatisticsWidget(),
       AccountWidget()
     ];
@@ -70,22 +68,17 @@ class _ManagerWidgetState extends State<ManagerWidget> {
     return [
       BottomNavigationBarItem(
         icon: Icon(
-          Icons.food_bank,
-        ),
-        label: 'Menu',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(
-          Icons.supervised_user_circle,
-        ),
-        label: 'Employees',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(
           Icons.list_alt,
         ),
         label: 'Orders',
       ),
+      BottomNavigationBarItem(
+        icon: Icon(
+          Icons.business,
+        ),
+        label: 'Company',
+      ),
+
       BottomNavigationBarItem(
         icon: Icon(
           Icons.pie_chart,

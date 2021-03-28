@@ -64,7 +64,7 @@ class _OrderWidgetState extends State<OrderWidget> {
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 40),
+                          fontSize: fontSize40),
                     ),
                     Text('${_prepareOrder.status}', style: TextStyle(
                       color: Colors.white,)),
@@ -82,7 +82,7 @@ class _OrderWidgetState extends State<OrderWidget> {
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 25),
+                              fontSize: fontSize20),
                         ),
                       ],
                     ),

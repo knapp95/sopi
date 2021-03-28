@@ -30,6 +30,7 @@ class FieldBuilderFactory {
     Color labelColor,
     bool obscureText = false,
     Widget suffixIcon,
+    Function onChangedHandler,
   }) {
     return !isVisible
         ? Container()
@@ -54,7 +55,7 @@ class FieldBuilderFactory {
                 ),
                 validator: (input) =>
                     _fieldValidate.validateFields(fieldName, input),
-                onChanged: (value) => _onChanged(fieldName, value),
+                onChanged: (value) => _onChanged(fieldName, value,onChangedHandler: onChangedHandler),
               ),
               SizedBox(height: 10),
             ],
