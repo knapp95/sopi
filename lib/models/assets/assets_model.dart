@@ -24,7 +24,6 @@ class AssetsModel with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      print(e);
       return e;
     }
   }

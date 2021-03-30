@@ -18,7 +18,6 @@ class AssetItemModel {
   }
 
   Future<Null> setAssignedEmployees(List<String> assignedEmployeesIds) async {
-    print(assignedEmployeesIds);
     List<UserModel> assignedEmployees = [];
     for (String id in assignedEmployeesIds) {
       DocumentSnapshot user = await usersCollection.doc(id).get();
@@ -36,6 +35,12 @@ class AssetItemModel {
   Future<Null> updateName() async {
     await assetsCollection.doc(this.aid).update({'name': this.name});
   }
+
+  Future<Null> removeAssignedEmployee(String id) async {
+    this.assignedEmployees.removeWhere((employee) => employee.uid == id);
+    this.updateAssignedEmployeesIds();
+  }
+
 
   Future<void> removeAsset() async {
     try {
