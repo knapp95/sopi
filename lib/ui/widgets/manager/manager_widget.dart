@@ -60,6 +60,7 @@ class _ManagerWidgetState extends State<ManagerWidget> {
       onPageChanged: (index) {
         _pageChanged(index);
       },
+
       children: children,
     );
   }

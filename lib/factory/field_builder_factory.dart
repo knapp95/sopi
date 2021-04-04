@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+/// import 'package:flutter_form_builder/flutter_form_builder.dart'; WAITING FOR UPGRADE VERSION
 import 'package:intl/intl.dart';
 import 'package:sopi/factory/field_validation_factory.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
@@ -32,34 +32,35 @@ class FieldBuilderFactory {
     Widget suffixIcon,
     Function onChangedHandler,
   }) {
-    return !isVisible
-        ? Container()
-        : Column(
-            children: [
-              FormBuilderTextField(
-                name: fieldName,
-                initialValue: initialValue,
-                keyboardType: keyboardType,
-                controller: controller,
-                maxLines: maxLines,
-                style: TextStyle(
-                  color: valueColor,
-                ),
-                obscureText: obscureText,
-                decoration: InputDecoration(
-                  labelText: labelText,
-                  labelStyle: TextStyle(
-                    color: labelColor,
-                  ),
-                  suffixIcon: suffixIcon,
-                ),
-                validator: (input) =>
-                    _fieldValidate.validateFields(fieldName, input),
-                onChanged: (value) => _onChanged(fieldName, value,onChangedHandler: onChangedHandler),
-              ),
-              SizedBox(height: 10),
-            ],
-          );
+    return Text('WAITING FOR UPGRADE VERSION');
+//    return !isVisible
+//        ? Container()
+//        : Column(
+//            children: [
+//              FormBuilderTextField(
+//                name: fieldName,
+//                initialValue: initialValue,
+//                keyboardType: keyboardType,
+//                controller: controller,
+//                maxLines: maxLines,
+//                style: TextStyle(
+//                  color: valueColor,
+//                ),
+//                obscureText: obscureText,
+//                decoration: InputDecoration(
+//                  labelText: labelText,
+//                  labelStyle: TextStyle(
+//                    color: labelColor,
+//                  ),
+//                  suffixIcon: suffixIcon,
+//                ),
+//                validator: (input) =>
+//                    _fieldValidate.validateFields(fieldName, input),
+//                onChanged: (value) => _onChanged(fieldName, value,onChangedHandler: onChangedHandler),
+//              ),
+//              SizedBox(height: 10),
+//            ],
+//          );
   }
 
   Widget buildTouchSpinField({
@@ -71,25 +72,26 @@ class FieldBuilderFactory {
     String labelText,
     Function onChangedHandler,
   }) {
-    return !isVisible
-        ? Container()
-        : Column(
-            children: [
-              FormBuilderTouchSpin(
-                name: fieldName,
-                displayFormat: NumberFormat.decimalPattern(),
-                initialValue: initialValue,
-                max: max,
-                decoration: InputDecoration(
-                  labelText: labelText,
-                  suffixIcon: suffixIcon,
-                ),
-                onChanged: (value) => _onChanged(fieldName, value,
-                    onChangedHandler: onChangedHandler),
-              ),
-              SizedBox(height: 10),
-            ],
-          );
+    return Text('WAITING FOR UPGRADE VERSION');
+//    return !isVisible
+//        ? Container()
+//        : Column(
+//            children: [
+//              FormBuilderTouchSpin(
+//                name: fieldName,
+//                displayFormat: NumberFormat.decimalPattern(),
+//                initialValue: initialValue,
+//                max: max,
+//                decoration: InputDecoration(
+//                  labelText: labelText,
+//                  suffixIcon: suffixIcon,
+//                ),
+//                onChanged: (value) => _onChanged(fieldName, value,
+//                    onChangedHandler: onChangedHandler),
+//              ),
+//              SizedBox(height: 10),
+//            ],
+//          );
   }
 
   Widget buildDropdownField({
@@ -103,35 +105,36 @@ class FieldBuilderFactory {
     Function onChangedHandler,
     dynamic initialValue,
   }) {
-    return !isVisible
-        ? Container()
-        : Column(
-            children: [
-              FormBuilderDropdown(
-                name: labelText,
-                decoration: InputDecoration(
-                  labelText: labelText,
-                  labelStyle: TextStyle(
-                    color: labelColor,
-                  ),
-                ),
-                items: items
-                    .map((GenericItemModel item) => DropdownMenuItem(
-                          child: Text(
-                            item.name,
-                            style: TextStyle(color: labelDropdownColor),
-                          ),
-                          value: item.id,
-                        ))
-                    .toList(),
-                dropdownColor: dropdownColor,
-                onChanged: (value) => _onChanged(fieldName, value,
-                    onChangedHandler: onChangedHandler),
-                initialValue: initialValue,
-              ),
-              SizedBox(height: 15),
-            ],
-          );
+    return Text('WAITING FOR UPGRADE VERSION');
+//    return !isVisible
+//        ? Container()
+//        : Column(
+//            children: [
+//              FormBuilderDropdown(
+//                name: labelText,
+//                decoration: InputDecoration(
+//                  labelText: labelText,
+//                  labelStyle: TextStyle(
+//                    color: labelColor,
+//                  ),
+//                ),
+//                items: items
+//                    .map((GenericItemModel item) => DropdownMenuItem(
+//                          child: Text(
+//                            item.name,
+//                            style: TextStyle(color: labelDropdownColor),
+//                          ),
+//                          value: item.id,
+//                        ))
+//                    .toList(),
+//                dropdownColor: dropdownColor,
+//                onChanged: (value) => _onChanged(fieldName, value,
+//                    onChangedHandler: onChangedHandler),
+//                initialValue: initialValue,
+//              ),
+//              SizedBox(height: 15),
+//            ],
+//          );
   }
 
   void _onChanged(String fieldName, value, {Function onChangedHandler}) {

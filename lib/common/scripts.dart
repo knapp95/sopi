@@ -11,8 +11,8 @@ bool containsIgnoreCase(String string1, String string2) {
 Future<void> showBottomNotification(
     BuildContext context, GenericResponseModel responseMessage) async {
   try {
-    Scaffold.of(Get.context, nullOk: true)?.hideCurrentSnackBar();
-    Scaffold.of(Get.context, nullOk: true)?.showSnackBar(
+    ScaffoldMessenger.of(Get.context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(Get.context).showSnackBar(
       BottomNotification(responseMessage).build(context),
     );
   } catch (e) {
@@ -42,5 +42,3 @@ String formatDateToString(DateTime date, {format = 'yyyy-MM-dd'}) {
   }
   return result;
 }
-
-

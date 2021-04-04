@@ -156,7 +156,7 @@ class ProductsList extends StatelessWidget {
   Widget _buildButtonWithLabel(
       String pid, Function onPressed, IconData icon, String label,
       [Color color]) {
-    return FlatButton(
+    return TextButton(
       onPressed: () => onPressed(pid),
       child: Row(
         children: [

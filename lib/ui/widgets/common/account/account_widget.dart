@@ -48,7 +48,7 @@ class AccountWidget extends StatelessWidget {
                   ),
                 ),
                 Text('Hi, Thomas'),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () {
                     context.read<AuthenticationService>().signOut();
                   },

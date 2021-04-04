@@ -28,7 +28,7 @@ const double fontSize40 = 40;
 TextStyle mainTimeStyle = TextStyle(fontSize: fontSize20, fontWeight: FontWeight.bold);
 
 
-FlatButton backDialogButton = FlatButton(
+TextButton backDialogButton = TextButton(
   child: Text(
     'Back',
     style: TextStyle(color: Colors.blue),

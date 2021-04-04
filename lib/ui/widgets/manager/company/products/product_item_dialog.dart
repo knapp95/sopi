@@ -159,7 +159,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
       ),
       actions: [
         backDialogButton,
-        FlatButton(
+        TextButton(
           onPressed: _submit,
           child: Text(
             'Submit',
@@ -172,7 +172,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
   Widget _buildImage() {
     Row(
       children: <Widget>[
-        FlatButton(
+        TextButton(
           child: Icon(Icons.refresh),
           onPressed: _changePhoto,
         ),

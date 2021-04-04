@@ -74,8 +74,8 @@ class BasketBottomWidget extends StatelessWidget {
                     )),
               ]),
             ),
-            FlatButton(
-              color: primaryColor,
+            TextButton(
+              style: TextButton.styleFrom(backgroundColor: primaryColor),
               onPressed: _confirmOrder,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

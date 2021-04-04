@@ -15,9 +15,8 @@ class BasketButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      minWidth: double.infinity,
-      color: this.backgroundColor,
+    return TextButton(
+      style: TextButton.styleFrom(backgroundColor: this.backgroundColor),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

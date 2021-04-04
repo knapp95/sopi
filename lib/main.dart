@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         ),
         StreamProvider(
           create: (context) =>
-              context.read<AuthenticationService>().authStateChanges,
+          context.read<AuthenticationService>().authStateChanges,
         )
       ],
       child: GetMaterialApp(

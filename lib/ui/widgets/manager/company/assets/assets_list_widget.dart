@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
+import 'package:sopi/models/assets/enums/assets_enum_bookmark.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/ui/widgets/manager/company/assets/asset_item_widget.dart';
 
 @immutable
 class AssetListWidget extends StatelessWidget {
   final List<AssetItemModel> assets;
+  final AssetsEnumBookmark displayBookmarks;
   final Function removeHandler;
-  AssetListWidget(this.assets, this.removeHandler);
 
+  AssetListWidget(this.assets, this.displayBookmarks, this.removeHandler);
 
   void _assignEmployeeToAsset({
     UserModel employee,
@@ -21,8 +23,30 @@ class AssetListWidget extends StatelessWidget {
     }
   }
 
+  void _assignToAsset(AssetItemModel asset, assign) {
+    /// MOZE DO ASSET PRZERZUCIC - LOGIKA ASSETiTEM
+    switch (displayBookmarks) {
+      case AssetsEnumBookmark.EMPLOYEES:
+        _assignEmployeeToAsset(
+          employee: assign,
+          asset: asset,
+        );
+        break;
+      case AssetsEnumBookmark.TYPES:
+        _assignTypeToAsset(
+          employee: assign,
+          asset: asset,
+        );
+        break;
+    }
+  }
 
-
+  void _assignTypeToAsset({
+    UserModel employee,
+    AssetItemModel asset,
+  }) {
+  ///TODO
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,26 +62,16 @@ class AssetListWidget extends StatelessWidget {
         final asset = assets[index];
         return Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 6.0,
+            horizontal: 8.0,
           ),
           child: DragTarget<UserModel>(
-            builder: (context, assignEmployee, _) {
-              return Container(
-                color: assignEmployee.isNotEmpty ? Colors.red : Colors.white,
-                child: AssetItemWidget(
-                    asset, assignEmployee.isNotEmpty, removeHandler),
-              );
+            builder: (context, assign, _) {
+              return AssetItemWidget(asset, assign.isNotEmpty, removeHandler);
             },
-            onAccept: (employee) {
-              _assignEmployeeToAsset(
-                employee: employee,
-                asset: asset,
-              );
-            },
+            onAccept: (assign) => _assignToAsset(asset, assign),
           ),
         );
       },
     );
   }
-
 }

@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
+import 'package:sopi/models/assets/assets_model.dart';
+import 'package:sopi/models/assets/enums/assets_enum_bookmark.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
-import 'employee/asset_employee_item_widget.dart';
-import 'employee/asset_employee_unassigned_widget.dart';
+import 'assign/employee/asset_employee_item_widget.dart';
+import 'assign/employee/asset_employee_unassigned_widget.dart';
 
 class AssetItemWidget extends StatefulWidget {
   final AssetItemModel asset;
-  final bool assignEmployee;
+  final bool assigned;
   final Function removeHandler;
 
-  AssetItemWidget(this.asset, this.assignEmployee, this.removeHandler);
+  AssetItemWidget(this.asset, this.assigned, this.removeHandler);
 
   @override
   _AssetItemWidgetState createState() => _AssetItemWidgetState(this.asset);
 }
 
 class _AssetItemWidgetState extends State<AssetItemWidget> {
-  final AssetItemModel asset;
+  final AssetItemModel _asset;
+  bool _isInit = true;
+  AssetsEnumBookmark _displayBookmarks;
 
-  _AssetItemWidgetState(this.asset);
+  _AssetItemWidgetState(this._asset);
 
   final FieldBuilderFactory _formFactory = FieldBuilderFactory();
   final GlobalKey _assetItemKey = GlobalKey();
@@ -34,7 +39,17 @@ class _AssetItemWidgetState extends State<AssetItemWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) => getSizeAndPosition());
   }
 
-  getSizeAndPosition() {
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      _displayBookmarks = Provider.of<AssetsModel>(context).displayBookmarks;
+      _isInit = false;
+    }
+
+    super.didChangeDependencies();
+  }
+
+  void getSizeAndPosition() {
     if (_assetItemKey.currentContext != null) {
       RenderBox _cardBox = _assetItemKey.currentContext.findRenderObject();
       _assetItemSize = _cardBox.size;
@@ -52,21 +67,21 @@ class _AssetItemWidgetState extends State<AssetItemWidget> {
 
   void _removeEmployee(String id) {
     setState(() {
-      asset.removeAssignedEmployee(id);
+      _asset.removeAssignedEmployee(id);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     getSizeAndPosition();
-    final textColor = widget.assignEmployee ? Colors.white : Colors.black;
+    final textColor = widget.assigned ? Colors.white : Colors.black;
 
     return Transform.scale(
-      scale: widget.assignEmployee ? 1.075 : 1.0,
+      scale: widget.assigned ? 1.075 : 1.0,
       child: Material(
         borderRadius: BorderRadius.circular(22.0),
-        elevation: widget.assignEmployee ? 8.0 : 4.0,
-        color: widget.assignEmployee ? primaryColor : Colors.white,
+        elevation: widget.assigned ? 8.0 : 4.0,
+        color: widget.assigned ? primaryColor : Colors.white,
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 10.0,
@@ -79,36 +94,37 @@ class _AssetItemWidgetState extends State<AssetItemWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if (asset.editMode) _buildRemoveAssetButton(asset),
-                  asset.editMode
+                  if (_asset.editMode) _buildRemoveAssetButton(_asset),
+                  _asset.editMode
                       ? Expanded(
                           child: _formFactory.buildTextField(
-                          initialValue: asset.name,
-                          onChangedHandler: (value) => asset.name = value,
+                          initialValue: _asset.name,
+                          onChangedHandler: (value) => _asset.name = value,
                         ))
                       : Text(
-                          asset.name,
+                          _asset.name,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: fontSize20,
                             color: textColor,
                           ),
                         ),
-                  _buildEditModeAssetNameButtons(asset),
+                  _buildEditModeAssetNameButtons(_asset),
                 ],
               ),
               Container(
                 key: _assetItemKey,
-                child: !widget.assignEmployee
-                    ? asset.assignedEmployees.length == 0
+                child: !widget.assigned
+                ///TODO opakować i przerzucić
+                    ? _asset.getAssign(_displayBookmarks).length == 0
                         ? AssetEmployeeUnassignedWidget()
                         : SingleChildScrollView(
                             child: Wrap(
                               spacing: 5,
-                              children: asset.assignedEmployees
+                              children: _asset.getAssign(_displayBookmarks)
                                   .map((employee) => AssetEmployeeWidget(
                                         employee,
-                                        onDeleteHandler: asset.editMode
+                                        onDeleteHandler: _asset.editMode
                                             ? _removeEmployee
                                             : null,
                                       ))

@@ -38,7 +38,11 @@ class _OrderWidgetState extends State<OrderWidget> {
         padding: EdgeInsets.only(top: statusBarHeight),
         child: Column(
           children: [
-             Expanded(flex: 3, child: _prepareOrder == null ? Text('No order') : _buildPrepareOrderWidget()) ,
+            Expanded(
+                flex: 3,
+                child: _prepareOrder == null
+                    ? Text('No order')
+                    : _buildPrepareOrderWidget()),
             Expanded(flex: 2, child: _buildPastOrdersWidget()),
           ],
         ),
@@ -66,8 +70,10 @@ class _OrderWidgetState extends State<OrderWidget> {
                           fontWeight: FontWeight.bold,
                           fontSize: fontSize40),
                     ),
-                    Text('${_prepareOrder.status}', style: TextStyle(
-                      color: Colors.white,)),
+                    Text('${_prepareOrder.status}',
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -89,16 +95,20 @@ class _OrderWidgetState extends State<OrderWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        FlatButton(
+                        TextButton(
+                          onPressed: () {}, ///TODO
+                          child: Text(
+                            'Cancel order',
+                            style: TextStyle(color: Colors.white),
+                          ),
+
+                        ),
+                        TextButton(
+                            onPressed: () {}, /// TODO
                             child: Text(
-                          'Cancel order',
-                          style: TextStyle(color: Colors.white),
-                        )),
-                        FlatButton(
-                            child: Text(
-                          'Confirm pick',
-                          style: TextStyle(color: Colors.white),
-                        )),
+                              'Confirm pick',
+                              style: TextStyle(color: Colors.white),
+                            )),
                       ],
                     ),
                   ],
@@ -128,12 +138,12 @@ class _OrderWidgetState extends State<OrderWidget> {
                 return !snapshot.hasData
                     ? LoadingDataInProgressWidget()
                     : ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (_, int index) {
-                    OrderItemModel order = snapshot.data[index];
-                    return OrderItemWidget(order);
-                  },
-                );
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (_, int index) {
+                          OrderItemModel order = snapshot.data[index];
+                          return OrderItemWidget(order);
+                        },
+                      );
               },
             ),
           ),
@@ -141,5 +151,4 @@ class _OrderWidgetState extends State<OrderWidget> {
       ),
     );
   }
-
 }

@@ -168,20 +168,22 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
                   obscureText: !_passwordVisible,
                 ),
                 SizedBox(height: 20),
-                RaisedButton(
-                  color: accentColor,
+                ElevatedButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: accentColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
                   child: Text(_getNameForButton,
                       style: TextStyle(
                         fontSize: fontSize20,
                         color: Colors.black,
                       )),
                   onPressed: () => _submit(context),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
                 ),
                 if (_authMode != AuthMode.resetPassword)
-                  FlatButton(
+                  TextButton(
                     onPressed: () =>
                         _switchAuthMode(resetPassword: AuthMode.resetPassword),
                     child: Text(
@@ -191,7 +193,7 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
                       ),
                     ),
                   ),
-                FlatButton(
+                TextButton(
                   onPressed: _switchAuthMode,
                   child: Text(
                     _isSingInShow ? 'Register' : 'Log in',
