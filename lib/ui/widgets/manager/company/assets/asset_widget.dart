@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
 import 'package:sopi/models/user/user_model.dart';
+import 'package:sopi/services/assets/asset_service.dart';
+import 'package:sopi/services/users/user_service.dart';
 import 'package:sopi/ui/widgets/manager/company/assets/assets_list_widget.dart';
-import 'package:sopi/ui/widgets/manager/company/assets/bottomBookmarks/asset_bottom_bookmarks_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/models/assets/assets_model.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
@@ -16,19 +17,19 @@ class AssetWidget extends StatefulWidget {
 
 class _AssetWidgetState extends State<AssetWidget>
     with TickerProviderStateMixin {
+  final _userService = UserService.singleton;
+  final _assetService = AssetService.singleton;
   bool _isInit = true;
   bool _isLoading = false;
   AssetsModel _assets;
   List<UserModel> _employees = [];
-
-  /// TODO do weryfikacji
 
   Future<Null> _loadData() async {
     _assets = Provider.of<AssetsModel>(context);
     if (!_assets.isInit) {
       await _assets.fetchAssets();
     }
-    _employees = await UserModel.fetchAllEmployees();
+    _employees = await _userService.fetchAllEmployees();
     setState(() {
       _isLoading = false;
     });
@@ -47,7 +48,7 @@ class _AssetWidgetState extends State<AssetWidget>
   }
 
   void _removeAsset(AssetItemModel asset) {
-    asset.removeAsset();
+    _assetService.removeDoc(asset.aid);
 
     setState(() {
       _assets.assets?.removeWhere((element) => element.aid == asset.aid);
@@ -62,10 +63,8 @@ class _AssetWidgetState extends State<AssetWidget>
             children: [
               Expanded(
                 flex: 3,
-                child: AssetListWidget(
-                    _assets.assets, _assets.displayBookmarks, _removeAsset),
+                child: AssetListWidget(_assets.assets, _removeAsset),
               ),
-              AssetBottomBookmarksWidget(),
               Expanded(child: AssetEmployeeListWidget(_employees)),
             ],
           );

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
-import 'package:sopi/models/assets/assets_model.dart';
-import 'package:sopi/models/assets/enums/assets_enum_bookmark.dart';
+import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 import 'assign/employee/asset_employee_item_widget.dart';
@@ -23,8 +21,6 @@ class AssetItemWidget extends StatefulWidget {
 
 class _AssetItemWidgetState extends State<AssetItemWidget> {
   final AssetItemModel _asset;
-  bool _isInit = true;
-  AssetsEnumBookmark _displayBookmarks;
 
   _AssetItemWidgetState(this._asset);
 
@@ -37,16 +33,6 @@ class _AssetItemWidgetState extends State<AssetItemWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => getSizeAndPosition());
-  }
-
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      _displayBookmarks = Provider.of<AssetsModel>(context).displayBookmarks;
-      _isInit = false;
-    }
-
-    super.didChangeDependencies();
   }
 
   void getSizeAndPosition() {
@@ -95,33 +81,37 @@ class _AssetItemWidgetState extends State<AssetItemWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   if (_asset.editMode) _buildRemoveAssetButton(_asset),
-                  _asset.editMode
-                      ? Expanded(
-                          child: _formFactory.buildTextField(
-                          initialValue: _asset.name,
-                          onChangedHandler: (value) => _asset.name = value,
-                        ))
-                      : Text(
-                          _asset.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: fontSize20,
-                            color: textColor,
-                          ),
-                        ),
+                  Expanded(
+                      child: !_asset.editMode
+                          ? ListTile(
+                              title: Text(
+                                _asset.name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: fontSize20,
+                                  color: textColor,
+                                ),
+                              ),
+                              subtitle: Text(ProductsModel.getTypeName(
+                                _asset.assignedProductType,
+                              )),
+                            )
+                          : _formFactory.buildTextField(
+                              initialValue: _asset.name,
+                              onChangedHandler: (value) => _asset.name = value,
+                            )),
                   _buildEditModeAssetNameButtons(_asset),
                 ],
               ),
               Container(
                 key: _assetItemKey,
                 child: !widget.assigned
-                ///TODO opakować i przerzucić
-                    ? _asset.getAssign(_displayBookmarks).length == 0
+                    ? _asset.assignedEmployees.length == 0
                         ? AssetEmployeeUnassignedWidget()
                         : SingleChildScrollView(
                             child: Wrap(
                               spacing: 5,
-                              children: _asset.getAssign(_displayBookmarks)
+                              children: _asset.assignedEmployees
                                   .map((employee) => AssetEmployeeWidget(
                                         employee,
                                         onDeleteHandler: _asset.editMode

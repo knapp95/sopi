@@ -1,49 +1,30 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:sopi/common/collections.dart';
 import 'package:sopi/common/scripts.dart';
+import 'package:sopi/models/products/primitive_product_item_model.dart';
+import 'package:sopi/services/products/product_service.dart';
 
-class ProductItemModel {
-  String pid;
+class ProductItemModel extends PrimitiveProductItemModel {
+  final _productService = ProductService.singleton;
   String imageUrl;
-  String name;
   String description;
   double price;
-  String type;
 
-  int count = 1;
-  int prepareTime = 30;
-
-  ProductItemModel({
-    this.pid,
-    this.imageUrl,
-    this.name,
-    this.description,
-    this.price,
-    this.type,
-    this.prepareTime,
-  });
-
-  String get displayTotalPrice => fixedDouble(this.price * this.count);
+  ProductItemModel();
 
   double get rate {
     var rng = Random();
     return rng.nextInt(6).toDouble();
   }
 
-  bool get isVeg => this.type == 'vege';
+  String get displayTotalPrice => fixedDouble(this.price * this.count);
 
-  ProductItemModel.fromJson(Map<String, dynamic> data) {
+  ProductItemModel.fromJson(Map<String, dynamic> data) : super.fromJson(data) {
     try {
-      this.pid = data['pid'];
       this.imageUrl = data['imageUrl'];
-      this.name = data['name'];
       this.description = data['description'];
       this.price = data['price'];
-      this.type = data['type'];
-      this.count = data['count'] ?? 1;
-      this.prepareTime = data['prepareTime'];
     } catch (e) {
       throw e;
     }
@@ -52,17 +33,13 @@ class ProductItemModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     try {
-      data['pid'] = this.pid;
-      data['name'] = this.name;
       data['description'] = this.description;
       data['imageUrl'] = this.imageUrl;
       data['price'] = this.price;
-      data['type'] = this.type;
-      data['count'] = this.count;
-      data['prepareTime'] = this.prepareTime;
     } catch (e) {
       throw e;
     }
+    data.addAll(super.toJson());
     return data;
   }
 
@@ -96,7 +73,7 @@ class ProductItemModel {
 
   Future<void> saveProductToFirebase({File image}) async {
     try {
-      final _document = productsCollection.doc(this.pid);
+      final _document = _productService.getDoc(this.pid);
       bool isNew = this.pid == null;
 
       if (isNew) {
@@ -111,14 +88,6 @@ class ProductItemModel {
       } else {
         await _document.update(data);
       }
-    } catch (e) {
-      return e;
-    }
-  }
-
-  Future<void> removeProduct() async {
-    try {
-      productsCollection.doc(this.pid).delete();
     } catch (e) {
       return e;
     }

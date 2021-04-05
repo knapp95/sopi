@@ -16,6 +16,7 @@ class AssetEmployeeWidget extends StatelessWidget {
           onDeleteHandler != null ? () => onDeleteHandler(employee.uid) : null,
       backgroundColor: Colors.white,
       shape: shapeDialog,
+      elevation: defaultElevation,
       avatar: ClipOval(
         child: SizedBox(
           width: 46,

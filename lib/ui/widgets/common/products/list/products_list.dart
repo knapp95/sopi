@@ -5,6 +5,7 @@ import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/models/user/enums/user_enum_type.dart';
 import 'package:sopi/models/user/user_model.dart';
+import 'package:sopi/services/products/product_service.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,7 @@ import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog.dar
 import 'package:sopi/ui/widgets/common/products/list/productsEmpty_list.dart';
 
 class ProductsList extends StatelessWidget {
+  final _productService = ProductService.singleton;
   final List<ProductItemModel> displayProductsList;
 
   ProductsList(this.displayProductsList);
@@ -24,11 +26,9 @@ class ProductsList extends StatelessWidget {
     showScaleDialog(productManager.ProductItemDialog(pid: pid));
   }
 
-  void _removeProduct(String pid) {
-    this
-        .displayProductsList
-        .firstWhere((element) => element.pid == pid)
-        .removeProduct();
+  void _removeProduct(String pid) async {
+    await _productService.removeDoc(pid);
+
     Provider.of<ProductsModel>(Get.context, listen: false).fetchProducts();
   }
 

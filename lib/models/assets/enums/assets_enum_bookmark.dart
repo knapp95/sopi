@@ -1,1 +1,0 @@
-enum AssetsEnumBookmark { EMPLOYEES, TYPES }

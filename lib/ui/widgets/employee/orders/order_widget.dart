@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/factory/order_factory.dart';
+import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
-import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/services/assets/asset_service.dart';
 import 'dart:async';
-import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:sopi/ui/shared/systems_parameters.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sopi/ui/widgets/employee/orders/order_item_widget.dart';
+import 'package:sopi/ui/widgets/employee/orders/order_processing_widget.dart';
 
 class OrderWidget extends StatefulWidget {
   @override
@@ -18,6 +16,8 @@ class OrderWidget extends StatefulWidget {
 }
 
 class _OrderWidgetState extends State<OrderWidget> {
+  final _assetService = AssetService.singleton;
+
   OrderFactory _orderFactory = OrderFactory.singleton;
   Timer _timer;
   String _timeNow;
@@ -47,12 +47,6 @@ class _OrderWidgetState extends State<OrderWidget> {
     });
   }
 
-  Query getSource(OrderStatus status) {
-    return status == OrderStatus.PROCESSING
-        ? _orderFactory.processingOrders
-        : _orderFactory.waitingOrders;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,25 +54,11 @@ class _OrderWidgetState extends State<OrderWidget> {
         padding: EdgeInsets.only(top: statusBarHeight),
         child: Column(
           children: [
-            Expanded(flex: 3, child: _buildOrdersListWidget(OrderStatus.PROCESSING)),
-            _buildDateTimeNowWidget(),
-            Expanded(flex: 3, child: _buildOrdersListWidget(OrderStatus.WAITING)),
+            Expanded(
+                flex: 2, child: _buildOrdersListWidget(OrderStatus.PROCESSING)),
+            Expanded(child: _buildOrdersListWidget(OrderStatus.WAITING)),
+            //   Expanded(child: _buildOrdersListWidget(OrderStatus.WAITING)),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDateTimeNowWidget() {
-    return Expanded(
-      child: Container(
-        decoration: getBoxDecoration(primaryColor, all: false),
-        child: Center(
-          child: Text(
-            _timeNow,
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: fontSize40),
-          ),
         ),
       ),
     );
@@ -95,30 +75,13 @@ class _OrderWidgetState extends State<OrderWidget> {
           ),
           Expanded(
             child: FutureBuilder(
-              future: getSource(status).get(),
+              future: status == OrderStatus.PROCESSING  ? _assetService.processingOrderEmployee : _assetService.processingOrderEmployee,
               builder: (ctx, snapshot) {
                 return !snapshot.hasData
                     ? LoadingDataInProgressWidget()
-                    : ListView.builder(
-                        itemCount: snapshot.data.docs.length,
-                        itemBuilder: (_, int index) {
-                          QueryDocumentSnapshot queryDoc =
-                              snapshot.data.docs[index];
-                          OrderItemModel order =
-                              OrderItemModel.fromJson(queryDoc.data());
-
-                          return Dismissible(
-                              key: UniqueKey(),
-                              child: OrderItemWidget(order),
-                              background: _buildDismissibleBackground(),
-                              resizeDuration: Duration(seconds: 1),
-                              direction: DismissDirection.startToEnd,
-                              onDismissed: (_) async {
-                                snapshot.data.removeAt(index);
-                                await _orderFactory.completedOrder(queryDoc.id);
-                              });
-                        },
-                      );
+                    : status == OrderStatus.PROCESSING
+                        ? _buildProcessingOrder(snapshot.data.docs[0])
+                        : _buildWaitingOrders(snapshot.data.docs);
               },
             ),
           ),
@@ -127,24 +90,14 @@ class _OrderWidgetState extends State<OrderWidget> {
     );
   }
 
-  Widget _buildDismissibleBackground() {
-    return Container(
-      color: Colors.green,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          formSizedBoxWidth,
-          FaIcon(
-            FontAwesomeIcons.check,
-            color: Colors.white,
-          ),
-          formSizedBoxWidth,
-          Text(
-            'Order is completed',
-            style: TextStyle(color: Colors.white),
-          ),
-        ],
-      ),
-    );
+  Widget _buildProcessingOrder(QueryDocumentSnapshot doc) {
+    final Map<String, dynamic> data = doc.get('processingProduct');
+    AssetProductModel assetProduct = AssetProductModel.fromJson(data);
+    return OrderProcessingWidget(assetProduct);
   }
+
+  Widget _buildWaitingOrders(List<QueryDocumentSnapshot> docs) {
+    return Text('TODO');
+  }
+
 }

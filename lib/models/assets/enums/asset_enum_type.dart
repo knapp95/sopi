@@ -1,1 +1,0 @@
-enum AssetsEnumType { DESSERT, BURGER,  PIZZA, PASTA, OTHER}

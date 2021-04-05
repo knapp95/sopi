@@ -36,8 +36,8 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
       case AuthMode.singIn:
         {
           responseMessage = await context.read<AuthenticationService>().signIn(
-                email: _emailController.text.trim(),
-                password: _passwordController.text.trim(),
+                email: 'employee@wp.pl',
+                password: 'employee123',
               );
         }
         break;

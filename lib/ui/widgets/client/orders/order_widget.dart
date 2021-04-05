@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:sopi/factory/order_factory.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:sopi/ui/shared/systems_parameters.dart';
 import 'package:sopi/ui/widgets/client/orders/order_item_widget.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class OrderWidget extends StatefulWidget {
   @override
@@ -16,17 +16,19 @@ class OrderWidget extends StatefulWidget {
 
 class _OrderWidgetState extends State<OrderWidget> {
   OrderItemModel _prepareOrder;
-  OrderFactory _orderFactory = OrderFactory.singleton;
 
   @override
   void didChangeDependencies() {
-    _orderFactory.prepareOrderForUser.then(
-      (value) => setState(
-        () {
-          _prepareOrder = value;
-        },
-      ),
-    );
+
+
+    /// TODO old
+//    _orderFactory.prepareOrderForUser.then(
+//      (value) => setState(
+//        () {
+//          _prepareOrder = value;
+//        },
+//      ),
+//    );
     super.didChangeDependencies();
   }
 
@@ -70,6 +72,20 @@ class _OrderWidgetState extends State<OrderWidget> {
                           fontWeight: FontWeight.bold,
                           fontSize: fontSize40),
                     ),
+                    StepProgressIndicator(
+                      totalSteps: 4,
+                      currentStep: 2,
+                      size: 20,
+                      unselectedColor: Colors.white,
+                      selectedColor: accentColor,
+                      roundedEdges: Radius.circular(10),
+                    ),
+                    Text(
+                      'Waiting in queueue',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                     Text('${_prepareOrder.status}',
                         style: TextStyle(
                           color: Colors.white,
@@ -96,15 +112,18 @@ class _OrderWidgetState extends State<OrderWidget> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         TextButton(
-                          onPressed: () {}, ///TODO
+                          onPressed: () {},
+
+                          ///TODO
                           child: Text(
                             'Cancel order',
                             style: TextStyle(color: Colors.white),
                           ),
-
                         ),
                         TextButton(
-                            onPressed: () {}, /// TODO
+                            onPressed: () {},
+
+                            /// TODO
                             child: Text(
                               'Confirm pick',
                               style: TextStyle(color: Colors.white),
@@ -133,7 +152,7 @@ class _OrderWidgetState extends State<OrderWidget> {
           ),
           Expanded(
             child: FutureBuilder(
-              future: _orderFactory.completedOrdersForUser,
+              future: null, //_orderFactory.completedOrdersForUser, ///TODO OLD
               builder: (ctx, snapshot) {
                 return !snapshot.hasData
                     ? LoadingDataInProgressWidget()

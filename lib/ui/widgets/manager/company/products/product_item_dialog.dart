@@ -5,8 +5,9 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
-import 'package:sopi/models/generic/generic_item_model.dart';
+import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/products/product_item_model.dart';
+import 'package:sopi/models/products/product_type_model.dart';
 import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
@@ -20,11 +21,8 @@ class ProductItemDialog extends StatefulWidget {
   ProductItemDialog({this.isNew = false, this.pid});
 
   @override
-  _ProductItemDialogState createState() =>
-      _ProductItemDialogState();
+  _ProductItemDialogState createState() => _ProductItemDialogState();
 }
-
-
 
 class _ProductItemDialogState extends State<ProductItemDialog> {
   final FieldBuilderFactory _formFactory = FieldBuilderFactory();
@@ -94,14 +92,16 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
     Get.back();
   }
 
-  List<GenericItemModel> get availableProductsTypes =>
-      ProductsModel.types.where((element) => element.id != 'special').toList();
+  List<ProductTypeModel> get availableProductsTypes => ProductsModel.types
+      .where((element) => element.type != ProductType.SPECIAL)
+      .toList();
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.isNew ? 'Add product' : 'Edit product'),
       shape: shapeDialog,
+      elevation: defaultElevation,
       content: Form(
         child: SingleChildScrollView(
           child: Column(
@@ -131,19 +131,20 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
                     ),
                     Row(
                       children: [
-                        Expanded(
-                          child: _formFactory.buildDropdownField(
-                            fieldName: 'type',
-                            initialValue: _product.type,
-                            labelText: 'Type',
-                            items: availableProductsTypes,
-                          ),
-                        ),
+                        /// TODO repair when form_builder is upgrade
+//                        Expanded(
+//                          child: _formFactory.buildDropdownField(
+//                            fieldName: 'type',
+//                            initialValue: _product.type,
+//                            labelText: 'Type',
+//                            items: availableProductsTypes,
+//                          ),
+//                        ),
                         formSizedBoxWidth,
                         Expanded(
                           child: _formFactory.buildDropdownField(
                             fieldName: 'prepareTime',
-                            initialValue:  _product.prepareTime?.toString(),
+                            initialValue: _product.prepareTime?.toString(),
                             labelText: 'Prepare time',
                             items: ProductsModel.times,
                           ),

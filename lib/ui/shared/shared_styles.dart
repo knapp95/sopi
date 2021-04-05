@@ -17,6 +17,13 @@ const RoundedRectangleBorder shapeDialogRed = const RoundedRectangleBorder(
 );
 
 
+const RoundedRectangleBorder shapeCard = const RoundedRectangleBorder(
+  borderRadius: const BorderRadius.all(
+    Radius.circular(16.0),
+  ),
+);
+
+
 /// SIZED BOX
 const SizedBox formSizedBoxHeight = SizedBox(height: 10);
 const SizedBox formSizedBoxWidth = SizedBox(width: 10);
@@ -24,6 +31,9 @@ const SizedBox formSizedBoxWidth = SizedBox(width: 10);
 ///FONT SIZE
 const double fontSize20 = 20;
 const double fontSize40 = 40;
+
+/// ELEVATION
+const double defaultElevation = 5;
 
 TextStyle mainTimeStyle = TextStyle(fontSize: fontSize20, fontWeight: FontWeight.bold);
 

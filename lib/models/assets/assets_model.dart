@@ -1,20 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sopi/common/collections.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
 import 'package:flutter/material.dart';
+import 'package:sopi/models/products/enums/product_enum_type.dart';
+import 'package:sopi/services/assets/asset_service.dart';
 
-import 'enums/assets_enum_bookmark.dart';
 
 
 
 class AssetsModel with ChangeNotifier {
+  final _assetService = AssetService.singleton;
   bool isInit = false;
   List<AssetItemModel> assets = [];
-  AssetsEnumBookmark displayBookmarks = AssetsEnumBookmark.EMPLOYEES;
 
   Future<void> fetchAssets() async {
     try {
-      final docs = (await assetsCollection.get())?.docs;
+      final docs = await _assetService.getDocs();
       if (docs != null) {
         List<AssetItemModel> assets = [];
         for (QueryDocumentSnapshot doc in docs) {
@@ -32,4 +32,10 @@ class AssetsModel with ChangeNotifier {
       return e;
     }
   }
+
+  AssetItemModel findAssetByProductType(ProductType productType) {
+    return this.assets.firstWhere((asset) => asset.assignedProductType == productType);
+  }
+
+
 }

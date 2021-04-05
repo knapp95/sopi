@@ -3,7 +3,6 @@ class FieldValidationFactory {
   static final FieldValidationFactory _singleton =
       FieldValidationFactory._internal();
 
-  /// Factory daje nam pewność że obiekt singleton zostanie utworzony tylko raz,
   factory FieldValidationFactory() {
     return _singleton;
   }
@@ -12,7 +11,6 @@ class FieldValidationFactory {
 
   static FieldValidationFactory get singleton => _singleton;
 
-  /// Walidacja pól (mail, hasło) przy logowaniu
   String validateFields(String field, String input) {
     String validateMessage;
     if (input == null || input.isEmpty) {

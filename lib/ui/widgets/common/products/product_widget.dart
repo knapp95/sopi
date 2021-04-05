@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
+import 'package:sopi/models/products/product_type_model.dart';
 import 'package:sopi/models/products/products_model.dart';
 import 'list/products_list.dart';
 import 'package:sopi/common/scripts.dart';
@@ -58,9 +58,9 @@ class _ProductsScreenState extends State<ProductWidget>
       if (text.isEmpty) {
         return;
       }
-      GenericItemModel openedProducts = ProductsModel.types[_selectedIndex];
+      ProductTypeModel openedProducts = ProductsModel.types[_selectedIndex];
       List<ProductItemModel> productsByType =
-      _products.getSortedProductsByType(openedProducts.id);
+      _products.getSortedProductsByType(openedProducts.type);
       _searchResult = productsByType
           .where((product) => containsIgnoreCase(product.name, text))
           .toList();
@@ -130,13 +130,13 @@ class _ProductsScreenState extends State<ProductWidget>
   }
 
   List<Widget> _buildTabsContent() {
-    List<Widget> tabsContent = ProductsModel.types.map((type) {
+    List<Widget> tabsContent = ProductsModel.types.map((element) {
       List<ProductItemModel> productsByType = [];
 
       if (_searchResult.length != 0 || _searchController.text.isNotEmpty) {
         productsByType = _searchResult;
       } else {
-        productsByType = _products.getSortedProductsByType(type.id);
+        productsByType = _products.getSortedProductsByType(element.type);
       }
       return ProductsList(productsByType);
     }).toList();

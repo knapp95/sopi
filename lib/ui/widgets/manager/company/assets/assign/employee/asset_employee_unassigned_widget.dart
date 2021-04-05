@@ -6,6 +6,7 @@ class AssetEmployeeUnassignedWidget extends StatelessWidget {
     return Chip(
       backgroundColor: Colors.white,
       shape: shapeDialogRed,
+      elevation: defaultElevation,
       avatar: ClipOval(
         child: SizedBox(
           width: 46,

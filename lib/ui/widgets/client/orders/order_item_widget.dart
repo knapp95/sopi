@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'package:sopi/common/scripts.dart';
-import 'package:sopi/models/products/product_item_model.dart';
+import 'package:sopi/models/orders/order_product_model.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 
 class OrderItemWidget extends StatelessWidget {
   final OrderItemModel order;
 
   OrderItemWidget(this.order);
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,7 @@ class OrderItemWidget extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildAssignedPersonToOrderWidget(List<ProductItemModel> products) {
+  List<Widget> _buildAssignedPersonToOrderWidget(List<OrderProductModel> products) {
     return products
             .map(
               (product) => Row(

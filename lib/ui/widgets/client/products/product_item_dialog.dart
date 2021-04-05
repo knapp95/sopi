@@ -45,6 +45,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       shape: shapeDialog,
+      elevation: defaultElevation,
       child: SingleChildScrollView(
         reverse: true,
         child: Column(

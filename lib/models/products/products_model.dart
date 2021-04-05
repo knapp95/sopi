@@ -1,21 +1,28 @@
-import 'package:sopi/common/collections.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:flutter/material.dart';
+import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/products/product_item_model.dart';
+import 'package:sopi/models/products/product_type_model.dart';
+import 'package:sopi/services/products/product_service.dart';
 
 class ProductsModel with ChangeNotifier {
+  final _productService = ProductService.singleton;
   bool isInit = false;
   static const double maxAvailableRate = 6.0;
 
-  static List<GenericItemModel> types = [
-    GenericItemModel(id: 'special', name: 'Special for your'),
-    GenericItemModel(id: 'dessert', name: 'Desserts'),
-    GenericItemModel(id: 'burger', name: 'Burger'),
-    GenericItemModel(id: 'pizza', name: 'Pizza'),
-    GenericItemModel(id: 'pasta', name: 'Pastas'),
-    GenericItemModel(id: 'vege', name: 'Vegan'),
-    GenericItemModel(id: 'other', name: 'Other'),
+  static List<ProductTypeModel> types = [
+    ProductTypeModel(ProductType.SPECIAL, 'Special for your'),
+    ProductTypeModel(ProductType.DESSERT, 'Desserts'),
+    ProductTypeModel(ProductType.BURGER, 'Burger'),
+    ProductTypeModel(ProductType.PIZZA, 'Pizza'),
+    ProductTypeModel(ProductType.PASTA, 'Pastas'),
+    ProductTypeModel(ProductType.VEGE, 'Vegan'),
+    ProductTypeModel(ProductType.OTHER, 'Other'),
   ];
+
+  static String getTypeName(ProductType type) {
+    return types.firstWhere((product) => product.type == type).name;
+  }
 
   static List<GenericItemModel> times = [
     GenericItemModel(id: '5', name: '5'),
@@ -28,36 +35,22 @@ class ProductsModel with ChangeNotifier {
     GenericItemModel(id: '60', name: '60'),
   ];
 
-
   List<ProductItemModel> products = [];
 
   Future<void> fetchProducts() async {
-    try {
-      final docs = (await productsCollection.get())?.docs;
-
-      if (docs != null) {
-        List<ProductItemModel> products = [];
-        docs.forEach((doc) {
-          final productTmp = ProductItemModel.fromJson(doc.data());
-          products.add(productTmp);
-        });
-        this.products = products;
-        this.isInit = true;
-        notifyListeners();
-      }
-    } catch (e) {
-      return e;
-    }
+    this.products = await _productService.fetchProducts();
+    this.isInit = true;
+    notifyListeners();
   }
 
-  List<ProductItemModel> getSortedProductsByType(String type) {
+  List<ProductItemModel> getSortedProductsByType(ProductType type) {
     List<ProductItemModel> productsByType = [];
     switch (type) {
-      case 'vege':
+      case ProductType.VEGE:
         productsByType =
             this.products.where((product) => product.isVeg).toList();
         break;
-      case 'special':
+      case ProductType.SPECIAL:
         productsByType = this.products..shuffle();
         break;
       default:
@@ -67,4 +60,5 @@ class ProductsModel with ChangeNotifier {
     productsByType.sort((a, b) => a.price?.compareTo(b.price));
     return productsByType;
   }
+
 }

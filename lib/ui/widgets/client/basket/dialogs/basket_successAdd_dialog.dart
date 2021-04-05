@@ -12,6 +12,7 @@ class BasketSuccessAddDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       shape: shapeDialog,
+      elevation: defaultElevation,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

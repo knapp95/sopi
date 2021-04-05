@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/models/user/user_model.dart';
+import 'package:sopi/services/users/user_service.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 
@@ -10,6 +11,7 @@ class EmployeesWidget extends StatefulWidget {
 }
 
 class _EmployeesWidgetState extends State<EmployeesWidget> {
+  final _userService = UserService.singleton;
   List<UserModel> _users;
   bool _isInit = false;
   bool _isLoading = false;
@@ -20,7 +22,8 @@ class _EmployeesWidgetState extends State<EmployeesWidget> {
       setState(() {
         _isLoading = true;
       });
-      UserModel.fetchAllEmployees().then((value) {
+
+      _userService.fetchAllEmployees().then((value) {
         if (mounted) {
           _users = value;
           setState(() {

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/factory/order_factory.dart';
 import 'package:sopi/models/basket/basket_model.dart';
-import 'package:sopi/models/orders/order_item_model.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
@@ -11,23 +10,17 @@ import 'package:sopi/ui/shared/shared_styles.dart';
 import 'dialogs/basket_successAdd_dialog.dart';
 
 class BasketBottomWidget extends StatelessWidget {
+  final OrderFactory _orderFactory = OrderFactory.singleton;
   final BasketModel _basket =
       Provider.of<BasketModel>(Get.context, listen: false);
 
   Future<Null> _confirmOrder() async {
-    OrderItemModel newOrder = OrderItemModel.fromBasket(
-      products: _basket.products.values.toList(),
-      createDate: DateTime.now(),
-    );
-    OrderFactory _ordersFactory = OrderFactory();
-
     /// FEATURE'S PAYMENT'S
-    await _ordersFactory.addOrder(newOrder);
-
+    final orderNumber = await _orderFactory.createOrder(_basket.productsOrder);
     _basket.clearBasket();
     Get.back();
 
-    showScaleDialog(BasketSuccessAddDialog(newOrder.humanNumber));
+    showScaleDialog(BasketSuccessAddDialog(orderNumber));
   }
 
   @override

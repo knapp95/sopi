@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sopi/common/scripts.dart';
-import 'package:sopi/factory/order_factory.dart';
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'dart:async';
@@ -17,7 +15,6 @@ class OrderWidget extends StatefulWidget {
 }
 
 class _OrderWidgetState extends State<OrderWidget> {
-  OrderFactory _orderFactory = OrderFactory.singleton;
   Timer _timer;
   String _timeNow;
   String _prepareTime;
@@ -45,12 +42,6 @@ class _OrderWidgetState extends State<OrderWidget> {
       _timeNow = formattedDateTime;
       _prepareTime = formatDateToString(now, format: 'mm:ss');
     });
-  }
-
-  Query getSource(OrderStatus status) {
-    return status == OrderStatus.PROCESSING
-        ? _orderFactory.processingOrders
-        : _orderFactory.waitingOrders;
   }
 
   @override
@@ -95,7 +86,7 @@ class _OrderWidgetState extends State<OrderWidget> {
           ),
           Expanded(
             child: FutureBuilder(
-              future: getSource(status).get(),
+              future: null, ///TODO TMP
               builder: (ctx, snapshot) {
                 return !snapshot.hasData
                     ? LoadingDataInProgressWidget()
