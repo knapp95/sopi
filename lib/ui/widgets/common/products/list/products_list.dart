@@ -7,7 +7,6 @@ import 'package:sopi/models/user/enums/user_enum_type.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/products/product_service.dart';
 import 'package:sopi/ui/shared/animations.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:get/get.dart';
 import 'package:sopi/ui/widgets/client/products/product_item_dialog.dart'
     as productClient;
@@ -82,18 +81,29 @@ class ProductsList extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: <Widget>[
-                                    _buildIconWithLabel(
-                                      FontAwesomeIcons.dollarSign,
-                                      product.price.toStringAsFixed(2),
+                                    TextButton.icon(
+                                      onPressed: null,
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.dollarSign,
+                                      ),
+                                      label: Text(
+                                        product.price.toStringAsFixed(2),
+                                      ),
                                     ),
-                                    _buildIconWithLabel(
-                                      FontAwesomeIcons.clock,
-                                      '${product.prepareTime} min',
+                                    TextButton.icon(
+                                      onPressed: null,
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.clock,
+                                      ),
+                                      label: Text('${product.prepareTime} min'),
                                     ),
-                                    _buildIconWithLabel(
-                                      FontAwesomeIcons.solidStar,
-                                      '${product.rate} / ${ProductsModel.maxAvailableRate.toStringAsFixed(2)}',
-                                      Colors.yellow,
+                                    TextButton.icon(
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.solidStar,
+                                        color: Colors.yellow,
+                                      ),
+                                      label: Text(
+                                          '${product.rate} / ${ProductsModel.maxAvailableRate.toStringAsFixed(2)}'),
                                     ),
                                   ],
                                 ),
@@ -111,19 +121,25 @@ class ProductsList extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         children: <Widget>[
-                                          _buildButtonWithLabel(
-                                            product.pid,
-                                            _editProduct,
-                                            FontAwesomeIcons.pencilAlt,
-                                            'Edit',
-                                            Colors.blue,
+                                          TextButton.icon(
+                                            onPressed: () =>
+                                                _editProduct(product.pid),
+                                            icon: FaIcon(
+                                                FontAwesomeIcons.pencilAlt),
+                                            label: Text('Edit'),
                                           ),
-                                          _buildButtonWithLabel(
-                                            product.pid,
-                                            _removeProduct,
-                                            FontAwesomeIcons.trash,
-                                            'Remove',
-                                            Colors.red,
+                                          TextButton.icon(
+                                            style: TextButton.styleFrom(
+                                              primary: Colors.red,
+                                            ),
+                                            onPressed: () =>
+                                                _removeProduct(product.pid),
+                                            icon: FaIcon(
+                                              FontAwesomeIcons.trash,
+                                            ),
+                                            label: Text(
+                                              'Remove',
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -138,39 +154,5 @@ class ProductsList extends StatelessWidget {
                   );
                 },
               );
-  }
-
-  Widget _buildIconWithLabel(IconData icon, String label, [Color color]) {
-    return Row(
-      children: <Widget>[
-        FaIcon(
-          icon,
-          color: color,
-        ),
-        SizedBox(width: 5),
-        Text(label),
-      ],
-    );
-  }
-
-  Widget _buildButtonWithLabel(
-      String pid, Function onPressed, IconData icon, String label,
-      [Color color]) {
-    return TextButton(
-      onPressed: () => onPressed(pid),
-      child: Row(
-        children: [
-          FaIcon(
-            icon,
-            color: color,
-          ),
-          formSizedBoxWidth,
-          Text(
-            label,
-            style: TextStyle(color: color),
-          ),
-        ],
-      ),
-    );
   }
 }

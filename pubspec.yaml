@@ -23,7 +23,7 @@ dependencies:
   shared_preferences: ^2.0.5
   intl: ^0.17.0
   flutter_native_splash: ^1.1.7+1
-#  flutter_form_builder: ^5.0.0  TODO must waiting for upgrade to dependency no conflict
+  flutter_form_builder: ^6.0.0-nullsafety.1
   firebase_storage: ^8.0.1
   firebase_auth: ^1.0.1
   cloud_firestore: ^1.0.3

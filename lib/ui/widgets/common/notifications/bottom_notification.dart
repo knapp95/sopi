@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/generic/generic_response_model.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
+import 'package:sopi/ui/shared/shared_styles.dart';
 
 class BottomNotification extends StatelessWidget {
   final GenericResponseModel responseMessage;
@@ -9,12 +11,15 @@ class BottomNotification extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SnackBar(
-      backgroundColor: responseMessage.correct ? Colors.blue : Colors.red,
-      content: Text(
-        responseMessage.message,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
+      elevation: defaultElevation,
+      backgroundColor: responseMessage.correct ? primaryColor : Colors.red,
+      content: Container(
+        child: Text(
+          responseMessage.message,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       duration: Duration(

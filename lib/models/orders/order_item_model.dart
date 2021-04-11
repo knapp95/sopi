@@ -66,11 +66,22 @@ class OrderItemModel {
     int prepareTime = 0;
     try {
       this.products.forEach((product) {
-        prepareTime += product.count * product.prepareTime;
+        prepareTime +=
+            product.extraPrepareTime + (product.count * product.prepareTime);
       });
     } catch (e) {
       throw e;
     }
     return prepareTime;
   }
+
+
+  OrderProductModel getProductByPid(String pid) {
+    return this
+        .products
+        .firstWhere((element) => element.pid == pid, orElse: () => null);
+  }
+
+
+
 }

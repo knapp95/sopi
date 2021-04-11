@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:sopi/home_page_wrapper.dart';
 import 'package:sopi/models/assets/assets_model.dart';
@@ -15,6 +16,9 @@ import 'models/products/products_model.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  );
   runApp(MyApp());
 }
 
@@ -40,16 +44,11 @@ class MyApp extends StatelessWidget {
         ),
         StreamProvider(
           create: (context) =>
-          context.read<AuthenticationService>().authStateChanges,
+              context.read<AuthenticationService>().authStateChanges,
         )
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: 'Lato',
-          primaryColor: primaryColor,
-          accentColor: accentColor,
-        ),
         home: AuthenticationWrapper(),
       ),
     );
@@ -62,7 +61,8 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<User>();
 
     if (firebaseUser != null) {
-      Provider.of<UserModel>(context, listen: false).getUserTypeAccountFromFirebase();
+      Provider.of<UserModel>(context, listen: false)
+          .getUserTypeAccountFromFirebase();
 
       return HomePageWrapper();
     }

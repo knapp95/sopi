@@ -25,6 +25,14 @@ class AssetService {
         .get();
   }
 
+  Future<QuerySnapshot> get waitingOrdersEmployee {
+    AuthenticationService.uid;
+    return _assetsCollection
+        .where('assignedEmployeesIds', arrayContains: AuthenticationService.uid)
+        .where('waitingProducts', isNotEqualTo: null)
+        .get();
+  }
+
   Future<Null> updateDoc(String aid, Map<String, dynamic> data) async =>
       _assetsCollection.doc(aid).update(data);
 

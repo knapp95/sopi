@@ -92,10 +92,6 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
     Get.back();
   }
 
-  List<ProductTypeModel> get availableProductsTypes => ProductsModel.types
-      .where((element) => element.type != ProductType.SPECIAL)
-      .toList();
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -131,20 +127,19 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
                     ),
                     Row(
                       children: [
-                        /// TODO repair when form_builder is upgrade
-//                        Expanded(
-//                          child: _formFactory.buildDropdownField(
-//                            fieldName: 'type',
-//                            initialValue: _product.type,
-//                            labelText: 'Type',
-//                            items: availableProductsTypes,
-//                          ),
-//                        ),
+                        Expanded(
+                         child: _formFactory.buildDropdownField(
+                           fieldName: 'type',
+                           initialValue: (_product.type ?? ProductType.BURGER).toString(),
+                           labelText: 'Type',
+                           items: ProductsModel.availableProductsTypesGeneric,
+                         ),
+                       ),
                         formSizedBoxWidth,
                         Expanded(
                           child: _formFactory.buildDropdownField(
                             fieldName: 'prepareTime',
-                            initialValue: _product.prepareTime?.toString(),
+                            initialValue:  _product.prepareTime ?? '30',
                             labelText: 'Prepare time',
                             items: ProductsModel.times,
                           ),

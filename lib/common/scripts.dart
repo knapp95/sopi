@@ -42,3 +42,12 @@ String formatDateToString(DateTime date, {format = 'yyyy-MM-dd'}) {
   }
   return result;
 }
+
+
+String durationInMinutes(Duration duration) {
+  if (duration == null) return '';
+  String twoDigits(int n) => n.toString().padLeft(2, "0");
+  String twoDigitMinutes = twoDigits((duration.inHours * 60) + duration.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return'$twoDigitMinutes:$twoDigitSeconds';
+}
