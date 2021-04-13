@@ -1,26 +1,25 @@
 import 'dart:async';
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/common/scripts.dart';
+import 'package:sopi/factory/order_factory.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
-import 'package:sopi/models/orders/order_product_model.dart';
+import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/services/products/product_service.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/widgets/common/dialogs/confirm_dialog.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 import 'package:sopi/ui/widgets/employee/orders/dialogs/order_dialog_addExtraTime_widget.dart';
 
 class OrderProcessingWidget extends StatefulWidget {
   final AssetProductModel assetProductModel;
 
-  const OrderProcessingWidget(this.assetProductModel);
+  const OrderProcessingWidget(this.assetProductModel, key) : super(key: key);
 
   @override
   _OrderProcessingWidgetState createState() => _OrderProcessingWidgetState(
@@ -28,6 +27,7 @@ class OrderProcessingWidget extends StatefulWidget {
 }
 
 class _OrderProcessingWidgetState extends State<OrderProcessingWidget> {
+  final OrderFactory _orderFactory = OrderFactory.singleton;
   final _orderService = OrderService.singleton;
   final String oid;
   final String pid;
@@ -64,14 +64,16 @@ class _OrderProcessingWidgetState extends State<OrderProcessingWidget> {
   }
 
   String get startOrderTimeDisplay {
-    return  durationInMinutes(_timePrepare);
+    return durationInMinutes(_timePrepare);
   }
 
   Future<Null> _loadData() async {
+
     final productService = ProductService.singleton;
     _orderItemModel = await _orderService.getOrderById(this.oid);
     _orderProductModel = _orderItemModel.getProductByPid(pid);
     _productItemModel = await productService.getProductById(this.pid);
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });
@@ -81,12 +83,20 @@ class _OrderProcessingWidgetState extends State<OrderProcessingWidget> {
     if (_isLoading) return;
     setState(() {
       final now = DateTime.now();
-      _timePrepare = now.difference(_orderItemModel.createDate);
+      _timePrepare = now.difference(_orderProductModel.startProcessingDate);
     });
   }
 
-  ///TODO
-  void _completeOrderDialog() {}
+  void _completeOrderDialog() async {
+    final confirm = await showScaleDialog(
+      ConfirmDialog('Set ${_productItemModel.name} as done?'),
+    );
+    if (confirm) {
+      _orderProductModel.setAsComplete();
+      _orderService.updateOrder(oid, _orderItemModel);
+      _orderFactory.completeOrderProduct(oid, _orderProductModel);
+    }
+  }
 
   void _addTimeToOrder() async {
     final result = await showScaleDialog(

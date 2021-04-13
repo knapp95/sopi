@@ -36,7 +36,7 @@ class OrderService {
   void updateOrder(String oid, OrderItemModel order) {
     try {
       final data = order.toJson();
-      _ordersCollection.doc(oid).set(data);
+      _ordersCollection.doc(oid).update(data);
       showBottomNotification(
         Get.context,
         GenericResponseModel('Order update successfully.'),

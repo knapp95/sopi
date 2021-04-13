@@ -1,7 +1,7 @@
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/services/authentication_service.dart';
 
-import 'order_product_model.dart';
+import 'products/order_product_model.dart';
 
 class OrderItemModel {
   OrderStatus status = OrderStatus.WAITING;

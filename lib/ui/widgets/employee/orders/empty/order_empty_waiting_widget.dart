@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class OrderNoAvailableWidget extends StatelessWidget {
+class OrderEmptyWaitingWidget extends StatelessWidget {
   final IconData icon;
   final String statusLabel;
 
-  OrderNoAvailableWidget({
+  OrderEmptyWaitingWidget({
     this.icon = Icons.calendar_today,
     this.statusLabel = 'No prepare orders schedule',
   });

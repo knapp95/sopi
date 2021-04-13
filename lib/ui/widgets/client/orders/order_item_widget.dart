@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'package:sopi/common/scripts.dart';
-import 'package:sopi/models/orders/order_product_model.dart';
+import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 
 class OrderItemWidget extends StatelessWidget {

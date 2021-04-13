@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/products/product_item_model.dart';
-import 'package:sopi/models/products/product_type_model.dart';
 import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';

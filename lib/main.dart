@@ -9,7 +9,6 @@ import 'package:sopi/services/authentication_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/widgets/authorization/authorization_widget.dart';
 import 'models/products/products_model.dart';
 

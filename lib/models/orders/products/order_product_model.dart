@@ -3,8 +3,12 @@ import 'package:sopi/models/products/product_item_model.dart';
 
 class OrderProductModel extends PrimitiveProductItemModel {
   int extraPrepareTime = 0;
+
   int get totalPrepareTime =>
       this.extraPrepareTime + (this.count * this.prepareTime);
+  bool isComplete = false;
+  DateTime startProcessingDate;
+  DateTime completeDate;
 
   OrderProductModel();
 
@@ -18,6 +22,9 @@ class OrderProductModel extends PrimitiveProductItemModel {
 
   OrderProductModel.fromJson(Map<String, dynamic> data) : super.fromJson(data) {
     try {
+      this.isComplete = data['isComplete'] ?? false;
+      this.startProcessingDate = data['startProcessingDate']?.toDate();
+      this.completeDate = data['completeDate']?.toDate();
       this.extraPrepareTime = data['extraPrepareTime'] ?? 0;
     } catch (e) {
       throw e;
@@ -27,11 +34,23 @@ class OrderProductModel extends PrimitiveProductItemModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     try {
+
+      data['startProcessingDate'] = this.startProcessingDate;
+      if (this.isComplete) {
+        data['isComplete'] = this.isComplete;
+        data['completeDate'] = this.completeDate;
+      }
+
       data['extraPrepareTime'] = this.extraPrepareTime;
     } catch (e) {
       throw e;
     }
     data.addAll(super.toJson());
     return data;
+  }
+
+  void setAsComplete() {
+    this.isComplete = true;
+    this.completeDate = DateTime.now();
   }
 }

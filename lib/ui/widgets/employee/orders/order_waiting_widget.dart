@@ -1,25 +1,19 @@
 import 'dart:async';
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/services/products/product_service.dart';
-import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
-import 'package:sopi/ui/widgets/employee/orders/dialogs/order_dialog_addExtraTime_widget.dart';
 
 class OrderWaitingWidget extends StatefulWidget {
   final AssetProductModel assetProductModel;
 
-  const OrderWaitingWidget(this.assetProductModel);
+  const OrderWaitingWidget(this.assetProductModel, key) : super(key: key);
 
   @override
   _OrderWaitingWidgetState createState() => _OrderWaitingWidgetState(
@@ -76,6 +70,8 @@ class _OrderWaitingWidgetState extends State<OrderWaitingWidget> {
     final productService = ProductService.singleton;
     _orderItemModel = await _orderService.getOrderById(this.oid);
     _productItemModel = await productService.getProductById(this.pid);
+
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });
@@ -89,7 +85,6 @@ class _OrderWaitingWidgetState extends State<OrderWaitingWidget> {
     return _isLoading
         ? LoadingDataInProgressWidget()
         : Card(
-            // color: primaryColor,
             shape: shapeCard,
             elevation: defaultElevation,
             child: Padding(
@@ -97,23 +92,30 @@ class _OrderWaitingWidgetState extends State<OrderWaitingWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '#${_orderItemModel.humanNumber}',
-                    style: textStyle,
+                  Expanded(
+                    child: Text(
+                      '#${_orderItemModel.humanNumber}',
+                      style: textStyle,
+                    ),
                   ),
-                  Column(
-                    children: [
-                      Text(
-                        '${_productItemModel.name}',
-                        style: textStyle,
-                      ),
-                      Text(
-                        'Prepare time: ${_productItemModel.prepareTime}',
-                        style: textStyle,
-                      ),
-                    ],
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${_productItemModel.name}',
+                          style: textStyle,
+                        ),
+                        Text(
+                          'Prepare time: ${widget.assetProductModel.totalPrepareTime}',
+                          style: textStyle,
+                        ),
+                      ],
+                    ),
                   ),
-                  Text('$timeWaitingDisplay', style: textStyle)
+                  Expanded(child: Text('$timeWaitingDisplay', style: textStyle))
                 ],
               ),
             ),
