@@ -17,15 +17,22 @@ class AssetService {
     return (await _assetsCollection.get())?.docs;
   }
 
-  Future<QuerySnapshot> get processingOrderEmployee {
+  Stream<QuerySnapshot> get processingOrderEmployee {
     AuthenticationService.uid;
     return _assetsCollection
         .where('assignedEmployeesIds', arrayContains: AuthenticationService.uid)
         .orderBy('processingProduct')
-        .get();
+        .snapshots();
   }
 
-  Future<Null> updateDoc(String aid, Map<String, dynamic> data) async =>
+  Stream<QuerySnapshot> get waitingOrdersEmployee {
+    return _assetsCollection
+        .where('assignedEmployeesIds', arrayContains: AuthenticationService.uid)
+        .where('waitingProducts', isNotEqualTo: null)
+        .snapshots();
+  }
+
+  Future<void> updateDoc(String aid, Map<String, dynamic> data) async =>
       _assetsCollection.doc(aid).update(data);
 
   Future<void> removeDoc(String aid) async =>

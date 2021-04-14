@@ -1,7 +1,7 @@
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/services/authentication_service.dart';
 
-import 'order_product_model.dart';
+import 'products/order_product_model.dart';
 
 class OrderItemModel {
   OrderStatus status = OrderStatus.WAITING;
@@ -66,11 +66,22 @@ class OrderItemModel {
     int prepareTime = 0;
     try {
       this.products.forEach((product) {
-        prepareTime += product.count * product.prepareTime;
+        prepareTime +=
+            product.extraPrepareTime + (product.count * product.prepareTime);
       });
     } catch (e) {
       throw e;
     }
     return prepareTime;
   }
+
+
+  OrderProductModel getProductByPid(String pid) {
+    return this
+        .products
+        .firstWhere((element) => element.pid == pid, orElse: () => null);
+  }
+
+
+
 }

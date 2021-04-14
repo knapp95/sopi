@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:sopi/common/scripts.dart';
+import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 
@@ -30,18 +33,28 @@ class OrderService {
         .update({'status': OrderStatus.PROCESSING.toString()});
   }
 
+  void updateOrder(String oid, OrderItemModel order) {
+    try {
+      final data = order.toJson();
+      _ordersCollection.doc(oid).update(data);
+      showBottomNotification(
+        Get.context,
+        GenericResponseModel('Order update successfully.'),
+      );
+    } catch (e) {
+      throw e;
+    }
+  }
 
   Future<int> getNextHumanNumberForOrder() async {
     int humanNumber = 1;
     QuerySnapshot query =
+        await _ordersCollection.orderBy('humanNumber').limitToLast(1).get();
 
-    await _ordersCollection.orderBy('humanNumber').limitToLast(1).get();
     /// After 99 order's increment's is reset
     if (query.docs.isNotEmpty && query.docs.first['humanNumber'] < 99) {
       humanNumber = query.docs.first['humanNumber'] + 1;
     }
     return humanNumber;
   }
-
-
 }

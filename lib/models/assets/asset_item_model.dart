@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
+import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/assets/asset_service.dart';
+import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/services/users/user_service.dart';
 
 class AssetItemModel {
+  final _orderService = OrderService.singleton;
   final _userService = UserService.singleton;
   final _assetService = AssetService.singleton;
   String aid;
@@ -39,35 +43,66 @@ class AssetItemModel {
     }
   }
 
+  /// CALLING WHEN CLIENT ORDERED A NEW ORDER
   Future<void> addProduct(String pid, String oid, int totalPrepareTime) async {
     AssetProductModel assetProductModel =
         AssetProductModel(pid, oid, totalPrepareTime);
     this.processingProduct == null
         ? this.updateProcessingProduct(assetProductModel)
-        : this.updateWaitingProducts(assetProductModel);
+        : this.addWaitingProduct(assetProductModel);
+  }
+
+  /// CALLING WHEN EMPLOYEE SET ACTUAL PREPARE PRODUCT AS COMPLETED
+  Future<Null> completeProcessingProduct() async {
+    final AssetProductModel firstWaitingProduct =
+        await this.getFirstWaitingProductForProcessing();
+
+    firstWaitingProduct != null
+        ? this.updateProcessingProduct(firstWaitingProduct)
+        : this.removeProcessingProduct();
+  }
+
+  Future<void> removeProcessingProduct() async {
+    this.processingProduct = null;
+    final data = {'processingProduct': FieldValue.delete()};
+    await _assetService.updateDoc(this.aid, data);
   }
 
   Future<void> updateProcessingProduct(
       AssetProductModel assetProductModel) async {
     this.processingProduct = assetProductModel;
-    final data = {'processingProduct': this.processingProduct.toJson()};
+    final oid = assetProductModel.oid;
+    final pid = assetProductModel.pid;
+
+    OrderItemModel order = await _orderService.getOrderById(oid);
+
+    OrderProductModel orderProductModel = order.getProductByPid(pid);
+    orderProductModel.startProcessingDate = DateTime.now();
+
+    _orderService.updateOrder(oid, order);
+
+    final data = {
+      'processingProduct': this.processingProduct.toJson(),
+    };
     await _assetService.updateDoc(this.aid, data);
   }
 
-  /// Add product to waiting queque, sort by totalPrepareTime and set in db
-  Future<void> updateWaitingProducts(
-      AssetProductModel assetProductModel) async {
-    this.waitingProducts.add(assetProductModel);
-    this
-        .waitingProducts
-        .sort((a, b) => a.totalPrepareTime.compareTo(b.totalPrepareTime));
+  Future<AssetProductModel> getFirstWaitingProductForProcessing() async {
+    AssetProductModel firstWaiting;
 
-    List<dynamic> waitingProductsJson = [];
-    for (AssetProductModel assetProduct in this.waitingProducts) {
-      waitingProductsJson.add(assetProduct.toJson());
+    if (this.waitingProducts.isNotEmpty) {
+      firstWaiting = this.waitingProducts.first;
+      this.waitingProducts.removeAt(0);
+      await this.updateWaitingProducts();
     }
-    final data = {'waitingProducts': waitingProductsJson};
-    await _assetService.updateDoc(this.aid, data);
+    return firstWaiting;
+  }
+
+  /// Add product to waiting queque, sort by totalPrepareTime and set in db
+  Future<void> addWaitingProduct(AssetProductModel assetProductModel) async {
+    this.waitingProducts.add(assetProductModel);
+    await this.sortWaitingProducts();
+    await this.updateWaitingProducts();
   }
 
   Future<Null> setAssignedEmployees(List<String> assignedEmployeesIds) async {
@@ -78,6 +113,21 @@ class AssetItemModel {
       assignedEmployees.add(UserModel.fromJson(data));
     }
     this.assignedEmployees = assignedEmployees;
+  }
+
+  Future<Null> sortWaitingProducts() async {
+    this
+        .waitingProducts
+        .sort((a, b) => a.totalPrepareTime.compareTo(b.totalPrepareTime));
+  }
+
+  Future<void> updateWaitingProducts() async {
+    List<dynamic> waitingProductsJson = [];
+    for (AssetProductModel assetProduct in this.waitingProducts) {
+      waitingProductsJson.add(assetProduct.toJson());
+    }
+    final data = {'waitingProducts': waitingProductsJson};
+    await _assetService.updateDoc(this.aid, data);
   }
 
   Future<Null> updateAssignedEmployeesIds() async {
@@ -97,5 +147,4 @@ class AssetItemModel {
     this.assignedEmployees.removeWhere((employee) => employee.uid == id);
     this.updateAssignedEmployeesIds();
   }
-
 }

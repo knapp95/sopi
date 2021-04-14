@@ -27,25 +27,34 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
   bool _passwordVisible = false;
 
   void _submit(BuildContext context) async {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
+    /// TODO comment for test
+    // if (!_formKey.currentState.validate()) {
+    //   return;
+    // }
     _formKey.currentState.save();
     GenericResponseModel responseMessage;
     switch (_authMode) {
       case AuthMode.singIn:
         {
           responseMessage = await context.read<AuthenticationService>().signIn(
-                email: 'employee@wp.pl',
-                password: 'employee123',
+                email: 'client@wp.pl',
+                password: 'client123',
               );
+          // responseMessage = await context.read<AuthenticationService>().signIn(
+          //   email: 'kamil@wp.pl',
+          //   password: 'kamil123',
+          // );
+          // responseMessage = await context.read<AuthenticationService>().signIn(
+          //   email: 'manager@wp.pl',
+          //   password: 'manager123',
+          // );
         }
         break;
       case AuthMode.singUp:
         {
           if (_confirmPasswordController.text != _passwordController.text) {
             responseMessage =
-                GenericResponseModel("The password is not the same", false);
+                GenericResponseModel("The password is not the same", correct: false);
           } else {
             responseMessage =
                 await context.read<AuthenticationService>().signUp(

@@ -20,6 +20,21 @@ class ProductsModel with ChangeNotifier {
     ProductTypeModel(ProductType.OTHER, 'Other'),
   ];
 
+  static List<ProductTypeModel> get availableProductsTypes =>
+      ProductsModel.types
+          .where((element) => element.type != ProductType.SPECIAL)
+          .toList();
+
+  static List<GenericItemModel> get availableProductsTypesGeneric {
+    List<GenericItemModel> availableProductsTypesGeneric = [];
+
+    availableProductsTypes.forEach((productType) =>
+        availableProductsTypesGeneric.add(GenericItemModel(
+            id: productType.type.toString(), name: productType.name)));
+
+    return availableProductsTypesGeneric;
+  }
+
   static String getTypeName(ProductType type) {
     return types.firstWhere((product) => product.type == type).name;
   }
@@ -60,5 +75,4 @@ class ProductsModel with ChangeNotifier {
     productsByType.sort((a, b) => a.price?.compareTo(b.price));
     return productsByType;
   }
-
 }

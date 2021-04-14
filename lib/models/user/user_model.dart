@@ -25,7 +25,7 @@ class UserModel with ChangeNotifier {
     this.profilePhoto = data['profilePhoto'];
   }
 
-  Future<void> getUserTypeAccountFromFirebase() async {
+  Future<Null> getUserTypeAccountFromFirebase() async {
     try {
       final typeAccountData = await _userService.getUserTypeAccount();
       this.typeAccount = getUserTypeFromString(typeAccountData);

@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 showScaleDialog(Widget dialog) {
-  showGeneralDialog(
+  return showGeneralDialog(
     transitionBuilder: (context, a1, a2, widget) {
       return Transform.scale(
         scale: a1.value,

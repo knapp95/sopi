@@ -20,9 +20,9 @@ class AuthenticationService {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      return GenericResponseModel("Signed in", true);
+      return GenericResponseModel("Signed in");
     } on FirebaseAuthException catch (e) {
-      return GenericResponseModel(e.message, false);
+      return GenericResponseModel(e.message, correct: false);
     }
   }
 
@@ -32,19 +32,18 @@ class AuthenticationService {
           email: email, password: password);
       final uid = _firebaseAuth.currentUser.uid;
       _userService.addUser(uid);
-      return GenericResponseModel("Signed up", false);
+      return GenericResponseModel("Signed up");
     } on FirebaseAuthException catch (e) {
-      return GenericResponseModel(e.message, false);
+      return GenericResponseModel(e.message, correct: false);
     }
   }
 
   Future<GenericResponseModel> resetPassword({String email}) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
-
-      return GenericResponseModel("Mail is sended", false);
+      return GenericResponseModel("Mail is sended");
     } on FirebaseAuthException catch (e) {
-      return GenericResponseModel(e.message, false);
+      return GenericResponseModel(e.message, correct: false);
     }
   }
 }
