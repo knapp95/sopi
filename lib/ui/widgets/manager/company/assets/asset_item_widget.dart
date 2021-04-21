@@ -4,7 +4,7 @@ import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
 import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'assign/employee/asset_employee_item_widget.dart';
 import 'assign/employee/asset_employee_unassigned_widget.dart';
 

@@ -1,4 +1,4 @@
-enum OrderStatus { WAITING, PROCESSING, COMPLETED, CANCELLED }
+enum OrderStatus { WAITING, PROCESSING, COMPLETED, RECEIVED, CANCELLED }
 
 OrderStatus getOrderStatusFromString(String statusAsString) {
   for (OrderStatus element in OrderStatus.values) {

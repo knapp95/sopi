@@ -9,8 +9,8 @@ import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:get/get.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/common/images/image_source_sheet.dart';
 
 class ProductItemDialog extends StatefulWidget {

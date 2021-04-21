@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/user/user_model.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 import 'asset_employee_item_widget.dart';
 
 class AssetEmployeeListWidget extends StatelessWidget {
   final List<UserModel> employees;
   final GlobalKey _draggableKey = GlobalKey();
+
   AssetEmployeeListWidget(this.employees);
 
   @override

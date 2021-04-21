@@ -81,7 +81,6 @@ class _ProductsScreenState extends State<ProductWidget>
             ? _buildSearchSection()
             : Text(
                 'Thomas, eat something tasty',
-                style: TextStyle(color: Colors.white),
               ),
         actions: [
           IconButton(

@@ -19,12 +19,12 @@ class OrderFactory {
 
   static OrderFactory get singleton => _singleton;
 
-  Future<int> createOrder(List<OrderProductModel> products) async {
+  Future<int> createOrder(List<OrderProductModel> products, double summaryPrice) async {
     final humanNumber = await _orderService.getNextHumanNumberForOrder();
     OrderItemModel newOrder = OrderItemModel.fromBasket(
         products: products,
         createDate: DateTime.now(),
-        humanNumber: humanNumber);
+        humanNumber: humanNumber, totalPrice: summaryPrice);
     final document = _orderService.getDoc();
     final data = newOrder.toJson();
     document.set(data);
@@ -53,5 +53,8 @@ class OrderFactory {
 
   }
 
-  void calculateProcess() {}
+
+
+
+
 }

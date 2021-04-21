@@ -5,6 +5,8 @@ import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 
+import '../authentication_service.dart';
+
 class OrderService {
   final _ordersCollection = FirebaseFirestore.instance.collection('orders');
   static final OrderService _singleton = OrderService._internal();
@@ -44,6 +46,20 @@ class OrderService {
     } catch (e) {
       throw e;
     }
+  }
+
+  Stream<QuerySnapshot> get processingOrderClient {
+    return _ordersCollection
+        .where('clientID', isEqualTo: AuthenticationService.uid)
+        .where('status', isNotEqualTo: OrderStatus.RECEIVED.toString())
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> get pastOrdersClient {
+    return _ordersCollection
+        .where('clientID', isEqualTo: AuthenticationService.uid)
+        .where('status', isEqualTo: OrderStatus.RECEIVED.toString())
+        .snapshots();
   }
 
   Future<int> getNextHumanNumberForOrder() async {

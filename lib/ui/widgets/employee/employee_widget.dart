@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/widgets/common/account/account_widget.dart';
-import 'package:sopi/ui/widgets/employee/orders/order_widget.dart';
+import 'package:sopi/ui/widgets/employee/orders/employee_order_widget.dart';
 
 class EmployeeWidget extends StatefulWidget {
   @override
@@ -48,7 +48,7 @@ class _EmployeeWidgetState extends State<EmployeeWidget> {
 
   Widget _buildPageView() {
     List<Widget> children = [
-      OrderWidget(),
+      EmployeeOrderWidget(),
       AccountWidget()
     ];
     return PageView(

@@ -3,22 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 
-class OrderDialogAddExtraTimeWidget extends StatefulWidget {
+class EmployeeOrderDialogAddExtraTimeWidget extends StatefulWidget {
   final int initialTime;
   final int extraTime;
   final DateTime startOrderTime;
 
-  OrderDialogAddExtraTimeWidget(this.initialTime, this.extraTime, this.startOrderTime);
+  EmployeeOrderDialogAddExtraTimeWidget(
+      this.initialTime, this.extraTime, this.startOrderTime);
 
   @override
-  _OrderDialogAddExtraTimeWidgetState createState() =>
-      _OrderDialogAddExtraTimeWidgetState();
+  _EmployeeOrderDialogAddExtraTimeWidgetState createState() =>
+      _EmployeeOrderDialogAddExtraTimeWidgetState();
 }
 
-class _OrderDialogAddExtraTimeWidgetState
-    extends State<OrderDialogAddExtraTimeWidget> {
+class _EmployeeOrderDialogAddExtraTimeWidgetState
+    extends State<EmployeeOrderDialogAddExtraTimeWidget> {
   Duration _timePrepare;
   Timer _timer;
   int _extraTime;
@@ -72,8 +73,7 @@ class _OrderDialogAddExtraTimeWidgetState
     return colorForOrderTime;
   }
 
-  Color get colorForExtraTime =>
-      _extraTime > 0 ? Colors.red : primaryColor;
+  Color get colorForExtraTime => _extraTime > 0 ? Colors.red : primaryColor;
 
   Future<void> _submit() async {
     Get.back(result: _extraTime);
@@ -168,9 +168,7 @@ class _OrderDialogAddExtraTimeWidgetState
                   ),
                   if (_extraTime != 0)
                     Text(
-                      _extraTime > 0
-                          ? '+$_extraTime'
-                          : '-${_extraTime.abs()}',
+                      _extraTime > 0 ? '+$_extraTime' : '-${_extraTime.abs()}',
                       style: TextStyle(
                         color: colorForExtraTime,
                         fontWeight: FontWeight.bold,

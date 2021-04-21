@@ -7,27 +7,27 @@ import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/services/products/product_service.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 
-class OrderWaitingWidget extends StatefulWidget {
+class EmployeeOrderWaitingItemWidget extends StatefulWidget {
   final AssetProductModel assetProductModel;
 
-  const OrderWaitingWidget(this.assetProductModel, key) : super(key: key);
+  const EmployeeOrderWaitingItemWidget(this.assetProductModel, key) : super(key: key);
 
   @override
-  _OrderWaitingWidgetState createState() => _OrderWaitingWidgetState(
+  _EmployeeOrderWaitingItemWidgetState createState() => _EmployeeOrderWaitingItemWidgetState(
       this.assetProductModel.oid, this.assetProductModel.pid);
 }
 
-class _OrderWaitingWidgetState extends State<OrderWaitingWidget> {
+class _EmployeeOrderWaitingItemWidgetState extends State<EmployeeOrderWaitingItemWidget> {
   final _orderService = OrderService.singleton;
   final String oid;
   final String pid;
   Timer _timer;
   Duration _timeWaiting;
 
-  _OrderWaitingWidgetState(this.oid, this.pid);
+  _EmployeeOrderWaitingItemWidgetState(this.oid, this.pid);
 
   OrderItemModel _orderItemModel;
   ProductItemModel _productItemModel;

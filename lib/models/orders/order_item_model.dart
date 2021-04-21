@@ -11,11 +11,13 @@ class OrderItemModel {
   int currentPositionInQueue;
   int humanNumber;
   List<OrderProductModel> products = [];
+  double totalPrice;
 
   OrderItemModel.fromBasket({
     this.createDate,
     this.humanNumber,
     this.products,
+    this.totalPrice,
   }) {
     this.clientID = AuthenticationService.uid;
   }
@@ -36,6 +38,7 @@ class OrderItemModel {
         }
         this.products = productsTmp;
       }
+      this.totalPrice = data['totalPrice']?.toDouble();
     } catch (e) {
       throw e;
     }
@@ -56,6 +59,7 @@ class OrderItemModel {
         }
         data['products'] = productsTmp;
       }
+      data['totalPrice'] = this.totalPrice;
     } catch (e) {
       throw e;
     }
@@ -75,13 +79,24 @@ class OrderItemModel {
     return prepareTime;
   }
 
-
   OrderProductModel getProductByPid(String pid) {
     return this
         .products
         .firstWhere((element) => element.pid == pid, orElse: () => null);
   }
 
-
-
+  String get statusDisplay {
+    switch (this.status) {
+      case OrderStatus.WAITING:
+        return 'Order waiting to start';
+      case OrderStatus.PROCESSING:
+        return 'Order is processing';
+      case OrderStatus.COMPLETED:
+        return 'Order is complete';
+      case OrderStatus.CANCELLED:
+        return 'Order is cancelled';
+      default:
+        return 'Almost done';
+    }
+  }
 }

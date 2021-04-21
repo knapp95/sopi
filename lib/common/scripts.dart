@@ -32,7 +32,8 @@ bool isNullOrEmpty(dynamic object) {
 }
 
 String fixedDouble(double value, [fractionDigits = 2]) {
-  return value?.toStringAsFixed(fractionDigits);
+  String fixedDouble = value?.toStringAsFixed(fractionDigits);
+  return fixedDouble ?? '0,00';
 }
 
 String formatDateToString(DateTime date, {format = 'yyyy-MM-dd'}) {
@@ -43,11 +44,11 @@ String formatDateToString(DateTime date, {format = 'yyyy-MM-dd'}) {
   return result;
 }
 
-
 String durationInMinutes(Duration duration) {
   if (duration == null) return '';
   String twoDigits(int n) => n.toString().padLeft(2, "0");
-  String twoDigitMinutes = twoDigits((duration.inHours * 60) + duration.inMinutes.remainder(60));
+  String twoDigitMinutes =
+      twoDigits((duration.inHours * 60) + duration.inMinutes.remainder(60));
   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-  return'$twoDigitMinutes:$twoDigitSeconds';
+  return '$twoDigitMinutes:$twoDigitSeconds';
 }

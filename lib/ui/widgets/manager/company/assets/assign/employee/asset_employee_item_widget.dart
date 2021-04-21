@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/user/user_model.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class AssetEmployeeWidget extends StatelessWidget {
   final UserModel employee;

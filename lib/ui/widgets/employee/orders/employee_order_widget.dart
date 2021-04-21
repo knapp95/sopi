@@ -4,18 +4,18 @@ import 'package:sopi/services/assets/asset_service.dart';
 import 'package:sopi/ui/shared/systems_parameters.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sopi/ui/widgets/employee/orders/empty/order_empty_processing_widget.dart';
-import 'package:sopi/ui/widgets/employee/orders/order_processing_widget.dart';
-import 'package:sopi/ui/widgets/employee/orders/order_waiting_widget.dart';
+import 'package:sopi/ui/widgets/employee/orders/processing/employee_order_processing_empty_widget.dart';
+import 'package:sopi/ui/widgets/employee/orders/processing/employee_order_processing_item_widget.dart';
+import 'package:sopi/ui/widgets/employee/orders/waiting/employee_order_waiting_item_widget.dart';
 import '../../common/loadingDataInProgress/loading_data_in_progress_widget.dart';
-import 'empty/order_empty_waiting_widget.dart';
+import 'waiting/employee_order_waiting_empty_widget.dart';
 
-class OrderWidget extends StatefulWidget {
+class EmployeeOrderWidget extends StatefulWidget {
   @override
-  _OrderWidgetState createState() => _OrderWidgetState();
+  _EmployeeOrderWidgetState createState() => _EmployeeOrderWidgetState();
 }
 
-class _OrderWidgetState extends State<OrderWidget> {
+class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
   final _assetService = AssetService.singleton;
 
   @override
@@ -63,14 +63,14 @@ class _OrderWidgetState extends State<OrderWidget> {
       stream: _assetService.processingOrderEmployee,
       builder: (ctx, snapshot) {
         if (!snapshot.hasData) return LoadingDataInProgressWidget();
-        if (snapshot.data.docs.isEmpty) return OrderEmptyProcessingWidget();
+        if (snapshot.data.docs.isEmpty) return EmployeeOrderProcessingEmptyWidget();
 
         final Map<String, dynamic> data =
             snapshot.data.docs[0].get('processingProduct');
         AssetProductModel assetProduct = AssetProductModel.fromJson(data);
         return Expanded(
             child:
-                OrderProcessingWidget(assetProduct, ObjectKey(assetProduct)));
+                EmployeeOrderProcessingItemWidget(assetProduct, ObjectKey(assetProduct)));
       },
     );
   }
@@ -81,7 +81,7 @@ class _OrderWidgetState extends State<OrderWidget> {
       builder: (ctx, snapshot) {
         if (!snapshot.hasData) return LoadingDataInProgressWidget();
         List<AssetProductModel> assetProducts = [];
-        if (snapshot.data.docs.isEmpty) return OrderEmptyWaitingWidget();
+        if (snapshot.data.docs.isEmpty) return EmployeeOrderWaitingEmptyWidget();
 
         for (QueryDocumentSnapshot assetDocSnapshot
             in snapshot.data.docs.toList()) {
@@ -95,12 +95,12 @@ class _OrderWidgetState extends State<OrderWidget> {
         }
         return Expanded(
           child: assetProducts.isEmpty
-              ? OrderEmptyWaitingWidget()
+              ? EmployeeOrderWaitingEmptyWidget()
               : ListView.builder(
                   itemCount: assetProducts.length,
                   itemBuilder: (_, int index) {
                     AssetProductModel assetProduct = assetProducts[index];
-                    return OrderWaitingWidget(
+                    return EmployeeOrderWaitingItemWidget(
                       assetProduct,
                       ObjectKey(assetProduct),
                     );

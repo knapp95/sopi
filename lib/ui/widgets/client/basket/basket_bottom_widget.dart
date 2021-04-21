@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sopi/common/scripts.dart';
 import 'package:sopi/factory/order_factory.dart';
 import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
-
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'dialogs/basket_successAdd_dialog.dart';
 
 class BasketBottomWidget extends StatelessWidget {
@@ -16,7 +16,7 @@ class BasketBottomWidget extends StatelessWidget {
 
   Future<Null> _confirmOrder() async {
     /// FEATURE'S PAYMENT'S
-    final orderNumber = await _orderFactory.createOrder(_basket.productsOrder);
+    final orderNumber = await _orderFactory.createOrder(_basket.productsOrder, _basket.summaryPrice);
     _basket.clearBasket();
     Get.back();
 
@@ -61,7 +61,7 @@ class BasketBottomWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
-                        '${_basket.displaySummaryPrice}',
+                        '${fixedDouble((_basket.summaryPrice))}',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     )),

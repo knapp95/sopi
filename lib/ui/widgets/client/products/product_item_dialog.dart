@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
 import 'package:get/get.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/client/basket/basket_button_widget.dart';
 
 class ProductItemDialog extends StatefulWidget {

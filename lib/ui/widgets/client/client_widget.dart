@@ -9,7 +9,7 @@ import 'package:sopi/ui/widgets/client/basket/basket_button_widget.dart';
 import 'package:sopi/ui/widgets/common/account/account_widget.dart';
 import 'package:sopi/ui/widgets/common/products/product_widget.dart';
 import 'basket/basket_bottom_widget.dart';
-import 'orders/order_widget.dart';
+import 'orders/client_order_widget.dart';
 
 class ClientWidget extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class ClientWidget extends StatefulWidget {
 
 class _ClientWidgetState extends State<ClientWidget> {
   PageController _pageController = PageController(
-    initialPage: 0,
+    initialPage: 1, ///TMP
     keepPage: true,
   );
   BasketModel _basket;
@@ -72,7 +72,7 @@ class _ClientWidgetState extends State<ClientWidget> {
 
   Widget _buildPageView() {
     List<Widget> children = [];
-    List<Widget> widgets = [ProductWidget(), OrderWidget(), AccountWidget()];
+    List<Widget> widgets = [ProductWidget(), ClientOrderWidget(), AccountWidget()];
 
     /// If basket no empty add bottom widget with basket info
     if (isNullOrEmpty(_basket.products)) {
@@ -85,7 +85,7 @@ class _ClientWidgetState extends State<ClientWidget> {
               Expanded(child: element),
               BasketButtonWidget(
                 'Display basket',
-                '\$${_basket.displaySummaryPrice}',
+                '\$${fixedDouble(_basket.summaryPrice)}',
                 onPressedHandler: _displaySummaryBasket,
                 color: primaryColor,
                 backgroundColor: Colors.white,

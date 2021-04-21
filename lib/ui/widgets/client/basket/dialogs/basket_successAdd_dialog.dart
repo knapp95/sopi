@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class BasketSuccessAddDialog extends StatelessWidget {
   final int orderNumber;
@@ -19,7 +19,10 @@ class BasketSuccessAddDialog extends StatelessWidget {
           Lottie.asset('assets/animations/success.json', repeat: false),
           Text(
             'Your\'s order #$orderNumber',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize20, color: primaryColor),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: fontSize20,
+                color: primaryColor),
           ),
           backDialogButton,
         ],

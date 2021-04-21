@@ -5,7 +5,7 @@ import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/services/authentication_service.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class AuthorizationWidget extends StatefulWidget {
   @override
@@ -31,30 +31,33 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
     // if (!_formKey.currentState.validate()) {
     //   return;
     // }
+
     _formKey.currentState.save();
     GenericResponseModel responseMessage;
     switch (_authMode) {
       case AuthMode.singIn:
         {
-          responseMessage = await context.read<AuthenticationService>().signIn(
+          await context.read<AuthenticationService>().signIn(
                 email: 'client@wp.pl',
                 password: 'client123',
               );
+          responseMessage = await context.read<AuthenticationService>().signIn(
+                email: 'kamil@wp.pl',
+                password: 'kamil123',
+              );
           // responseMessage = await context.read<AuthenticationService>().signIn(
-          //   email: 'kamil@wp.pl',
-          //   password: 'kamil123',
-          // );
-          // responseMessage = await context.read<AuthenticationService>().signIn(
-          //   email: 'manager@wp.pl',
-          //   password: 'manager123',
-          // );
+          //       email: 'manager@wp.pl',
+          //       password: 'manager123',
+          //     );
         }
         break;
       case AuthMode.singUp:
         {
           if (_confirmPasswordController.text != _passwordController.text) {
-            responseMessage =
-                GenericResponseModel("The password is not the same", correct: false);
+            responseMessage = GenericResponseModel(
+              "The password is not the same",
+              correct: false,
+            );
           } else {
             responseMessage =
                 await context.read<AuthenticationService>().signUp(
@@ -73,7 +76,8 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
         }
         break;
     }
-    showBottomNotification(context, responseMessage);
+    if (responseMessage != null)
+      showBottomNotification(context, responseMessage);
   }
 
   bool get _isSingInShow {

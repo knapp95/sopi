@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 
-class OrderEmptyProcessingWidget extends StatelessWidget {
+class EmployeeOrderProcessingEmptyWidget extends StatelessWidget {
   final IconData icon;
   final String statusLabel;
 
-  OrderEmptyProcessingWidget({
+  EmployeeOrderProcessingEmptyWidget({
     this.icon = Icons.calendar_today,
     this.statusLabel = 'No processing order',
   });

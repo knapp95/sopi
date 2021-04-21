@@ -11,22 +11,22 @@ import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/services/products/product_service.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/common/dialogs/confirm_dialog.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
-import 'package:sopi/ui/widgets/employee/orders/dialogs/order_dialog_addExtraTime_widget.dart';
+import 'package:sopi/ui/widgets/employee/orders/dialogs/employee_order_dialog_addExtraTime_widget.dart';
 
-class OrderProcessingWidget extends StatefulWidget {
+class EmployeeOrderProcessingItemWidget extends StatefulWidget {
   final AssetProductModel assetProductModel;
 
-  const OrderProcessingWidget(this.assetProductModel, key) : super(key: key);
+  const EmployeeOrderProcessingItemWidget(this.assetProductModel, key) : super(key: key);
 
   @override
-  _OrderProcessingWidgetState createState() => _OrderProcessingWidgetState(
+  _EmployeeOrderProcessingItemWidgetState createState() => _EmployeeOrderProcessingItemWidgetState(
       this.assetProductModel.oid, this.assetProductModel.pid);
 }
 
-class _OrderProcessingWidgetState extends State<OrderProcessingWidget> {
+class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcessingItemWidget> {
   final OrderFactory _orderFactory = OrderFactory.singleton;
   final _orderService = OrderService.singleton;
   final String oid;
@@ -34,7 +34,7 @@ class _OrderProcessingWidgetState extends State<OrderProcessingWidget> {
   Duration _timePrepare;
   Timer _timer;
 
-  _OrderProcessingWidgetState(this.oid, this.pid);
+  _EmployeeOrderProcessingItemWidgetState(this.oid, this.pid);
 
   OrderItemModel _orderItemModel;
   OrderProductModel _orderProductModel;
@@ -100,7 +100,7 @@ class _OrderProcessingWidgetState extends State<OrderProcessingWidget> {
 
   void _addTimeToOrder() async {
     final result = await showScaleDialog(
-      OrderDialogAddExtraTimeWidget(_orderProductModel.prepareTime,
+      EmployeeOrderDialogAddExtraTimeWidget(_orderProductModel.prepareTime,
           _orderProductModel.extraPrepareTime, _orderItemModel.createDate),
     );
     if (result != null) {

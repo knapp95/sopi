@@ -18,7 +18,6 @@ class AssetService {
   }
 
   Stream<QuerySnapshot> get processingOrderEmployee {
-    AuthenticationService.uid;
     return _assetsCollection
         .where('assignedEmployeesIds', arrayContains: AuthenticationService.uid)
         .orderBy('processingProduct')

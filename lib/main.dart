@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get.dart';
 import 'package:sopi/home_page_wrapper.dart';
 import 'package:sopi/models/assets/assets_model.dart';
 import 'package:sopi/models/basket/basket_model.dart';
@@ -9,6 +9,7 @@ import 'package:sopi/services/authentication_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sopi/ui/shared/styles/theme_data_style.dart';
 import 'package:sopi/ui/widgets/authorization/authorization_widget.dart';
 import 'models/products/products_model.dart';
 
@@ -47,6 +48,8 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: GetMaterialApp(
+        navigatorKey: Get.addKey(GlobalKey()),
+        theme: themeDataStyle,
         debugShowCheckedModeBanner: false,
         home: AuthenticationWrapper(),
       ),

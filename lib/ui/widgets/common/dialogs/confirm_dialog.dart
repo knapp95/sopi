@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class ConfirmDialog extends StatelessWidget {
   final String content;
+
   ConfirmDialog(this.content);
 
   Future<void> _submit() async {

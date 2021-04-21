@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'package:sopi/common/scripts.dart';
-import 'package:sopi/ui/shared/shared_styles.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class OrderItemWidget extends StatelessWidget {
   final OrderItemModel order;
@@ -46,7 +46,6 @@ class OrderItemWidget extends StatelessWidget {
                 Expanded(child: Text('${order.prepareTime}')),
               ],
             ),
-
           ],
         ),
       ),
@@ -84,4 +83,3 @@ class OrderItemWidget extends StatelessWidget {
           ];
   }
 }
-

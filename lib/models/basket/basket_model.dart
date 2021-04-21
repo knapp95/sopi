@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 
@@ -10,7 +9,7 @@ class BasketModel with ChangeNotifier {
     notifyListeners();
   }
 
-  String get displaySummaryPrice {
+  double get summaryPrice {
     double summaryPrice = 0;
     try {
       this.products.forEach((_, product) {
@@ -19,8 +18,9 @@ class BasketModel with ChangeNotifier {
     } catch (e) {
       throw e;
     }
-    return fixedDouble(summaryPrice);
+    return summaryPrice;
   }
+
 
   void clearBasket() {
     this.products = {};
