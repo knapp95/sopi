@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/widgets/common/account/account_widget.dart';
-import 'package:sopi/ui/widgets/manager/company/company_widget.dart';
-import 'package:sopi/ui/widgets/manager/orders/order_widget.dart';
+import 'package:sopi/ui/widgets/manager/company/manager_company_widget.dart';
+import 'package:sopi/ui/widgets/manager/orders/manager_order_widget.dart';
 import 'package:sopi/ui/widgets/manager/statistics/statistics_widget.dart';
 
 class ManagerWidget extends StatefulWidget {
@@ -50,8 +50,8 @@ class _ManagerWidgetState extends State<ManagerWidget> {
 
   Widget _buildPageView() {
     List<Widget> children = [
-      OrderWidget(),
-      CompanyWidget(),
+      ManagerOrderWidget(),
+      ManagerCompanyWidget(),
       StatisticsWidget(),
       AccountWidget()
     ];

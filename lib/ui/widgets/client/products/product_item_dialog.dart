@@ -43,6 +43,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
 
   @override
   Widget build(BuildContext context) {
+    print(_product.count);
     return Dialog(
       shape: shapeDialog,
       elevation: defaultElevation,
@@ -56,20 +57,20 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
                     'assets/images/no_photo.png',
                   ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListTile(
-                    title: Text(_product.name),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(_product.description),
-                    ),
+                  Text(_product.name),
+                  Text(
+                    _product.description,
+                    style: TextStyle(color: Colors.grey),
                   ),
-                  _formFactory.buildTouchSpinField(
+                  formSizedBoxHeight,
+                  _formFactory.buildNumberPicker(
                     fieldName: 'count',
                     max: 10,
-                    initialValue: _product.count,
+                    value: _product.count,
                     onChangedHandler: (_) => setState(() {}),
                   ),
                   _formFactory.buildTextField(

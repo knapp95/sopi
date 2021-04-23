@@ -18,7 +18,7 @@ class ClientWidget extends StatefulWidget {
 
 class _ClientWidgetState extends State<ClientWidget> {
   PageController _pageController = PageController(
-    initialPage: 1, ///TMP
+    initialPage: 0,
     keepPage: true,
   );
   BasketModel _basket;
