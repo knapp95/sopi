@@ -9,7 +9,7 @@ abstract class PrimitiveProductItemModel {
 
   bool get isVeg => this.type == ProductType.VEGE;
 
-  PrimitiveProductItemModel({this.pid});
+  PrimitiveProductItemModel({this.pid, this.name});
 
   PrimitiveProductItemModel.fromJson(Map<String, dynamic> data) {
     try {

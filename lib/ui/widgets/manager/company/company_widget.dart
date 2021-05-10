@@ -11,6 +11,7 @@ class CompanyWidget extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+
           flexibleSpace: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

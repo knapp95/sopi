@@ -37,7 +37,7 @@ class OrderFactory {
     newOrder.products.forEach((product) {
       AssetItemModel assignedAsset =
           _assets.findAssetByProductType(product.type);
-      assignedAsset.addProduct(product.pid, oid, product.totalPrepareTime);
+      assignedAsset.addProduct(product.name, product.pid, oid, product.totalPrepareTime);
       if (assignedAsset.processingProduct.oid == oid) {
         _orderService.updateOrderStatusToProcessing(oid);
       }

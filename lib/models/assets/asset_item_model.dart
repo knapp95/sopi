@@ -44,9 +44,9 @@ class AssetItemModel {
   }
 
   /// CALLING WHEN CLIENT ORDERED A NEW ORDER
-  Future<void> addProduct(String pid, String oid, int totalPrepareTime) async {
+  Future<void> addProduct(String name, String pid, String oid, int totalPrepareTime) async {
     AssetProductModel assetProductModel =
-        AssetProductModel(pid, oid, totalPrepareTime);
+        AssetProductModel(name, pid,  oid, totalPrepareTime);
     this.processingProduct == null
         ? this.updateProcessingProduct(assetProductModel)
         : this.addWaitingProduct(assetProductModel);
