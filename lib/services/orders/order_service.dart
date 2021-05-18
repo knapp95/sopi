@@ -48,6 +48,16 @@ class OrderService {
     }
   }
 
+  Future<void> removeAllOrders() async {
+    final docs = (await _ordersCollection.get())?.docs;
+    if (docs != null) {
+      for (QueryDocumentSnapshot doc in docs) {
+       await doc.reference.delete();
+      }
+    }
+  }
+
+
   Stream<QuerySnapshot> get processingOrderClient {
     return _ordersCollection
         .where('clientID', isEqualTo: AuthenticationService.uid)

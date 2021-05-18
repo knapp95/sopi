@@ -31,6 +31,10 @@ class AssetService {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> get assets {
+    return _assetsCollection.snapshots();
+  }
+
   Future<void> updateDoc(String aid, Map<String, dynamic> data) async =>
       _assetsCollection.doc(aid).update(data);
 
