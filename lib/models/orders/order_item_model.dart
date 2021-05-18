@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/services/authentication_service.dart';
 
@@ -9,6 +12,7 @@ class OrderItemModel {
   String clientID;
   List<String> assignedPerson;
   int currentPositionInQueue;
+  Color color;
   int humanNumber;
   List<OrderProductModel> products = [];
   double totalPrice;
@@ -30,6 +34,7 @@ class OrderItemModel {
 
       this.assignedPerson = data['assignedPerson'];
       this.humanNumber = data['humanNumber'];
+      this.color = Color(data['color']);
       List<dynamic> extractedProducts = data['products'];
       if (extractedProducts != null) {
         List<OrderProductModel> productsTmp = [];
@@ -52,6 +57,7 @@ class OrderItemModel {
       data['clientID'] = this.clientID;
       data['humanNumber'] = this.humanNumber;
       data['prepareTime'] = this.prepareTime;
+      data['color'] = Random().nextInt(0xffffffff);
       if (this.products != null) {
         List<dynamic> productsTmp = [];
         for (OrderProductModel product in this.products) {

@@ -43,7 +43,6 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
 
   @override
   Widget build(BuildContext context) {
-    print(_product.count);
     return Dialog(
       shape: shapeDialog,
       elevation: defaultElevation,
