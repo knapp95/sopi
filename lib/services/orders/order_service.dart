@@ -29,7 +29,7 @@ class OrderService {
     return _ordersCollection.doc(oid);
   }
 
-  void updateOrderStatusToProcessing(oid) {
+  Future<void> updateOrderStatusToProcessing(oid) async {
     _ordersCollection
         .doc(oid)
         .update({'status': OrderStatus.PROCESSING.toString()});

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
+import 'package:sopi/models/assets/asset_timeline_settings.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
@@ -19,6 +20,15 @@ class AssetItemModel {
   List<UserModel> assignedEmployees = [];
   AssetProductModel processingProduct;
   List<AssetProductModel> waitingProducts = [];
+
+  /// Get's only waiting product who startTimeline < product < endTimeline
+  List<AssetProductModel> get availableWaitingProducts {
+    return waitingProducts.where((product) {
+      DateTime productEndDate = product.startProcessingDate.add(Duration(minutes: product.totalPrepareTime));
+      return productEndDate.isAfter(AssetTimelineSettings.availableStartTimeline) && product.startProcessingDate.isBefore(AssetTimelineSettings.availableEndTimeline);
+    }
+    ).toList();
+  }
 
   AssetItemModel.fromJson(Map<String, dynamic> data) {
     try {
@@ -44,12 +54,13 @@ class AssetItemModel {
   }
 
   /// CALLING WHEN CLIENT ORDERED A NEW ORDER
-  Future<void> addProduct(String name, String pid, String oid, int totalPrepareTime) async {
+  Future<void> addProduct(
+      String name, String pid, String oid, int totalPrepareTime) async {
     AssetProductModel assetProductModel =
-        AssetProductModel(name, pid,  oid, totalPrepareTime);
+        AssetProductModel(name, pid, oid, totalPrepareTime);
     this.processingProduct == null
-        ? this.updateProcessingProduct(assetProductModel)
-        : this.addWaitingProduct(assetProductModel);
+        ? await this.updateProcessingProduct(assetProductModel)
+        : await this.addWaitingProduct(assetProductModel);
   }
 
   /// CALLING WHEN EMPLOYEE SET ACTUAL PREPARE PRODUCT AS COMPLETED

@@ -8,6 +8,18 @@ bool containsIgnoreCase(String string1, String string2) {
   return string1?.toLowerCase()?.contains(string2?.toLowerCase());
 }
 
+DateTime get roundingNow {
+  DateTime now = DateTime.now();
+  int minuteTmp = now.minute < 5 ? 0 : 5;
+  return DateTime(
+    now.year,
+    now.month,
+    now.day,
+    now.hour,
+    minuteTmp,
+  );
+}
+
 Future<void> showBottomNotification(
     BuildContext context, GenericResponseModel responseMessage) async {
   try {

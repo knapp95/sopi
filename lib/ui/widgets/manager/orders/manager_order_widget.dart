@@ -18,7 +18,6 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(top: statusBarHeight + 20),
@@ -27,26 +26,30 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
           builder: (ctx, snapshot) {
             if (snapshot.data == null) return LoadingDataInProgressWidget();
             return SingleChildScrollView(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
                 children: [
-                  ManagerOrderTimelineLeft(),
-                  Expanded(
-                    child: Container(
-                      height: 1800,
-                      ///TODO
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: snapshot.data.docs.length,
-                        itemBuilder: (_, int index) {
-                          QueryDocumentSnapshot assetDoc =
-                              snapshot.data.docs[index];
-                          AssetItemModel assetItem =
-                              AssetItemModel.fromJson(assetDoc.data());
-                          return ManagerOrderTimelineRight(assetItem);
-                        },
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ManagerOrderTimelineLeft(),
+                      Expanded(
+                        child: Container(
+                          height: 1800,
+                          ///TODO
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data.docs.length,
+                            itemBuilder: (_, int index) {
+                              QueryDocumentSnapshot assetDoc =
+                                  snapshot.data.docs[index];
+                              AssetItemModel assetItem =
+                                  AssetItemModel.fromJson(assetDoc.data());
+                              return ManagerOrderTimelineRight(assetItem);
+                            },
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),

@@ -34,21 +34,21 @@ class OrderFactory {
     final document = _orderService.getDoc();
     final data = newOrder.toJson();
     document.set(data);
-    this.addNewOrderToProcess(document.id, newOrder);
+    await this.addNewOrderToProcess(document.id, newOrder);
     return humanNumber;
   }
 
   Future<Null> addNewOrderToProcess(String oid, OrderItemModel newOrder) async {
     await _assets.fetchAssets();
-    newOrder.products.forEach((product) {
+    for (OrderProductModel product in newOrder.products) {
       AssetItemModel assignedAsset =
           _assets.findAssetByProductType(product.type);
-      assignedAsset.addProduct(
+      await assignedAsset.addProduct(
           product.name, product.pid, oid, product.totalPrepareTime);
       if (assignedAsset.processingProduct.oid == oid) {
-        _orderService.updateOrderStatusToProcessing(oid);
+        await _orderService.updateOrderStatusToProcessing(oid);
       }
-    });
+    }
   }
 
   Future<Null> completeOrderProduct(
