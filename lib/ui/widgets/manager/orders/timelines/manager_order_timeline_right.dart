@@ -3,7 +3,6 @@ import 'package:sopi/models/assets/asset_item_model.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/assets/asset_timeline_settings.dart';
 import 'package:sopi/models/assets/asset_type_mocked.dart';
-import 'package:sopi/models/assets/assets_model.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
@@ -36,19 +35,18 @@ class ManagerOrderTimelineRight extends StatelessWidget {
 
   double _getEmptySpaceBetweenBlocks(int index) {
     AssetProductModel waitingProduct =
-        assetItem.availableWaitingProducts[index];
+        assetItem.queueProductsTimeline[index];
     if (index == 0) {
       int differenceInMinutes = AssetTimelineSettings.availableStartTimeline
           .difference(waitingProduct.startProcessingDate)
           .inMinutes;
-      print(differenceInMinutes);
-      if (differenceInMinutes > 0) {
+      if (differenceInMinutes < 0) {
         return 0;
       }
       return _getHeightForMinutes(differenceInMinutes);
     } else {
       AssetProductModel earlierProduct =
-          assetItem.availableWaitingProducts[index - 1];
+          assetItem.queueProductsTimeline[index - 1];
       int differenceMinutes = waitingProduct.startProcessingDate
               .difference(earlierProduct.startProcessingDate)
               .inMinutes -
@@ -66,10 +64,10 @@ class ManagerOrderTimelineRight extends StatelessWidget {
       width: 75,
       child: ListView.builder(
         padding: EdgeInsets.zero,
-        itemCount: assetItem.availableWaitingProducts.length,
+        itemCount: assetItem.queueProductsTimeline.length,
         itemBuilder: (_, int index) {
           AssetProductModel waitingProduct =
-              assetItem.availableWaitingProducts[index];
+              assetItem.queueProductsTimeline[index];
           double heightBlock =
               _getHeightForMinutes(waitingProduct.totalPrepareTime);
           if (index == 0) {

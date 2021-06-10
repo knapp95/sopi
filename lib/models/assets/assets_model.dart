@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
 import 'package:flutter/material.dart';
+import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/services/assets/asset_service.dart';
-
-
-
 
 class AssetsModel with ChangeNotifier {
   final _assetService = AssetService.singleton;
@@ -34,8 +32,18 @@ class AssetsModel with ChangeNotifier {
   }
 
   AssetItemModel findAssetByProductType(ProductType productType) {
-    return this.assets.firstWhere((asset) => asset.assignedProductType == productType);
+    return this
+        .assets
+        .firstWhere((asset) => asset.assignedProductType == productType);
   }
 
-
+  static List<AssetProductModel> getAllQueueProductsInAssetsForEmployee(
+      List<QueryDocumentSnapshot> docs) {
+    List<AssetProductModel> queueAllProductsInAssetsForEmployee = [];
+    for (QueryDocumentSnapshot doc in docs) {
+      AssetItemModel assetItemModel = AssetItemModel.fromJson(doc.data());
+      queueAllProductsInAssetsForEmployee.addAll(assetItemModel.queueProducts);
+    }
+    return queueAllProductsInAssetsForEmployee;
+  }
 }

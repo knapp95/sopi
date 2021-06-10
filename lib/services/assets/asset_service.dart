@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../authentication_service.dart';
+import '../authentication/authentication_service.dart';
 
 class AssetService {
   final _assetsCollection = FirebaseFirestore.instance.collection('assets');
@@ -17,17 +17,10 @@ class AssetService {
     return (await _assetsCollection.get())?.docs;
   }
 
-  Stream<QuerySnapshot> get processingOrderEmployee {
+  Stream<QuerySnapshot> get queueProductsInAssetsForEmployee {
     return _assetsCollection
         .where('assignedEmployeesIds', arrayContains: AuthenticationService.uid)
-        .orderBy('processingProduct')
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> get waitingOrdersEmployee {
-    return _assetsCollection
-        .where('assignedEmployeesIds', arrayContains: AuthenticationService.uid)
-        .where('waitingProducts', isNotEqualTo: null)
+///TODO        .orderBy('queueProducts')
         .snapshots();
   }
 

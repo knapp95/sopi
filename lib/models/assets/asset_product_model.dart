@@ -1,10 +1,11 @@
+import 'package:sopi/models/assets/enums/asset_enum_status.dart';
 import 'package:sopi/models/products/primitive_product_item_model.dart';
 
 class AssetProductModel extends PrimitiveProductItemModel {
   String oid;
   int totalPrepareTime;
   DateTime startProcessingDate;
-
+  AssetEnumStatus status = AssetEnumStatus.WAITING;
   AssetProductModel(String name, String pid, this.oid, this.totalPrepareTime)
       : super(pid: pid, name: name);
 
@@ -13,6 +14,7 @@ class AssetProductModel extends PrimitiveProductItemModel {
       this.oid = data['oid'];
       this.totalPrepareTime = data['totalPrepareTime'];
       this.startProcessingDate = data['startProcessingDate']?.toDate();
+      this.status = getAssetStatusFromString(data['status']);
     } catch (e) {
       throw e;
     }
@@ -26,6 +28,7 @@ class AssetProductModel extends PrimitiveProductItemModel {
       data['totalPrepareTime'] = this.totalPrepareTime;
       data['name'] = this.name;
       data['startProcessingDate'] = this.startProcessingDate;
+      data['status'] = this.status.toString();
     } catch (e) {
       throw e;
     }

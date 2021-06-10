@@ -5,7 +5,7 @@ import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/models/orders/order_item_model.dart';
 
-import '../authentication_service.dart';
+import '../authentication/authentication_service.dart';
 
 class OrderService {
   final _ordersCollection = FirebaseFirestore.instance.collection('orders');

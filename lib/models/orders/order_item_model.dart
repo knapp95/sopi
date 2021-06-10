@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
-import 'package:sopi/services/authentication_service.dart';
+import 'package:sopi/services/authentication/authentication_service.dart';
 
 import 'products/order_product_model.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sopi/services/authentication_service.dart';
+import 'package:sopi/services/authentication/authentication_service.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 
 class AccountWidget extends StatelessWidget {

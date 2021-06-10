@@ -4,7 +4,7 @@ import 'package:sopi/common/scripts.dart';
 class AssetTimelineSettings {
   static const differenceInMinutes = 15;
   static const rangeHoursForwards = 3;
-  static const rangeHoursBackwards = 1;
+  static const rangeHoursBackwards = 2;
 
   static DateTime get availableStartTimeline {
     DateTime availableStartTimeline = DateTime(

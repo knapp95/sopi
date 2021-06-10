@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
+import 'package:sopi/models/assets/assets_model.dart';
+import 'package:sopi/models/assets/enums/asset_enum_status.dart';
 import 'package:sopi/services/assets/asset_service.dart';
 import 'package:sopi/ui/shared/systems_parameters.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sopi/ui/widgets/employee/orders/processing/employee_order_processing_empty_widget.dart';
 import 'package:sopi/ui/widgets/employee/orders/processing/employee_order_processing_item_widget.dart';
 import 'package:sopi/ui/widgets/employee/orders/waiting/employee_order_waiting_item_widget.dart';
@@ -23,18 +24,34 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(top: statusBarHeight),
-        child: Column(
-          children: [
-            _buildSection(
-              title: 'Actual prepare',
-              child: _buildProcessingOrder(),
-            ),
-            _buildSection(
-              title: 'Waiting',
-              child: _buildWaitingOrders(),
-            ),
-          ],
-        ),
+        child: StreamBuilder(
+            stream: _assetService.queueProductsInAssetsForEmployee,
+            builder: (ctx, snapshot) {
+              if (!snapshot.hasData) return LoadingDataInProgressWidget();
+              if (snapshot.data.docs.isEmpty)
+                return EmployeeOrderWaitingEmptyWidget();
+              List<AssetProductModel> allQueueProductsInAssetsForEmployee =
+                  AssetsModel.getAllQueueProductsInAssetsForEmployee(
+                      snapshot.data.docs);
+              AssetProductModel processingProduct =
+                  allQueueProductsInAssetsForEmployee.firstWhere((element) =>
+                      element.status == AssetEnumStatus.PROCESSING);
+              List<AssetProductModel> waitingProducts =
+                  allQueueProductsInAssetsForEmployee.where(
+                      (element) => element.status == AssetEnumStatus.WAITING).toList();
+              return Column(
+                children: [
+                  _buildSection(
+                    title: 'Actual prepare',
+                    child: _buildProcessingOrder(processingProduct),
+                  ),
+                  _buildSection(
+                    title: 'Waiting',
+                    child: _buildWaitingOrders(waitingProducts),
+                  ),
+                ],
+              );
+            }),
       ),
     );
   }
@@ -58,56 +75,28 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
     );
   }
 
-  Widget _buildProcessingOrder() {
-    return StreamBuilder(
-      stream: _assetService.processingOrderEmployee,
-      builder: (ctx, snapshot) {
-        if (!snapshot.hasData) return LoadingDataInProgressWidget();
-        if (snapshot.data.docs.isEmpty) return EmployeeOrderProcessingEmptyWidget();
-
-        final Map<String, dynamic> data =
-            snapshot.data.docs[0].get('processingProduct');
-        AssetProductModel assetProduct = AssetProductModel.fromJson(data);
-        return Expanded(
-            child:
-                EmployeeOrderProcessingItemWidget(assetProduct, ObjectKey(assetProduct)));
-      },
-    );
+  Widget _buildProcessingOrder(AssetProductModel processingProduct) {
+    return processingProduct != null
+        ? Expanded(
+            child: EmployeeOrderProcessingItemWidget(
+                processingProduct, ObjectKey(processingProduct)))
+        : EmployeeOrderProcessingEmptyWidget();
   }
 
-  Widget _buildWaitingOrders() {
-    return StreamBuilder(
-      stream: _assetService.waitingOrdersEmployee,
-      builder: (ctx, snapshot) {
-        if (!snapshot.hasData) return LoadingDataInProgressWidget();
-        List<AssetProductModel> assetProducts = [];
-        if (snapshot.data.docs.isEmpty) return EmployeeOrderWaitingEmptyWidget();
-
-        for (QueryDocumentSnapshot assetDocSnapshot
-            in snapshot.data.docs.toList()) {
-          List<dynamic> waitingProducts =
-              assetDocSnapshot.get('waitingProducts');
-          waitingProducts.forEach((waitingProduct) {
-            AssetProductModel assetProduct =
-                AssetProductModel.fromJson(waitingProduct);
-            assetProducts.add(assetProduct);
-          });
-        }
-        return Expanded(
-          child: assetProducts.isEmpty
-              ? EmployeeOrderWaitingEmptyWidget()
-              : ListView.builder(
-                  itemCount: assetProducts.length,
-                  itemBuilder: (_, int index) {
-                    AssetProductModel assetProduct = assetProducts[index];
-                    return EmployeeOrderWaitingItemWidget(
-                      assetProduct,
-                      ObjectKey(assetProduct),
-                    );
-                  },
-                ),
-        );
-      },
+  Widget _buildWaitingOrders(List<AssetProductModel> waitingProducts) {
+    return Expanded(
+      child: waitingProducts.isEmpty
+          ? EmployeeOrderWaitingEmptyWidget()
+          : ListView.builder(
+              itemCount: waitingProducts.length,
+              itemBuilder: (_, int index) {
+                AssetProductModel assetProduct = waitingProducts[index];
+                return EmployeeOrderWaitingItemWidget(
+                  assetProduct,
+                  ObjectKey(assetProduct),
+                );
+              },
+            ),
     );
   }
 }

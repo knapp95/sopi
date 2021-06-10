@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sopi/models/user/enums/user_enum_type.dart';
 import 'package:sopi/models/user/user_model.dart';
 
-import '../authentication_service.dart';
+import '../authentication/authentication_service.dart';
 
 class UserService {
   final _usersCollection = FirebaseFirestore.instance.collection('users');

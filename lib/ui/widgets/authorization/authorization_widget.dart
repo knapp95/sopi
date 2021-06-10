@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
-import 'package:sopi/services/authentication_service.dart';
+import 'package:sopi/services/authentication/authentication_service.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
@@ -27,7 +27,7 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
   bool _passwordVisible = false;
 
   void _submit(BuildContext context) async {
-    /// TODO comment for test
+    ///TODO comment for test
     // if (!_formKey.currentState.validate()) {
     //   return;
     // }
@@ -37,10 +37,10 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
     switch (_authMode) {
       case AuthMode.singIn:
         {
-          await context.read<AuthenticationService>().signIn(
-                email: 'client@wp.pl',
-                password: 'client123',
-              );
+          // await context.read<AuthenticationService>().signIn(
+          //       email: 'client@wp.pl',
+          //       password: 'client123',
+          //     );
           // responseMessage = await context.read<AuthenticationService>().signIn(
           //       email: 'kamil@wp.pl',
           //       password: 'kamil123',

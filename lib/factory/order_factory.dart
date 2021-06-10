@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
@@ -64,8 +63,7 @@ class OrderFactory {
     await _assets.fetchAssets();
     for (AssetItemModel asset in _assets.assets) {
       final data = {
-        'waitingProducts': [],
-        'processingProduct': FieldValue.delete(),
+        'queueProducts': [],
       };
       await _assetService.updateDoc(asset.aid, data);
     }
