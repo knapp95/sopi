@@ -6,7 +6,7 @@ import 'package:sopi/services/authentication/authentication_service.dart';
 
 import 'products/order_product_model.dart';
 
-class OrderItemModel {
+class OrderModel {
   OrderStatus status = OrderStatus.WAITING;
   DateTime createDate;
   String clientID;
@@ -17,7 +17,7 @@ class OrderItemModel {
   List<OrderProductModel> products = [];
   double totalPrice;
 
-  OrderItemModel.fromBasket({
+  OrderModel.fromBasket({
     this.createDate,
     this.humanNumber,
     this.products,
@@ -26,7 +26,8 @@ class OrderItemModel {
     this.clientID = AuthenticationService.uid;
   }
 
-  OrderItemModel.fromJson(Map<String, dynamic> data) {
+
+  OrderModel.fromJson(Map<String, dynamic> data) {
     try {
       this.createDate = data['createDate']?.toDate();
       this.status = getOrderStatusFromString(data['status']);

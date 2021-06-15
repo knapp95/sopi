@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class ClientOrderPastItemWidget extends StatelessWidget {
-  final OrderItemModel orderPast;
+  final OrderModel orderPast;
 
   ClientOrderPastItemWidget(this.orderPast);
 

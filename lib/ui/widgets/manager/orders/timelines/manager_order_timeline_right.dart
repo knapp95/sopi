@@ -3,7 +3,7 @@ import 'package:sopi/models/assets/asset_item_model.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/assets/asset_timeline_settings.dart';
 import 'package:sopi/models/assets/asset_type_mocked.dart';
-import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/manager/orders/timelines/manager_order_timeline_footer.dart';
@@ -34,21 +34,17 @@ class ManagerOrderTimelineRight extends StatelessWidget {
   }
 
   double _getEmptySpaceBetweenBlocks(int index) {
-    AssetProductModel waitingProduct =
-        assetItem.queueProductsTimeline[index];
+    AssetProductModel waitingProduct = assetItem.queueProductsTimeline[index];
     if (index == 0) {
       int differenceInMinutes = AssetTimelineSettings.availableStartTimeline
-          .difference(waitingProduct.startProcessingDate)
+          .difference(waitingProduct.createDate)
           .inMinutes;
-      if (differenceInMinutes < 0) {
-        return 0;
-      }
       return _getHeightForMinutes(differenceInMinutes);
     } else {
       AssetProductModel earlierProduct =
           assetItem.queueProductsTimeline[index - 1];
-      int differenceMinutes = waitingProduct.startProcessingDate
-              .difference(earlierProduct.startProcessingDate)
+      int differenceMinutes = waitingProduct.createDate
+              .difference(earlierProduct.createDate)
               .inMinutes -
           earlierProduct.totalPrepareTime;
       return _getHeightForMinutes(differenceMinutes);
@@ -56,7 +52,9 @@ class ManagerOrderTimelineRight extends StatelessWidget {
   }
 
   double _getHeightForMinutes(int minutes) {
-    return 32 * (minutes / AssetTimelineSettings.differenceInMinutes);
+    return minutes < 0
+        ? 0
+        : 32 * (minutes / AssetTimelineSettings.differenceInMinutes);
   }
 
   Widget _buildWaitingBlocks() {
@@ -73,7 +71,7 @@ class ManagerOrderTimelineRight extends StatelessWidget {
           if (index == 0) {
             int startBeforeTimeline = AssetTimelineSettings
                 .availableStartTimeline
-                .difference(waitingProduct.startProcessingDate)
+                .difference(waitingProduct.createDate)
                 .inMinutes;
             if (startBeforeTimeline > 0) {
               heightBlock = _getHeightForMinutes(
@@ -90,7 +88,7 @@ class ManagerOrderTimelineRight extends StatelessWidget {
                         orderSnap.data == null) {
                       return Container();
                     }
-                    OrderItemModel order = orderSnap.data;
+                    OrderModel order = orderSnap.data;
                     return Padding(
                       padding: EdgeInsets.only(
                           top: _getEmptySpaceBetweenBlocks(index)),

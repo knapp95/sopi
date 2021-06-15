@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
-import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/orders/order_model.dart';
 
 import '../authentication/authentication_service.dart';
 
@@ -19,10 +19,10 @@ class OrderService {
 
   static OrderService get singleton => _singleton;
 
-  Future<OrderItemModel> getOrderById(String oid) async {
+  Future<OrderModel> getOrderById(String oid) async {
     DocumentSnapshot documentSnapshot = await _ordersCollection.doc(oid).get();
     final data = documentSnapshot.data();
-    return OrderItemModel.fromJson(data);
+    return OrderModel.fromJson(data);
   }
 
   DocumentReference getDoc({String oid}) {
@@ -35,7 +35,7 @@ class OrderService {
         .update({'status': OrderStatus.PROCESSING.toString()});
   }
 
-  void updateOrder(String oid, OrderItemModel order) {
+  void updateOrder(String oid, OrderModel order) {
     try {
       final data = order.toJson();
       _ordersCollection.doc(oid).update(data);

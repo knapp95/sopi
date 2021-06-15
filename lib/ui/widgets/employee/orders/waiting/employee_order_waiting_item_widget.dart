@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
-import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/services/products/product_service.dart';
@@ -29,7 +29,7 @@ class _EmployeeOrderWaitingItemWidgetState extends State<EmployeeOrderWaitingIte
 
   _EmployeeOrderWaitingItemWidgetState(this.oid, this.pid);
 
-  OrderItemModel _orderItemModel;
+  OrderModel _orderModel;
   ProductItemModel _productItemModel;
   bool _isInit = true;
   bool _isLoading = false;
@@ -58,7 +58,7 @@ class _EmployeeOrderWaitingItemWidgetState extends State<EmployeeOrderWaitingIte
     if (_isLoading) return;
     setState(() {
       final now = DateTime.now();
-      _timeWaiting = now.difference(_orderItemModel.createDate);
+      _timeWaiting = now.difference(_orderModel.createDate);
     });
   }
 
@@ -68,7 +68,7 @@ class _EmployeeOrderWaitingItemWidgetState extends State<EmployeeOrderWaitingIte
 
   Future<Null> _loadData() async {
     final productService = ProductService.singleton;
-    _orderItemModel = await _orderService.getOrderById(this.oid);
+    _orderModel = await _orderService.getOrderById(this.oid);
     _productItemModel = await productService.getProductById(this.pid);
 
     if (!mounted) return;
@@ -94,7 +94,7 @@ class _EmployeeOrderWaitingItemWidgetState extends State<EmployeeOrderWaitingIte
                 children: [
                   Expanded(
                     child: Text(
-                      '#${_orderItemModel.humanNumber}',
+                      '#${_orderModel.humanNumber}',
                       style: textStyle,
                     ),
                   ),

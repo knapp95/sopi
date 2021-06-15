@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 
 class ClientOrderProcessingItemWidget extends StatelessWidget {
-  final OrderItemModel orderProcessing;
+  final OrderModel orderProcessing;
   ClientOrderProcessingItemWidget(this.orderProcessing);
   @override
   Widget build(BuildContext context) {

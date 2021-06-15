@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/ui/shared/systems_parameters.dart';
 import 'package:sopi/ui/widgets/client/orders/past/client_order_past_empty_widget.dart';
@@ -66,7 +66,7 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
         if (snapshot.data.docs.isEmpty)
           return ClientOrderProcessingEmptyWidget();
         final QueryDocumentSnapshot doc = snapshot.data.docs[0];
-        OrderItemModel orderProcessing = OrderItemModel.fromJson(doc.data());
+        OrderModel orderProcessing = OrderModel.fromJson(doc.data());
         return ClientOrderProcessingItemWidget(orderProcessing);
       },
     );
@@ -85,7 +85,7 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
           itemCount: snapshot.data.docs.length,
           itemBuilder: (_, int index) {
             QueryDocumentSnapshot orderDoc = snapshot.data.docs[index];
-            OrderItemModel pastOrder = OrderItemModel.fromJson(orderDoc.data());
+            OrderModel pastOrder = OrderModel.fromJson(orderDoc.data());
             return ClientOrderPastItemWidget(pastOrder);
           },
         );

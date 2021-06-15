@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/factory/order_factory.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
-import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
@@ -36,7 +36,7 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
 
   _EmployeeOrderProcessingItemWidgetState(this.oid, this.pid);
 
-  OrderItemModel _orderItemModel;
+  OrderModel _orderModel;
   OrderProductModel _orderProductModel;
   ProductItemModel _productItemModel;
 
@@ -70,8 +70,8 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
   Future<Null> _loadData() async {
 
     final productService = ProductService.singleton;
-    _orderItemModel = await _orderService.getOrderById(this.oid);
-    _orderProductModel = _orderItemModel.getProductByPid(pid);
+    _orderModel = await _orderService.getOrderById(this.oid);
+    _orderProductModel = _orderModel.getProductByPid(pid);
     _productItemModel = await productService.getProductById(this.pid);
     if (!mounted) return;
     setState(() {
@@ -93,7 +93,7 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
     );
     if (confirm) {
       _orderProductModel.setAsComplete();
-      _orderService.updateOrder(oid, _orderItemModel);
+      _orderService.updateOrder(oid, _orderModel);
       _orderFactory.completeOrderProduct(oid, _orderProductModel);
     }
   }
@@ -101,11 +101,11 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
   void _addTimeToOrder() async {
     final result = await showScaleDialog(
       EmployeeOrderDialogAddExtraTimeWidget(_orderProductModel.prepareTime,
-          _orderProductModel.extraPrepareTime, _orderItemModel.createDate),
+          _orderProductModel.extraPrepareTime, _orderModel.createDate),
     );
     if (result != null) {
       _orderProductModel.extraPrepareTime = result;
-      _orderService.updateOrder(oid, _orderItemModel);
+      _orderService.updateOrder(oid, _orderModel);
     }
   }
 
@@ -136,7 +136,7 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
                           ),
                         ),
                         _buildPositionedInfo(
-                          label1: 'Order #${_orderItemModel.humanNumber}',
+                          label1: 'Order #${_orderModel.humanNumber}',
                           label2: '${_productItemModel.name}',
                           left: 15.0,
                         ),

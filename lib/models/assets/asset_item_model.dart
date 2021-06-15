@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/assets/asset_timeline_settings.dart';
 import 'package:sopi/models/assets/enums/asset_enum_status.dart';
-import 'package:sopi/models/orders/order_item_model.dart';
+import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/user/user_model.dart';
@@ -37,11 +37,11 @@ class AssetItemModel {
   /// Get's products from queue who startTimeline < product < endTimeline
   List<AssetProductModel> get queueProductsTimeline {
     return this.queueProducts.where((product) {
-      DateTime productEndDate = product.startProcessingDate
+      DateTime productEndDate = product.createDate
           .add(Duration(minutes: product.totalPrepareTime));
       return productEndDate
               .isAfter(AssetTimelineSettings.availableStartTimeline) &&
-          product.startProcessingDate
+          product.createDate
               .isBefore(AssetTimelineSettings.availableEndTimeline);
     }).toList();
   }
@@ -89,7 +89,7 @@ class AssetItemModel {
     final oid = assetProductModel.oid;
     final pid = assetProductModel.pid;
 
-    OrderItemModel order = await _orderService.getOrderById(oid);
+    OrderModel order = await _orderService.getOrderById(oid);
 
     OrderProductModel orderProductModel = order.getProductByPid(pid);
     orderProductModel.startProcessingDate = DateTime.now();
