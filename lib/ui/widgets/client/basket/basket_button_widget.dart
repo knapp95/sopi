@@ -6,7 +6,7 @@ class BasketButtonWidget extends StatelessWidget {
   final String subTitle;
   final Color color;
   final Color backgroundColor;
-  final Function onPressedHandler;
+  final Function? onPressedHandler;
 
   BasketButtonWidget(this.title, this.subTitle,
       {this.color = Colors.black,
@@ -27,7 +27,7 @@ class BasketButtonWidget extends StatelessWidget {
           Text(subTitle, style: TextStyle(color: color)),
         ],
       ),
-      onPressed: onPressedHandler,
+      onPressed: onPressedHandler as void Function()?,
     );
   }
 }

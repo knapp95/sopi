@@ -55,8 +55,8 @@ class _ManagerOrderGenerateMockedButtonState
               ),
             ),
             backgroundColor: item.color,
-            onTap: () => item.funHandler(),
-            label: item.name,
+            onTap: () => item.funHandler!(),
+            label: item.name as String?,
             labelStyle: TextStyle(color: Colors.white),
             labelBackgroundColor: item.color,
           );

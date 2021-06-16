@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../authentication/authentication_service.dart';
 
 class AssetService {
@@ -14,13 +15,14 @@ class AssetService {
   static AssetService get singleton => _singleton;
 
   Future<List<QueryDocumentSnapshot>> getDocs() async {
-    return (await _assetsCollection.get())?.docs;
+    return (await _assetsCollection.get()).docs;
   }
 
   Stream<QuerySnapshot> get queueProductsInAssetsForEmployee {
     return _assetsCollection
         .where('assignedEmployeesIds', arrayContains: AuthenticationService.uid)
-///TODO        .orderBy('queueProducts')
+
+        ///TODO        .orderBy('queueProducts')
         .snapshots();
   }
 
@@ -28,9 +30,9 @@ class AssetService {
     return _assetsCollection.snapshots();
   }
 
-  Future<void> updateDoc(String aid, Map<String, dynamic> data) async =>
+  Future<void> updateDoc(String? aid, Map<String, dynamic> data) async =>
       _assetsCollection.doc(aid).update(data);
 
-  Future<void> removeDoc(String aid) async =>
+  Future<void> removeDoc(String? aid) async =>
       _assetsCollection.doc(aid).delete();
 }

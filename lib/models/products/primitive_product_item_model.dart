@@ -1,12 +1,12 @@
 import 'enums/product_enum_type.dart';
 
 abstract class PrimitiveProductItemModel {
-  String pid;
-  String name;
-  ProductType type;
-  int count = 1;
-  int prepareTime;
-  DateTime createDate;
+  String? pid;
+  String? name;
+  ProductType? type;
+  int? count = 1;
+  int? prepareTime;
+  DateTime? createDate;
 
   bool get isVeg => this.type == ProductType.VEGE;
 

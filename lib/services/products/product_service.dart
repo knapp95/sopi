@@ -13,18 +13,18 @@ class ProductService {
 
   static ProductService get singleton => _singleton;
 
-  Future<ProductItemModel> getProductById(String oid) async {
+  Future<ProductItemModel> getProductById(String? oid) async {
     DocumentSnapshot documentSnapshot =
         await _productsCollection.doc(oid).get();
-    final data = documentSnapshot.data();
+    final data = documentSnapshot.data()! as Map<String, dynamic>;
     return ProductItemModel.fromJson(data);
   }
 
-  Future<void> removeDoc(String pid) async =>
+  Future<void> removeDoc(String? pid) async =>
       _productsCollection.doc(pid).delete();
 
   Future<List<ProductItemModel>> fetchProducts() async {
-    final docs = (await _productsCollection.get())?.docs;
+    final docs = (await _productsCollection.get()).docs;
 
     List<ProductItemModel> products = [];
     docs.forEach((doc) {
@@ -34,9 +34,7 @@ class ProductService {
     return products;
   }
 
-  DocumentReference getDoc(String pid) {
+  DocumentReference getDoc(String? pid) {
     return _productsCollection.doc(pid);
   }
-
-
 }

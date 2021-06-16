@@ -8,6 +8,7 @@ import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/widgets/client/basket/basket_button_widget.dart';
 import 'package:sopi/ui/widgets/common/account/account_widget.dart';
 import 'package:sopi/ui/widgets/common/products/product_widget.dart';
+
 import 'basket/basket_bottom_widget.dart';
 import 'orders/client_order_widget.dart';
 
@@ -21,7 +22,7 @@ class _ClientWidgetState extends State<ClientWidget> {
     initialPage: 0,
     keepPage: true,
   );
-  BasketModel _basket;
+  late BasketModel _basket;
 
   int _bottomSelectedIndex = 0;
 
@@ -48,7 +49,7 @@ class _ClientWidgetState extends State<ClientWidget> {
   void _displaySummaryBasket() {
     showMaterialModalBottomSheet(
       expand: false,
-      context: Get.context,
+      context: Get.context!,
       backgroundColor: Colors.transparent,
       builder: (context) => BasketBottomWidget(),
     );
@@ -72,7 +73,11 @@ class _ClientWidgetState extends State<ClientWidget> {
 
   Widget _buildPageView() {
     List<Widget> children = [];
-    List<Widget> widgets = [ProductWidget(), ClientOrderWidget(), AccountWidget()];
+    List<Widget> widgets = [
+      ProductWidget(),
+      ClientOrderWidget(),
+      AccountWidget()
+    ];
 
     /// If basket no empty add bottom widget with basket info
     if (isNullOrEmpty(_basket.products)) {

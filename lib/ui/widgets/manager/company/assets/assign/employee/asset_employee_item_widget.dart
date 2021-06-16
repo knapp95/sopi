@@ -3,8 +3,8 @@ import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class AssetEmployeeWidget extends StatelessWidget {
-  final UserModel employee;
-  final Function onDeleteHandler;
+  final UserModel? employee;
+  final Function? onDeleteHandler;
 
   AssetEmployeeWidget(this.employee, {this.onDeleteHandler});
 
@@ -12,8 +12,9 @@ class AssetEmployeeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Chip(
       deleteIconColor: Colors.red,
-      onDeleted:
-          onDeleteHandler != null ? () => onDeleteHandler(employee.uid) : null,
+      onDeleted: onDeleteHandler != null
+          ? () => onDeleteHandler!(employee!.uid)
+          : null,
       backgroundColor: Colors.white,
       shape: shapeDialog,
       elevation: defaultElevation,
@@ -22,14 +23,14 @@ class AssetEmployeeWidget extends StatelessWidget {
           width: 46,
           height: 46,
           child: Image.network(
-            employee.profilePhoto,
+            employee!.profilePhoto!,
             fit: BoxFit.cover,
           ),
         ),
       ),
       label: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(employee.username),
+        child: Text(employee!.username!),
       ),
     );
   }

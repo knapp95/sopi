@@ -9,13 +9,13 @@ class BottomNotification extends StatelessWidget {
   BottomNotification(this.responseMessage);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext? context) {
     return SnackBar(
       elevation: defaultElevation,
       backgroundColor: responseMessage.correct ? primaryColor : Colors.red,
       content: Container(
         child: Text(
-          responseMessage.message,
+          responseMessage.message!,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.bold,

@@ -19,18 +19,18 @@ class FieldBuilderFactory {
   static FieldBuilderFactory get singleton => _singleton;
 
   Widget buildTextField({
-    String fieldName,
+    String? fieldName = 'field',
     dynamic initialValue,
     bool isVisible = true,
-    Color valueColor,
-    TextInputType keyboardType,
-    TextEditingController controller,
+    Color? valueColor,
+    TextInputType? keyboardType,
+    TextEditingController? controller,
     int maxLines = 1,
-    String labelText,
-    Color labelColor,
+    String? labelText,
+    Color? labelColor,
     bool obscureText = false,
-    Widget suffixIcon,
-    Function onChangedHandler,
+    Widget? suffixIcon,
+    Function? onChangedHandler,
   }) {
     return !isVisible
         ? Container()
@@ -38,7 +38,7 @@ class FieldBuilderFactory {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               FormBuilderTextField(
-                name: fieldName,
+                name: fieldName!,
                 initialValue: initialValue,
                 keyboardType: keyboardType,
                 controller: controller,
@@ -56,7 +56,7 @@ class FieldBuilderFactory {
                   suffixIcon: suffixIcon,
                 ),
                 validator: (input) =>
-                    _fieldValidate.validateFields(fieldName, input),
+                    _fieldValidate.validateFields(fieldName, input!),
                 onChanged: (value) => _onChanged(fieldName, value,
                     onChangedHandler: onChangedHandler),
               ),
@@ -66,13 +66,13 @@ class FieldBuilderFactory {
   }
 
   Widget buildNumberPicker({
-    String fieldName,
-    dynamic value,
-    @required int max,
+    String? fieldName,
+    required dynamic value,
+    required int max,
     bool isVisible = true,
-    Widget suffixIcon,
-    String labelText,
-    Function onChangedHandler,
+    Widget? suffixIcon,
+    String? labelText,
+    Function? onChangedHandler,
   }) {
     final canSubtraction = value > 1;
     final canAdd = value < max;
@@ -104,14 +104,14 @@ class FieldBuilderFactory {
   }
 
   Widget buildDropdownField({
-    String fieldName,
+    String? fieldName,
     bool isVisible = true,
-    String labelText,
-    Color labelColor,
-    Color labelDropdownColor,
-    Color dropdownColor,
-    List<GenericItemModel> items,
-    Function onChangedHandler,
+    String? labelText,
+    Color? labelColor,
+    Color? labelDropdownColor,
+    Color? dropdownColor,
+    List<GenericItemModel>? items,
+    Function? onChangedHandler,
     dynamic initialValue,
   }) {
     return !isVisible
@@ -119,24 +119,24 @@ class FieldBuilderFactory {
         : Column(
             children: [
               FormBuilderDropdown(
-                name: labelText,
+                name: labelText!,
                 decoration: InputDecoration(
                   labelText: labelText,
                   labelStyle: TextStyle(
                     color: labelColor,
                   ),
                 ),
-                items: items
+                items: items!
                     .map((GenericItemModel item) => DropdownMenuItem(
                           child: Text(
-                            item.name,
+                            item.name as String,
                             style: TextStyle(color: labelDropdownColor),
                           ),
                           value: item.id,
                         ))
                     .toList(),
                 dropdownColor: dropdownColor,
-                onChanged: (value) => _onChanged(fieldName, value,
+                onChanged: (dynamic value) => _onChanged(fieldName, value,
                     onChangedHandler: onChangedHandler),
                 initialValue: initialValue,
               ),
@@ -145,7 +145,7 @@ class FieldBuilderFactory {
           );
   }
 
-  void _onChanged(String fieldName, value, {Function onChangedHandler}) {
+  void _onChanged(String? fieldName, value, {Function? onChangedHandler}) {
     this.data?.changeValueInForm(fieldName, value);
     if (onChangedHandler != null) {
       onChangedHandler(value);

@@ -1,5 +1,5 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 showScaleDialog(Widget dialog) {
   return showGeneralDialog(
@@ -13,8 +13,9 @@ showScaleDialog(Widget dialog) {
       );
     },
     transitionDuration: Duration(milliseconds: 200),
-    context: Get.context,
+    context: Get.context!,
     // ignore: missing_return
-    pageBuilder: (context, animation1, animation2) {},
+    pageBuilder: (context, animation1, animation2) {} as Widget Function(
+        BuildContext, Animation<double>, Animation<double>),
   );
 }

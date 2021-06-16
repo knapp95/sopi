@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ManagerOrderTimelineFooter extends StatelessWidget {
-  final String name;
+  final String? name;
   final String iconPath;
 
   ManagerOrderTimelineFooter(this.name, this.iconPath);

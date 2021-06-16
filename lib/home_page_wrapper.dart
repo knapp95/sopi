@@ -13,7 +13,7 @@ class HomePageWrapper extends StatefulWidget {
 }
 
 class _HomePageWrapperState extends State<HomePageWrapper> {
-  UserType _typeAccount;
+  UserType? _typeAccount;
 
   @override
   void didChangeDependencies() {
@@ -31,7 +31,7 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
   Widget _buildPageForTypeAccount(BuildContext context) {
     switch (_typeAccount) {
       case UserType.CLIENT:
-         return ClientWidget();
+        return ClientWidget();
       case UserType.MANAGER:
         return ManagerWidget();
       case UserType.EMPLOYEE:

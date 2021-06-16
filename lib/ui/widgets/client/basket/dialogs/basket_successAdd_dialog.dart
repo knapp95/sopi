@@ -4,7 +4,7 @@ import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class BasketSuccessAddDialog extends StatelessWidget {
-  final int orderNumber;
+  final int? orderNumber;
 
   BasketSuccessAddDialog(this.orderNumber);
 

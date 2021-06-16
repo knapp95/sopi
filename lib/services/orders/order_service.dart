@@ -19,13 +19,13 @@ class OrderService {
 
   static OrderService get singleton => _singleton;
 
-  Future<OrderModel> getOrderById(String oid) async {
+  Future<OrderModel> getOrderById(String? oid) async {
     DocumentSnapshot documentSnapshot = await _ordersCollection.doc(oid).get();
-    final data = documentSnapshot.data();
+    final data = documentSnapshot.data()! as Map<String, dynamic>;
     return OrderModel.fromJson(data);
   }
 
-  DocumentReference getDoc({String oid}) {
+  DocumentReference getDoc({String? oid}) {
     return _ordersCollection.doc(oid);
   }
 
@@ -35,7 +35,7 @@ class OrderService {
         .update({'status': OrderStatus.PROCESSING.toString()});
   }
 
-  void updateOrder(String oid, OrderModel order) {
+  void updateOrder(String? oid, OrderModel order) {
     try {
       final data = order.toJson();
       _ordersCollection.doc(oid).update(data);
@@ -49,14 +49,11 @@ class OrderService {
   }
 
   Future<void> removeAllOrders() async {
-    final docs = (await _ordersCollection.get())?.docs;
-    if (docs != null) {
-      for (QueryDocumentSnapshot doc in docs) {
-       await doc.reference.delete();
-      }
+    final docs = (await _ordersCollection.get()).docs;
+    for (QueryDocumentSnapshot doc in docs) {
+      await doc.reference.delete();
     }
   }
-
 
   Stream<QuerySnapshot> get processingOrderClient {
     return _ordersCollection
@@ -72,8 +69,8 @@ class OrderService {
         .snapshots();
   }
 
-  Future<int> getNextHumanNumberForOrder() async {
-    int humanNumber = 1;
+  Future<int?> getNextHumanNumberForOrder() async {
+    int? humanNumber = 1;
     QuerySnapshot query =
         await _ordersCollection.orderBy('humanNumber').limitToLast(1).get();
 

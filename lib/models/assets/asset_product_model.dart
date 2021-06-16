@@ -2,10 +2,11 @@ import 'package:sopi/models/assets/enums/asset_enum_status.dart';
 import 'package:sopi/models/products/primitive_product_item_model.dart';
 
 class AssetProductModel extends PrimitiveProductItemModel {
-  String oid;
-  int totalPrepareTime;
-  AssetEnumStatus status = AssetEnumStatus.WAITING;
-  AssetProductModel(String name, String pid, this.oid, this.totalPrepareTime)
+  String? oid;
+  int? totalPrepareTime;
+  AssetEnumStatus? status = AssetEnumStatus.WAITING;
+
+  AssetProductModel(String? name, String? pid, this.oid, this.totalPrepareTime)
       : super(pid: pid, name: name);
 
   AssetProductModel.fromJson(Map<String, dynamic> data) : super.fromJson(data) {

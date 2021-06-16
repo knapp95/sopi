@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/models/products/products_model.dart';
@@ -7,13 +8,11 @@ import 'package:sopi/models/user/enums/user_enum_type.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/products/product_service.dart';
 import 'package:sopi/ui/shared/animations.dart';
-import 'package:get/get.dart';
 import 'package:sopi/ui/widgets/client/products/product_item_dialog.dart'
-    as productClient;
+as productClient;
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
-import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog.dart'
-    as productManager;
 import 'package:sopi/ui/widgets/common/products/list/productsEmpty_list.dart';
+import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog.dart' as productManager;
 
 class ProductsList extends StatelessWidget {
   final _productService = ProductService.singleton;
@@ -21,14 +20,14 @@ class ProductsList extends StatelessWidget {
 
   ProductsList(this.displayProductsList);
 
-  void _editProduct(String pid) {
+  void _editProduct(String? pid) {
     showScaleDialog(productManager.ProductItemDialog(pid: pid));
   }
 
-  void _removeProduct(String pid) async {
+  void _removeProduct(String? pid) async {
     await _productService.removeDoc(pid);
 
-    Provider.of<ProductsModel>(Get.context, listen: false).fetchProducts();
+    Provider.of<ProductsModel>(Get.context!, listen: false).fetchProducts();
   }
 
   @override
@@ -56,18 +55,18 @@ class ProductsList extends StatelessWidget {
                         children: [
                           ListTile(
                             title: Text(
-                              product.name,
+                              product.name!,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text(
-                              product.description,
+                              product.description!,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey,
                               ),
                             ),
                             trailing: product.imageUrl != null
-                                ? Image.network(product.imageUrl,
+                                ? Image.network(product.imageUrl!,
                                     fit: BoxFit.cover)
                                 : Image.asset(
                                     'assets/images/no_photo.png',
@@ -87,7 +86,7 @@ class ProductsList extends StatelessWidget {
                                         FontAwesomeIcons.dollarSign,
                                       ),
                                       label: Text(
-                                        product.price.toStringAsFixed(2),
+                                        product.price!.toStringAsFixed(2),
                                       ),
                                     ),
                                     TextButton.icon(
@@ -98,6 +97,7 @@ class ProductsList extends StatelessWidget {
                                       label: Text('${product.prepareTime} min'),
                                     ),
                                     TextButton.icon(
+                                      onPressed: () {},
                                       icon: FaIcon(
                                         FontAwesomeIcons.solidStar,
                                         color: Colors.yellow,

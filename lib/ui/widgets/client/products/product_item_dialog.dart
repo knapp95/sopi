@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
 import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
-import 'package:get/get.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/client/basket/basket_button_widget.dart';
 
@@ -30,10 +30,10 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
   }
 
   void _addToBasket() {
-    BasketModel _basket = Provider.of<BasketModel>(Get.context, listen: false);
+    BasketModel _basket = Provider.of<BasketModel>(Get.context!, listen: false);
     if (_basket.products.containsKey(_product.pid)) {
-      _basket.products[_product.pid].count =
-          _basket.products[_product.pid].count + _product.count;
+      _basket.products[_product.pid]!.count =
+          _basket.products[_product.pid]!.count! + _product.count!;
     } else {
       _basket.products[_product.pid] = _product;
     }
@@ -51,7 +51,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
         child: Column(
           children: [
             _product.imageUrl != null
-                ? Image.network(_product.imageUrl, fit: BoxFit.cover)
+                ? Image.network(_product.imageUrl!, fit: BoxFit.cover)
                 : Image.asset(
                     'assets/images/no_photo.png',
                   ),
@@ -60,9 +60,9 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_product.name),
+                  Text(_product.name!),
                   Text(
-                    _product.description,
+                    _product.description!,
                     style: TextStyle(color: Colors.grey),
                   ),
                   formSizedBoxHeight,

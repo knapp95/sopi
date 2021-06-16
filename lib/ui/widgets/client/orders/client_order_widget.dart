@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
@@ -7,7 +8,7 @@ import 'package:sopi/ui/widgets/client/orders/past/client_order_past_item_widget
 import 'package:sopi/ui/widgets/client/orders/processing/client_order_processing_empty_widget.dart';
 import 'package:sopi/ui/widgets/client/orders/processing/client_order_processing_item_widget.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 
 class ClientOrderWidget extends StatefulWidget {
@@ -41,7 +42,7 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
     );
   }
 
-  Widget _buildSection({String title, Widget child}) {
+  Widget _buildSection({required String title, Widget? child}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -52,7 +53,7 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
               style: TextStyle(color: Colors.grey),
             ),
           ),
-          child,
+          child!,
         ],
       ),
     );
@@ -63,10 +64,12 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
       stream: _orderService.processingOrderClient,
       builder: (ctx, snapshot) {
         if (!snapshot.hasData) return LoadingDataInProgressWidget();
-        if (snapshot.data.docs.isEmpty)
+        if ((snapshot.data! as QuerySnapshot).docs.isEmpty)
           return ClientOrderProcessingEmptyWidget();
-        final QueryDocumentSnapshot doc = snapshot.data.docs[0];
-        OrderModel orderProcessing = OrderModel.fromJson(doc.data());
+        final QueryDocumentSnapshot doc =
+            (snapshot.data! as QuerySnapshot).docs[0];
+        final data = doc.data()! as Map<String, dynamic>;
+        OrderModel orderProcessing = OrderModel.fromJson(data);
         return ClientOrderProcessingItemWidget(orderProcessing);
       },
     );
@@ -77,15 +80,18 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
       stream: _orderService.pastOrdersClient,
       builder: (ctx, snapshot) {
         if (!snapshot.hasData) return LoadingDataInProgressWidget();
-        if (snapshot.data.docs.isEmpty) return ClientOrderPastEmptyWidget();
+        if ((snapshot.data! as QuerySnapshot).docs.isEmpty)
+          return ClientOrderPastEmptyWidget();
 
         return ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          itemCount: snapshot.data.docs.length,
+          itemCount: (snapshot.data! as QuerySnapshot).docs.length,
           itemBuilder: (_, int index) {
-            QueryDocumentSnapshot orderDoc = snapshot.data.docs[index];
-            OrderModel pastOrder = OrderModel.fromJson(orderDoc.data());
+            QueryDocumentSnapshot orderDoc =
+                (snapshot.data! as QuerySnapshot).docs[index];
+            final data = orderDoc.data()! as Map<String, dynamic>;
+            OrderModel pastOrder = OrderModel.fromJson(data);
             return ClientOrderPastItemWidget(pastOrder);
           },
         );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sopi/ui/widgets/common/products/buttons/product_buttons.dart';
 import 'package:sopi/ui/widgets/manager/company/assets/asset_widget.dart';
 import 'package:sopi/ui/widgets/manager/company/products/products_widget.dart';
+
 import 'employees/employees_widget.dart';
 
 class ManagerCompanyWidget extends StatelessWidget {

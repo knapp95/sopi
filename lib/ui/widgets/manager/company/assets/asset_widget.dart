@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
+import 'package:sopi/models/assets/assets_model.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/assets/asset_service.dart';
 import 'package:sopi/services/users/user_service.dart';
-import 'package:sopi/ui/widgets/manager/company/assets/assets_list_widget.dart';
-import 'package:provider/provider.dart';
-import 'package:sopi/models/assets/assets_model.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
+import 'package:sopi/ui/widgets/manager/company/assets/assets_list_widget.dart';
 
 import 'assign/employee/asset_employee_list_widget.dart';
 
@@ -21,10 +21,10 @@ class _AssetWidgetState extends State<AssetWidget>
   final _assetService = AssetService.singleton;
   bool _isInit = true;
   bool _isLoading = false;
-  AssetsModel _assets;
+  late AssetsModel _assets;
   List<UserModel> _employees = [];
 
-  Future<Null> _loadData() async {
+  Future<void> _loadData() async {
     _assets = Provider.of<AssetsModel>(context);
     if (!_assets.isInit) {
       await _assets.fetchAssets();
@@ -51,7 +51,7 @@ class _AssetWidgetState extends State<AssetWidget>
     _assetService.removeDoc(asset.aid);
 
     setState(() {
-      _assets.assets?.removeWhere((element) => element.aid == asset.aid);
+      _assets.assets.removeWhere((element) => element.aid == asset.aid);
     });
   }
 

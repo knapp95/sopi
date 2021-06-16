@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
@@ -13,24 +14,27 @@ import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_pro
 class EmployeeOrderWaitingItemWidget extends StatefulWidget {
   final AssetProductModel assetProductModel;
 
-  const EmployeeOrderWaitingItemWidget(this.assetProductModel, key) : super(key: key);
+  const EmployeeOrderWaitingItemWidget(this.assetProductModel, key)
+      : super(key: key);
 
   @override
-  _EmployeeOrderWaitingItemWidgetState createState() => _EmployeeOrderWaitingItemWidgetState(
-      this.assetProductModel.oid, this.assetProductModel.pid);
+  _EmployeeOrderWaitingItemWidgetState createState() =>
+      _EmployeeOrderWaitingItemWidgetState(
+          this.assetProductModel.oid, this.assetProductModel.pid);
 }
 
-class _EmployeeOrderWaitingItemWidgetState extends State<EmployeeOrderWaitingItemWidget> {
+class _EmployeeOrderWaitingItemWidgetState
+    extends State<EmployeeOrderWaitingItemWidget> {
   final _orderService = OrderService.singleton;
-  final String oid;
-  final String pid;
-  Timer _timer;
-  Duration _timeWaiting;
+  final String? oid;
+  final String? pid;
+  late Timer _timer;
+  Duration? _timeWaiting;
 
   _EmployeeOrderWaitingItemWidgetState(this.oid, this.pid);
 
-  OrderModel _orderModel;
-  ProductItemModel _productItemModel;
+  late OrderModel _orderModel;
+  late ProductItemModel _productItemModel;
   bool _isInit = true;
   bool _isLoading = false;
 
@@ -58,7 +62,7 @@ class _EmployeeOrderWaitingItemWidgetState extends State<EmployeeOrderWaitingIte
     if (_isLoading) return;
     setState(() {
       final now = DateTime.now();
-      _timeWaiting = now.difference(_orderModel.createDate);
+      _timeWaiting = now.difference(_orderModel.createDate!);
     });
   }
 
@@ -66,7 +70,7 @@ class _EmployeeOrderWaitingItemWidgetState extends State<EmployeeOrderWaitingIte
     return durationInMinutes(_timeWaiting);
   }
 
-  Future<Null> _loadData() async {
+  Future<void> _loadData() async {
     final productService = ProductService.singleton;
     _orderModel = await _orderService.getOrderById(this.oid);
     _productItemModel = await productService.getProductById(this.pid);

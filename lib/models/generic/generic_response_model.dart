@@ -1,5 +1,5 @@
 class GenericResponseModel {
-  String message;
+  String? message;
   bool correct;
 
   GenericResponseModel(this.message, {this.correct = true});

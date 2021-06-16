@@ -1,4 +1,3 @@
-
 class FieldValidationFactory {
   static final FieldValidationFactory _singleton =
       FieldValidationFactory._internal();
@@ -11,8 +10,8 @@ class FieldValidationFactory {
 
   static FieldValidationFactory get singleton => _singleton;
 
-  String validateFields(String field, String input) {
-    String validateMessage;
+  String? validateFields(String? field, String input) {
+    String? validateMessage;
     if (input.isEmpty) {
       validateMessage = 'Pole wymagane.';
       return validateMessage;

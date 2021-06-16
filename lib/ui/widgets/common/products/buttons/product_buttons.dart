@@ -36,8 +36,8 @@ class _ProductButtonsState extends State<ProductButtons> {
     return allItems;
   }
 
-  List<GenericItemModel> get visibleItems {
-    List<GenericItemModel> visibleItems = [];
+  List<GenericItemModel?> get visibleItems {
+    List<GenericItemModel?> visibleItems = [];
     visibleItems.add(allItems['addProductImport']);
     visibleItems.add(allItems['addProductManual']);
     return visibleItems;
@@ -49,17 +49,17 @@ class _ProductButtonsState extends State<ProductButtons> {
         backgroundColor: Colors.white,
         foregroundColor: primaryColor,
         animatedIcon: AnimatedIcons.list_view,
-        children: visibleItems.map((GenericItemModel item) {
+        children: visibleItems.map((GenericItemModel? item) {
           return SpeedDialChild(
             child: Center(
               child: FaIcon(
-                item.icon,
+                item!.icon,
                 color: Colors.white,
               ),
             ),
             backgroundColor: item.color,
-            onTap: () => item.funHandler(),
-            label: item.name,
+            onTap: () => item.funHandler!(),
+            label: item.name as String?,
             labelStyle: TextStyle(color: Colors.white),
             labelBackgroundColor: item.color,
           );

@@ -17,8 +17,8 @@ class ManagerOrderTimelineRight extends StatelessWidget {
     this.assetItem,
   );
 
-  AssetTypeMocked get assetTypeMocked =>
-      assetsTypeMocked[assetItem.assignedProductType];
+  AssetTypeMocked? get assetTypeMocked =>
+      assetsTypeMocked[assetItem.assignedProductType!];
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class ManagerOrderTimelineRight extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          ManagerOrderTimelineFooter(assetItem.name, assetTypeMocked.iconPath),
+          ManagerOrderTimelineFooter(assetItem.name, assetTypeMocked!.iconPath),
           Expanded(child: _buildWaitingBlocks()),
         ],
       ),
@@ -37,16 +37,16 @@ class ManagerOrderTimelineRight extends StatelessWidget {
     AssetProductModel waitingProduct = assetItem.queueProductsTimeline[index];
     if (index == 0) {
       int differenceInMinutes = AssetTimelineSettings.availableStartTimeline
-          .difference(waitingProduct.createDate)
+          .difference(waitingProduct.createDate!)
           .inMinutes;
       return _getHeightForMinutes(differenceInMinutes);
     } else {
       AssetProductModel earlierProduct =
           assetItem.queueProductsTimeline[index - 1];
-      int differenceMinutes = waitingProduct.createDate
-              .difference(earlierProduct.createDate)
+      int differenceMinutes = waitingProduct.createDate!
+              .difference(earlierProduct.createDate!)
               .inMinutes -
-          earlierProduct.totalPrepareTime;
+          earlierProduct.totalPrepareTime!;
       return _getHeightForMinutes(differenceMinutes);
     }
   }
@@ -67,15 +67,15 @@ class ManagerOrderTimelineRight extends StatelessWidget {
           AssetProductModel waitingProduct =
               assetItem.queueProductsTimeline[index];
           double heightBlock =
-              _getHeightForMinutes(waitingProduct.totalPrepareTime);
+              _getHeightForMinutes(waitingProduct.totalPrepareTime!);
           if (index == 0) {
             int startBeforeTimeline = AssetTimelineSettings
                 .availableStartTimeline
-                .difference(waitingProduct.createDate)
+                .difference(waitingProduct.createDate!)
                 .inMinutes;
             if (startBeforeTimeline > 0) {
               heightBlock = _getHeightForMinutes(
-                  waitingProduct.totalPrepareTime - startBeforeTimeline);
+                  waitingProduct.totalPrepareTime! - startBeforeTimeline);
             }
           }
           return Container(
@@ -83,12 +83,11 @@ class ManagerOrderTimelineRight extends StatelessWidget {
               children: [
                 FutureBuilder(
                   builder: (context, orderSnap) {
-                    if (orderSnap.connectionState == ConnectionState.none &&
-                            orderSnap.hasData == null ||
+                    if (orderSnap.connectionState == ConnectionState.none ||
                         orderSnap.data == null) {
                       return Container();
                     }
-                    OrderModel order = orderSnap.data;
+                    OrderModel order = orderSnap.data as OrderModel;
                     return Padding(
                       padding: EdgeInsets.only(
                           top: _getEmptySpaceBetweenBlocks(index)),

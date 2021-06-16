@@ -5,10 +5,10 @@ class OrderProductModel extends PrimitiveProductItemModel {
   int extraPrepareTime = 0;
 
   int get totalPrepareTime =>
-      this.extraPrepareTime + (this.count * this.prepareTime);
+      this.extraPrepareTime + (this.count! * this.prepareTime!);
   bool isComplete = false;
-  DateTime startProcessingDate;
-  DateTime completeDate;
+  DateTime? startProcessingDate;
+  DateTime? completeDate;
 
   OrderProductModel();
 
@@ -34,7 +34,6 @@ class OrderProductModel extends PrimitiveProductItemModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
     try {
-
       data['startProcessingDate'] = this.startProcessingDate;
       if (this.isComplete) {
         data['isComplete'] = this.isComplete;

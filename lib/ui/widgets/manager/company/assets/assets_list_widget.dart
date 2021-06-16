@@ -11,16 +11,15 @@ class AssetListWidget extends StatelessWidget {
   AssetListWidget(this.assets, this.removeHandler);
 
   void _assignEmployeeToAsset({
-    UserModel employee,
-    AssetItemModel asset,
+    UserModel? employee,
+    required AssetItemModel asset,
   }) {
     if (!asset.assignedEmployees
-        .any((assignedEmployee) => assignedEmployee.uid == employee.uid)) {
+        .any((assignedEmployee) => assignedEmployee!.uid == employee!.uid)) {
       asset.assignedEmployees.add(employee);
       asset.updateAssignedEmployeesIds();
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +41,8 @@ class AssetListWidget extends StatelessWidget {
             builder: (context, assign, _) {
               return AssetItemWidget(asset, assign.isNotEmpty, removeHandler);
             },
-            onAccept: (assign) => _assignEmployeeToAsset(asset: asset, employee: assign),
+            onAccept: (assign) =>
+                _assignEmployeeToAsset(asset: asset, employee: assign),
           ),
         );
       },
