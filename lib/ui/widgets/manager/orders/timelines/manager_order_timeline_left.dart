@@ -13,7 +13,7 @@ class ManagerOrderTimelineLeft extends StatefulWidget {
 enum Timeline { BEFORE, AFTER }
 
 class _ManagerOrderTimelineLeftState extends State<ManagerOrderTimelineLeft> {
-  Timer _timer;
+  late Timer _timer;
   bool _isInit = true;
   DateTime now = roundingNow;
 
@@ -64,7 +64,7 @@ class _ManagerOrderTimelineLeftState extends State<ManagerOrderTimelineLeft> {
         formatDateToString(
           time,
           format: 'HH:mm',
-        ),
+        )!,
         style: TextStyle(
           color: Colors.grey,
           fontWeight: FontWeight.bold,

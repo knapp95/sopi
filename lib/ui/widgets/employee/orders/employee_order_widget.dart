@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/assets/assets_model.dart';
@@ -8,6 +9,7 @@ import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_pro
 import 'package:sopi/ui/widgets/employee/orders/processing/employee_order_processing_empty_widget.dart';
 import 'package:sopi/ui/widgets/employee/orders/processing/employee_order_processing_item_widget.dart';
 import 'package:sopi/ui/widgets/employee/orders/waiting/employee_order_waiting_item_widget.dart';
+
 import '../../common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 import 'waiting/employee_order_waiting_empty_widget.dart';
 
@@ -28,17 +30,19 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
             stream: _assetService.queueProductsInAssetsForEmployee,
             builder: (ctx, snapshot) {
               if (!snapshot.hasData) return LoadingDataInProgressWidget();
-              if (snapshot.data.docs.isEmpty)
+              if ((snapshot.data! as QuerySnapshot).docs.isEmpty)
                 return EmployeeOrderWaitingEmptyWidget();
               List<AssetProductModel> allQueueProductsInAssetsForEmployee =
                   AssetsModel.getAllQueueProductsInAssetsForEmployee(
-                      snapshot.data.docs);
+                      (snapshot.data! as QuerySnapshot).docs);
               AssetProductModel processingProduct =
                   allQueueProductsInAssetsForEmployee.firstWhere((element) =>
                       element.status == AssetEnumStatus.PROCESSING);
               List<AssetProductModel> waitingProducts =
-                  allQueueProductsInAssetsForEmployee.where(
-                      (element) => element.status == AssetEnumStatus.WAITING).toList();
+                  allQueueProductsInAssetsForEmployee
+                      .where((element) =>
+                          element.status == AssetEnumStatus.WAITING)
+                      .toList();
               return Column(
                 children: [
                   _buildSection(
@@ -56,7 +60,7 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
     );
   }
 
-  Widget _buildSection({String title, Widget child}) {
+  Widget _buildSection({required String title, Widget? child}) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -68,7 +72,7 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
                 style: TextStyle(color: Colors.grey),
               ),
             ),
-            child,
+            child!,
           ],
         ),
       ),

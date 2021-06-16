@@ -35,15 +35,18 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
                       Expanded(
                         child: Container(
                           height: 1800,
+
                           ///TODO
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data.docs.length,
+                            itemCount:
+                                (snapshot.data! as QuerySnapshot).docs.length,
                             itemBuilder: (_, int index) {
                               QueryDocumentSnapshot assetDoc =
-                                  snapshot.data.docs[index];
+                                  (snapshot.data! as QuerySnapshot).docs[index];
+                              final data = assetDoc.data()! as Map<String, dynamic>;
                               AssetItemModel assetItem =
-                                  AssetItemModel.fromJson(assetDoc.data());
+                                  AssetItemModel.fromJson(data);
                               return ManagerOrderTimelineRight(assetItem);
                             },
                           ),

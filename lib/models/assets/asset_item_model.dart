@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/assets/asset_timeline_settings.dart';
 import 'package:sopi/models/assets/enums/asset_enum_status.dart';
@@ -14,11 +15,11 @@ class AssetItemModel {
   final _orderService = OrderService.singleton;
   final _userService = UserService.singleton;
   final _assetService = AssetService.singleton;
-  String aid;
-  String name;
+  String? aid;
+  String? name;
   bool editMode = false;
-  ProductType assignedProductType;
-  List<UserModel> assignedEmployees = [];
+  ProductType? assignedProductType;
+  List<UserModel?> assignedEmployees = [];
   List<AssetProductModel> queueProducts = [];
 
   List<AssetProductModel> get waitingProducts {
@@ -28,20 +29,19 @@ class AssetItemModel {
         .toList();
   }
 
-  AssetProductModel get processingProduct {
-    return this.queueProducts.firstWhere(
-        (element) => element.status == AssetEnumStatus.PROCESSING,
-        orElse: () => null);
+  AssetProductModel? get processingProduct {
+    return this.queueProducts.firstWhereOrNull(
+        (element) => element.status == AssetEnumStatus.PROCESSING);
   }
 
   /// Get's products from queue who startTimeline < product < endTimeline
   List<AssetProductModel> get queueProductsTimeline {
     return this.queueProducts.where((product) {
-      DateTime productEndDate = product.createDate
-          .add(Duration(minutes: product.totalPrepareTime));
+      DateTime productEndDate =
+          product.createDate!.add(Duration(minutes: product.totalPrepareTime!));
       return productEndDate
               .isAfter(AssetTimelineSettings.availableStartTimeline) &&
-          product.createDate
+          product.createDate!
               .isBefore(AssetTimelineSettings.availableEndTimeline);
     }).toList();
   }
@@ -52,7 +52,7 @@ class AssetItemModel {
       this.name = data['name'];
       this.assignedProductType =
           getProductTypeFromString(data['assignedProductType']);
-      List<dynamic> extractedQueueProducts = data['queueProducts'];
+      List<dynamic>? extractedQueueProducts = data['queueProducts'];
       if (extractedQueueProducts != null) {
         List<AssetProductModel> queueProductsTmp = [];
         for (dynamic product in extractedQueueProducts) {
@@ -67,16 +67,17 @@ class AssetItemModel {
 
   /// CALLING WHEN CLIENT ORDERED A NEW ORDER
   Future<void> addProduct(
-      String name, String pid, String oid, int totalPrepareTime) async {
+      String? name, String? pid, String oid, int totalPrepareTime) async {
     AssetProductModel assetProductModel =
         AssetProductModel(name, pid, oid, totalPrepareTime);
     await this.addProductToQueue(assetProductModel);
   }
 
   /// CALLING WHEN EMPLOYEE SET ACTUAL PREPARE PRODUCT AS COMPLETED
-  Future<Null> completeProcessingProduct() async {
-    this.processingProduct.status = AssetEnumStatus.PAST;
-    AssetProductModel firstWaitingProduct = this.waitingProducts.first;
+  Future<void> completeProcessingProduct() async {
+    this.processingProduct!.status = AssetEnumStatus.PAST;
+    AssetProductModel? firstWaitingProduct =
+        this.waitingProducts.length > 0 ? this.waitingProducts.first : null;
     if (firstWaitingProduct != null) {
       firstWaitingProduct.status = AssetEnumStatus.PROCESSING;
       this.updateProcessingProduct(firstWaitingProduct);
@@ -91,7 +92,7 @@ class AssetItemModel {
 
     OrderModel order = await _orderService.getOrderById(oid);
 
-    OrderProductModel orderProductModel = order.getProductByPid(pid);
+    OrderProductModel orderProductModel = order.getProductByPid(pid)!;
     orderProductModel.startProcessingDate = DateTime.now();
     _orderService.updateOrder(oid, order);
   }
@@ -107,11 +108,11 @@ class AssetItemModel {
     await this.updateQueueProducts();
   }
 
-  Future<Null> setAssignedEmployees(List<String> assignedEmployeesIds) async {
-    List<UserModel> assignedEmployees = [];
+  Future<void> setAssignedEmployees(List<String> assignedEmployeesIds) async {
+    List<UserModel?> assignedEmployees = [];
     for (String id in assignedEmployeesIds) {
       DocumentSnapshot user = await _userService.getDoc(uid: id).get();
-      final data = user.data();
+      final data = user.data()! as Map<String, dynamic>;
       assignedEmployees.add(UserModel.fromJson(data));
     }
     this.assignedEmployees = assignedEmployees;
@@ -126,21 +127,21 @@ class AssetItemModel {
     await _assetService.updateDoc(this.aid, data);
   }
 
-  Future<Null> updateAssignedEmployeesIds() async {
-    List<String> assignedEmployeesIds =
-        this.assignedEmployees.map((employee) => employee.uid).toList();
+  Future<void> updateAssignedEmployeesIds() async {
+    List<String?> assignedEmployeesIds =
+        this.assignedEmployees.map((employee) => employee!.uid).toList();
 
     final data = {'assignedEmployeesIds': assignedEmployeesIds};
     await _assetService.updateDoc(this.aid, data);
   }
 
-  Future<Null> updateName() async {
+  Future<void> updateName() async {
     final data = {'name': this.name};
     await _assetService.updateDoc(this.aid, data);
   }
 
-  Future<Null> removeAssignedEmployee(String id) async {
-    this.assignedEmployees.removeWhere((employee) => employee.uid == id);
+  Future<void> removeAssignedEmployee(String id) async {
+    this.assignedEmployees.removeWhere((employee) => employee!.uid == id);
     this.updateAssignedEmployeesIds();
   }
 }

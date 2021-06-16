@@ -1,21 +1,23 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:collection/collection.dart' show IterableExtension;
+
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/services/authentication/authentication_service.dart';
 
 import 'products/order_product_model.dart';
 
 class OrderModel {
-  OrderStatus status = OrderStatus.WAITING;
-  DateTime createDate;
-  String clientID;
-  List<String> assignedPerson;
-  int currentPositionInQueue;
-  Color color;
-  int humanNumber;
-  List<OrderProductModel> products = [];
-  double totalPrice;
+  OrderStatus? status = OrderStatus.WAITING;
+  DateTime? createDate;
+  String? clientID;
+  List<String>? assignedPerson;
+  int? currentPositionInQueue;
+  late Color color;
+  int? humanNumber;
+  List<OrderProductModel>? products = [];
+  double? totalPrice;
 
   OrderModel.fromBasket({
     this.createDate,
@@ -26,7 +28,6 @@ class OrderModel {
     this.clientID = AuthenticationService.uid;
   }
 
-
   OrderModel.fromJson(Map<String, dynamic> data) {
     try {
       this.createDate = data['createDate']?.toDate();
@@ -36,7 +37,7 @@ class OrderModel {
       this.assignedPerson = data['assignedPerson'];
       this.humanNumber = data['humanNumber'];
       this.color = Color(data['color']);
-      List<dynamic> extractedProducts = data['products'];
+      List<dynamic>? extractedProducts = data['products'];
       if (extractedProducts != null) {
         List<OrderProductModel> productsTmp = [];
         for (dynamic product in extractedProducts) {
@@ -61,7 +62,7 @@ class OrderModel {
       data['color'] = Random().nextInt(0xffffffff);
       if (this.products != null) {
         List<dynamic> productsTmp = [];
-        for (OrderProductModel product in this.products) {
+        for (OrderProductModel product in this.products!) {
           productsTmp.add(product.toJson());
         }
         data['products'] = productsTmp;
@@ -76,9 +77,9 @@ class OrderModel {
   int get prepareTime {
     int prepareTime = 0;
     try {
-      this.products.forEach((product) {
+      this.products!.forEach((product) {
         prepareTime +=
-            product.extraPrepareTime + (product.count * product.prepareTime);
+            product.extraPrepareTime + (product.count! * product.prepareTime!);
       });
     } catch (e) {
       throw e;
@@ -86,10 +87,8 @@ class OrderModel {
     return prepareTime;
   }
 
-  OrderProductModel getProductByPid(String pid) {
-    return this
-        .products
-        .firstWhere((element) => element.pid == pid, orElse: () => null);
+  OrderProductModel? getProductByPid(String? pid) {
+    return this.products!.firstWhereOrNull((element) => element.pid == pid);
   }
 
   String get statusDisplay {

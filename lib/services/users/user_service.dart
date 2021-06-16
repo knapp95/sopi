@@ -23,12 +23,14 @@ class UserService {
         .get();
 
     querySnapshot.docs.forEach((userDoc) {
-      userList.add(UserModel.fromJson(userDoc.data()));
+
+      final data = userDoc.data()! as Map<String, dynamic>;
+      userList.add(UserModel.fromJson(data));
     });
     return userList;
   }
 
-  DocumentReference getDoc({String uid}) {
+  DocumentReference getDoc({String? uid}) {
     return _usersCollection.doc(uid);
   }
 
@@ -41,13 +43,13 @@ class UserService {
     doc.set(data);
   }
 
-  Future<String> getUserTypeAccount() async {
+  Future<String?> getUserTypeAccount() async {
     try {
       DocumentReference doc = _usersCollection.doc(AuthenticationService.uid);
-      final data = (await doc.get()).data();
+      final data = (await doc.get()).data()! as Map<String, dynamic>;
       return data['typeAccount'];
     } catch (e) {
-      return e;
+      throw e;
     }
   }
 }

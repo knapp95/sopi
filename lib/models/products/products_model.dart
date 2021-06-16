@@ -1,5 +1,5 @@
-import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:flutter/material.dart';
+import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/models/products/product_type_model.dart';
@@ -35,7 +35,7 @@ class ProductsModel with ChangeNotifier {
     return availableProductsTypesGeneric;
   }
 
-  static String getTypeName(ProductType type) {
+  static String getTypeName(ProductType? type) {
     return types.firstWhere((product) => product.type == type).name;
   }
 
@@ -72,7 +72,7 @@ class ProductsModel with ChangeNotifier {
         productsByType =
             this.products.where((product) => product.type == type).toList();
     }
-    productsByType.sort((a, b) => a.price?.compareTo(b.price));
+    productsByType.sort((a, b) => a.price!.compareTo(b.price!));
     return productsByType;
   }
 }

@@ -60,7 +60,6 @@ class _ManagerWidgetState extends State<ManagerWidget> {
       onPageChanged: (index) {
         _pageChanged(index);
       },
-
       children: children,
     );
   }
@@ -79,7 +78,6 @@ class _ManagerWidgetState extends State<ManagerWidget> {
         ),
         label: 'Company',
       ),
-
       BottomNavigationBarItem(
         icon: Icon(
           Icons.pie_chart,

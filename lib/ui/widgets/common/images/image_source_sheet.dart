@@ -1,20 +1,20 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageSourceSheet extends StatelessWidget {
   /// Optional maximum height of image
-  final double maxHeight;
+  final double? maxHeight;
 
   /// Optional maximum width of image
-  final double maxWidth;
+  final double? maxWidth;
 
   /// The imageQuality argument modifies the quality of the image, ranging from
   /// 0-100 where 100 is the original/max quality. If imageQuality is null, the
   /// image with the original quality will be returned.
-  final int imageQuality;
+  final int? imageQuality;
 
   /// Use preferredCameraDevice to specify the camera to use when the source is
   /// `ImageSource.camera`. The preferredCameraDevice is ignored when source is
@@ -25,16 +25,16 @@ class ImageSourceSheet extends StatelessWidget {
   /// Callback when an image is selected.
   ///
   /// **Note**: This will work on web platform whereas [onImageSelected] will not.
-  final Function(Image) onImage;
+  final Function(Image)? onImage;
 
   /// Callback when an image is selected.
   ///
   /// **Warning**: This will _NOT_ work on web platform because [File] is not
   /// available.
-  final Function(File) onImageSelected;
+  final Function(File)? onImageSelected;
 
   ImageSourceSheet({
-    Key key,
+    Key? key,
     this.maxHeight,
     this.maxWidth,
     this.imageQuality,
@@ -56,7 +56,7 @@ class ImageSourceSheet extends StatelessWidget {
     if (null != pickedFile) {
       if (null != onImage) {
         final image = Image.memory(await pickedFile.readAsBytes());
-        onImage(image);
+        onImage!(image);
       }
 
       if (null != onImageSelected) {
@@ -66,7 +66,7 @@ class ImageSourceSheet extends StatelessWidget {
 
         final imageFile = File(pickedFile.path);
         assert(null != imageFile);
-        onImageSelected(imageFile);
+        onImageSelected!(imageFile);
       }
     }
   }

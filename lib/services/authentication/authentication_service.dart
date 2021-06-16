@@ -6,17 +6,18 @@ class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
   final _userService = UserService.singleton;
 
-  static String get uid => FirebaseAuth.instance.currentUser.uid;
+  static String get uid => FirebaseAuth.instance.currentUser!.uid;
 
   AuthenticationService(this._firebaseAuth);
 
-  Stream<User> get authStateChanges => _firebaseAuth.idTokenChanges();
+  Stream<User?> get authStateChanges => _firebaseAuth.idTokenChanges();
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }
 
-  Future<GenericResponseModel> signIn({String email, String password}) async {
+  Future<GenericResponseModel> signIn(
+      {required String email, required String password}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
@@ -26,11 +27,12 @@ class AuthenticationService {
     }
   }
 
-  Future<GenericResponseModel> signUp({String email, String password}) async {
+  Future<GenericResponseModel> signUp(
+      {required String email, required String password}) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-      final uid = _firebaseAuth.currentUser.uid;
+      final uid = _firebaseAuth.currentUser!.uid;
       _userService.addUser(uid);
       return GenericResponseModel("Signed up");
     } on FirebaseAuthException catch (e) {
@@ -38,7 +40,7 @@ class AuthenticationService {
     }
   }
 
-  Future<GenericResponseModel> resetPassword({String email}) async {
+  Future<GenericResponseModel> resetPassword({required String email}) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
       return GenericResponseModel("Mail is sended");

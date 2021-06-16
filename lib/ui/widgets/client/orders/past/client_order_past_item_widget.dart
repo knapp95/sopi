@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/common/scripts.dart';
+import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class ClientOrderPastItemWidget extends StatelessWidget {
@@ -25,11 +25,11 @@ class ClientOrderPastItemWidget extends StatelessWidget {
             Text('#${orderPast.humanNumber}', style: textStyle),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: orderPast.products
+              children: orderPast.products!
                   .map((product) => Row(
                         children: [
                           Text('${product.count}x ', style: textStyle),
-                          Text(product.name, style: textStyle),
+                          Text(product.name!, style: textStyle),
                         ],
                       ))
                   .toList(),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/models/products/product_type_model.dart';
 import 'package:sopi/models/products/products_model.dart';
+
 import 'list/products_list.dart';
-import 'package:sopi/common/scripts.dart';
-import 'package:provider/provider.dart';
+
 class ProductWidget extends StatefulWidget {
   @override
   _ProductsScreenState createState() => _ProductsScreenState();
@@ -14,11 +16,11 @@ class _ProductsScreenState extends State<ProductWidget>
     with TickerProviderStateMixin {
   bool _isInit = false;
   int _selectedIndex = 0;
-  TabController _tabController;
-  TextEditingController _searchController;
+  TabController? _tabController;
+  TextEditingController? _searchController;
 
   bool _searchActive = false;
-  ProductsModel _products;
+  late ProductsModel _products;
   List<ProductItemModel> _searchResult = [];
 
   @override
@@ -26,10 +28,10 @@ class _ProductsScreenState extends State<ProductWidget>
     _searchController = TextEditingController();
     _tabController =
         TabController(length: ProductsModel.types.length, vsync: this);
-    _tabController.addListener(() {
+    _tabController!.addListener(() {
       setState(() {
         _searchClear();
-        _selectedIndex = _tabController.index;
+        _selectedIndex = _tabController!.index;
       });
     });
     super.initState();
@@ -47,8 +49,8 @@ class _ProductsScreenState extends State<ProductWidget>
 
   @override
   void dispose() {
-    _searchController.dispose();
-    _tabController.dispose();
+    _searchController!.dispose();
+    _tabController!.dispose();
     super.dispose();
   }
 
@@ -60,9 +62,9 @@ class _ProductsScreenState extends State<ProductWidget>
       }
       ProductTypeModel openedProducts = ProductsModel.types[_selectedIndex];
       List<ProductItemModel> productsByType =
-      _products.getSortedProductsByType(openedProducts.type);
+          _products.getSortedProductsByType(openedProducts.type);
       _searchResult = productsByType
-          .where((product) => containsIgnoreCase(product.name, text))
+          .where((product) => containsIgnoreCase(product.name!, text)!)
           .toList();
     });
   }
@@ -70,7 +72,7 @@ class _ProductsScreenState extends State<ProductWidget>
   void _searchClear() {
     _searchActive = false;
     _searchResult.clear();
-    _searchController.clear();
+    _searchController!.clear();
   }
 
   @override
@@ -132,7 +134,7 @@ class _ProductsScreenState extends State<ProductWidget>
     List<Widget> tabsContent = ProductsModel.types.map((element) {
       List<ProductItemModel> productsByType = [];
 
-      if (_searchResult.length != 0 || _searchController.text.isNotEmpty) {
+      if (_searchResult.length != 0 || _searchController!.text.isNotEmpty) {
         productsByType = _searchResult;
       } else {
         productsByType = _products.getSortedProductsByType(element.type);

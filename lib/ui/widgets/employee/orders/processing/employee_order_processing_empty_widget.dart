@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-
 class EmployeeOrderProcessingEmptyWidget extends StatelessWidget {
   final IconData icon;
   final String statusLabel;
@@ -20,7 +19,7 @@ class EmployeeOrderProcessingEmptyWidget extends StatelessWidget {
           Text(
             statusLabel,
             style:
-            TextStyle(fontWeight: FontWeight.bold, color: Colors.black12),
+                TextStyle(fontWeight: FontWeight.bold, color: Colors.black12),
           ),
         ],
       ),

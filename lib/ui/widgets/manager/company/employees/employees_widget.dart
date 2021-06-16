@@ -12,7 +12,7 @@ class EmployeesWidget extends StatefulWidget {
 
 class _EmployeesWidgetState extends State<EmployeesWidget> {
   final _userService = UserService.singleton;
-  List<UserModel> _users;
+  late List<UserModel> _users;
   bool _isInit = false;
   bool _isLoading = false;
 
@@ -50,69 +50,66 @@ class _EmployeesWidgetState extends State<EmployeesWidget> {
                     UserModel user = _users[index];
                     return Card(
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  user.username!,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      user.username,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                    FaIcon(
+                                      FontAwesomeIcons.solidStar,
+                                      color: Colors.yellow,
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        FaIcon(
-                                          FontAwesomeIcons.solidStar,
-                                          color: Colors.yellow,
-                                        ),
-                                        Text('4.43 / 5')
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          height: 20,
-                                          width: 20,
-                                          margin:
-                                              EdgeInsets.only(right: 8, top: 8),
-                                          decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        Text('Offline'),
-                                      ],
-                                    ),
+                                    Text('4.43 / 5')
                                   ],
                                 ),
-                              ),
-                              Container(
-                                width: 100.0,
-                                height: 100.0,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      'assets/images/no_photo.png',
+                                Row(
+                                  children: [
+                                    Container(
+                                      height: 20,
+                                      width: 20,
+                                      margin: EdgeInsets.only(right: 8, top: 8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
                                     ),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(50.0),
-                                  ),
-                                  border: Border.all(
-                                    color: primaryColor,
-                                    width: 1,
-                                  ),
+                                    Text('Offline'),
+                                  ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ));
+                          Container(
+                            width: 100.0,
+                            height: 100.0,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  'assets/images/no_photo.png',
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(50.0),
+                              ),
+                              border: Border.all(
+                                color: primaryColor,
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ));
                   },
                 ),
               ),

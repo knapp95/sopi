@@ -4,16 +4,16 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  get: ^4.1.2
+  get: ^4.1.4
   provider: ^5.0.0
-  http: ^0.13.1
+  http: ^0.13.3
   font_awesome_flutter: ^9.0.0
   flutter_speed_dial: ^3.0.5 # floating action button
   modal_bottom_sheet: ^2.0.0 # bottom sheet dialog
@@ -24,9 +24,10 @@ dependencies:
   flutter_form_builder: ^6.0.1
   firebase_storage: ^8.0.1
   firebase_auth: ^1.0.1
-  cloud_firestore: ^1.0.3
+  cloud_firestore: ^2.2.2
   image_cropper: ^1.4.0
-  image_picker: ^0.7.4
+  image_picker: ^0.8.0+3
+  collection: ^1.15.0-nullsafety.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

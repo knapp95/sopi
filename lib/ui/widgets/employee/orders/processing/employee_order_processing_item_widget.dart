@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/common/scripts.dart';
@@ -19,26 +20,29 @@ import 'package:sopi/ui/widgets/employee/orders/dialogs/employee_order_dialog_ad
 class EmployeeOrderProcessingItemWidget extends StatefulWidget {
   final AssetProductModel assetProductModel;
 
-  const EmployeeOrderProcessingItemWidget(this.assetProductModel, key) : super(key: key);
+  const EmployeeOrderProcessingItemWidget(this.assetProductModel, key)
+      : super(key: key);
 
   @override
-  _EmployeeOrderProcessingItemWidgetState createState() => _EmployeeOrderProcessingItemWidgetState(
-      this.assetProductModel.oid, this.assetProductModel.pid);
+  _EmployeeOrderProcessingItemWidgetState createState() =>
+      _EmployeeOrderProcessingItemWidgetState(
+          this.assetProductModel.oid, this.assetProductModel.pid);
 }
 
-class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcessingItemWidget> {
+class _EmployeeOrderProcessingItemWidgetState
+    extends State<EmployeeOrderProcessingItemWidget> {
   final OrderFactory _orderFactory = OrderFactory.singleton;
   final _orderService = OrderService.singleton;
-  final String oid;
-  final String pid;
-  Duration _timePrepare;
-  Timer _timer;
+  final String? oid;
+  final String? pid;
+  Duration? _timePrepare;
+  late Timer _timer;
 
   _EmployeeOrderProcessingItemWidgetState(this.oid, this.pid);
 
-  OrderModel _orderModel;
-  OrderProductModel _orderProductModel;
-  ProductItemModel _productItemModel;
+  late OrderModel _orderModel;
+  OrderProductModel? _orderProductModel;
+  late ProductItemModel _productItemModel;
 
   bool _isInit = true;
   bool _isLoading = false;
@@ -67,8 +71,7 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
     return durationInMinutes(_timePrepare);
   }
 
-  Future<Null> _loadData() async {
-
+  Future<void> _loadData() async {
     final productService = ProductService.singleton;
     _orderModel = await _orderService.getOrderById(this.oid);
     _orderProductModel = _orderModel.getProductByPid(pid);
@@ -83,7 +86,7 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
     if (_isLoading) return;
     setState(() {
       final now = DateTime.now();
-      _timePrepare = now.difference(_orderProductModel.startProcessingDate);
+      _timePrepare = now.difference(_orderProductModel!.startProcessingDate!);
     });
   }
 
@@ -92,19 +95,19 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
       ConfirmDialog('Set ${_productItemModel.name} as done?'),
     );
     if (confirm) {
-      _orderProductModel.setAsComplete();
+      _orderProductModel!.setAsComplete();
       _orderService.updateOrder(oid, _orderModel);
-      _orderFactory.completeOrderProduct(oid, _orderProductModel);
+      _orderFactory.completeOrderProduct(oid, _orderProductModel!);
     }
   }
 
   void _addTimeToOrder() async {
     final result = await showScaleDialog(
-      EmployeeOrderDialogAddExtraTimeWidget(_orderProductModel.prepareTime,
-          _orderProductModel.extraPrepareTime, _orderModel.createDate),
+      EmployeeOrderDialogAddExtraTimeWidget(_orderProductModel!.prepareTime,
+          _orderProductModel!.extraPrepareTime, _orderModel.createDate),
     );
     if (result != null) {
-      _orderProductModel.extraPrepareTime = result;
+      _orderProductModel!.extraPrepareTime = result;
       _orderService.updateOrder(oid, _orderModel);
     }
   }
@@ -129,7 +132,8 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
                           child: Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: NetworkImage(_productItemModel.imageUrl),
+                                image:
+                                    NetworkImage(_productItemModel.imageUrl!),
                                 fit: BoxFit.fitWidth,
                               ),
                             ),
@@ -182,10 +186,10 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
   }
 
   Widget _buildPositionedInfo(
-      {String label1,
-      String label2,
-      Widget child1,
-      Widget child2,
+      {String? label1,
+      String? label2,
+      Widget? child1,
+      Widget? child2,
       left,
       right}) {
     return Positioned(
@@ -196,9 +200,9 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
         crossAxisAlignment:
             left != null ? CrossAxisAlignment.start : CrossAxisAlignment.end,
         children: <Widget>[
-          child1 ?? _buildOrderInfoRow(label1),
+          child1 ?? _buildOrderInfoRow(label1!),
           formSizedBoxHeight,
-          child2 ?? _buildOrderInfoRow(label2),
+          child2 ?? _buildOrderInfoRow(label2!),
         ],
       ),
     );
@@ -218,8 +222,8 @@ class _EmployeeOrderProcessingItemWidgetState extends State<EmployeeOrderProcess
   }
 
   Widget _buildTimeOrder() {
-    int prepareTime = _orderProductModel.prepareTime;
-    int extraTime = _orderProductModel.extraPrepareTime;
+    int? prepareTime = _orderProductModel!.prepareTime;
+    int extraTime = _orderProductModel!.extraPrepareTime;
 
     return Container(
       color: primaryColor,

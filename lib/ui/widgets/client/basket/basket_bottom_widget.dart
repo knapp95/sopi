@@ -7,16 +7,18 @@ import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
+
 import 'dialogs/basket_successAdd_dialog.dart';
 
 class BasketBottomWidget extends StatelessWidget {
   final OrderFactory _orderFactory = OrderFactory.singleton;
   final BasketModel _basket =
-      Provider.of<BasketModel>(Get.context, listen: false);
+      Provider.of<BasketModel>(Get.context!, listen: false);
 
-  Future<Null> _confirmOrder() async {
+  Future<void> _confirmOrder() async {
     /// FEATURE'S PAYMENT'S
-    final orderNumber = await _orderFactory.createOrder(_basket.productsOrder, _basket.summaryPrice);
+    final orderNumber = await _orderFactory.createOrder(
+        _basket.productsOrder, _basket.summaryPrice);
     _basket.clearBasket();
     Get.back();
 

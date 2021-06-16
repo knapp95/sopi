@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+
 class LoadingDataInProgressWidget extends StatelessWidget {
   final String message;
   final bool withScaffold;
-  LoadingDataInProgressWidget({this.message = 'Loading data is progress', this.withScaffold = false});
+
+  LoadingDataInProgressWidget(
+      {this.message = 'Loading data is progress', this.withScaffold = false});
 
   @override
   Widget build(BuildContext context) {
@@ -25,5 +28,4 @@ class LoadingDataInProgressWidget extends StatelessWidget {
       ),
     );
   }
-
 }

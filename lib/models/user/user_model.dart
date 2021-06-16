@@ -4,14 +4,14 @@ import 'package:sopi/services/users/user_service.dart';
 
 class UserModel with ChangeNotifier {
   final _userService = UserService.singleton;
-  UserType typeAccount;
-  String uid;
-  String name;
-  String email;
-  String username;
-  String status;
-  int state;
-  String profilePhoto;
+  UserType? typeAccount;
+  String? uid;
+  String? name;
+  String? email;
+  String? username;
+  String? status;
+  int? state;
+  String? profilePhoto;
 
   UserModel();
 
@@ -25,13 +25,13 @@ class UserModel with ChangeNotifier {
     this.profilePhoto = data['profilePhoto'];
   }
 
-  Future<Null> getUserTypeAccountFromFirebase() async {
+  Future<void> getUserTypeAccountFromFirebase() async {
     try {
       final typeAccountData = await _userService.getUserTypeAccount();
       this.typeAccount = getUserTypeFromString(typeAccountData);
       notifyListeners();
     } catch (e) {
-      return e;
+      throw e;
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/products/primitive_product_item_model.dart';
@@ -7,9 +8,9 @@ import 'package:sopi/services/products/product_service.dart';
 
 class ProductItemModel extends PrimitiveProductItemModel {
   final _productService = ProductService.singleton;
-  String imageUrl;
-  String description;
-  double price;
+  String? imageUrl;
+  String? description;
+  double? price;
 
   ProductItemModel();
 
@@ -18,7 +19,7 @@ class ProductItemModel extends PrimitiveProductItemModel {
     return rng.nextInt(6).toDouble();
   }
 
-  String get displayTotalPrice => fixedDouble(this.price * this.count);
+  String get displayTotalPrice => fixedDouble(this.price! * this.count!);
 
   ProductItemModel.fromJson(Map<String, dynamic> data) : super.fromJson(data) {
     try {
@@ -71,7 +72,7 @@ class ProductItemModel extends PrimitiveProductItemModel {
     }
   }
 
-  Future<void> saveProductToFirebase({File image}) async {
+  Future<void> saveProductToFirebase({File? image}) async {
     try {
       final _document = _productService.getDoc(this.pid);
       bool isNew = this.pid == null;
@@ -89,7 +90,7 @@ class ProductItemModel extends PrimitiveProductItemModel {
         await _document.update(data);
       }
     } catch (e) {
-      return e;
+      throw e;
     }
   }
 

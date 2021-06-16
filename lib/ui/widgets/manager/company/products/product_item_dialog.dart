@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -9,13 +10,12 @@ import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:get/get.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/common/images/image_source_sheet.dart';
 
 class ProductItemDialog extends StatefulWidget {
   final bool isNew;
-  final String pid;
+  final String? pid;
 
   ProductItemDialog({this.isNew = false, this.pid});
 
@@ -26,9 +26,9 @@ class ProductItemDialog extends StatefulWidget {
 class _ProductItemDialogState extends State<ProductItemDialog> {
   final FieldBuilderFactory _formFactory = FieldBuilderFactory();
   bool _isInit = false;
-  ProductsModel _products;
-  ProductItemModel _product;
-  PickedFile _imageFile;
+  late ProductsModel _products;
+  ProductItemModel? _product;
+  PickedFile? _imageFile;
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
 
   Future<void> _cropImage(File imageFile) async {
     try {
-      File croppedFile = await ImageCropper.cropImage(
+      File? croppedFile = await ImageCropper.cropImage(
         aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
         sourcePath: imageFile.path,
         androidUiSettings: AndroidUiSettings(
@@ -76,7 +76,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
       );
       if (croppedFile != null) {
         setState(() {
-          _imageFile = PickedFile(croppedFile?.path) ?? _imageFile;
+          _imageFile = PickedFile(croppedFile.path);
         });
       }
     } catch (e) {
@@ -85,8 +85,8 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
   }
 
   Future<void> _submit() async {
-    final image = _imageFile != null ? File(_imageFile.path) : null;
-    await _product.saveProductToFirebase(image: image);
+    final image = _imageFile != null ? File(_imageFile!.path) : null;
+    await _product!.saveProductToFirebase(image: image);
     _products.fetchProducts();
     Get.back();
   }
@@ -109,17 +109,17 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
                     _formFactory.buildTextField(
                       labelText: 'Name',
                       fieldName: 'name',
-                      initialValue: _product.name,
+                      initialValue: _product!.name,
                     ),
                     _formFactory.buildTextField(
                       labelText: 'Description',
                       fieldName: 'description',
-                      initialValue: _product.description,
+                      initialValue: _product!.description,
                       maxLines: 5,
                     ),
                     _formFactory.buildTextField(
                       fieldName: 'price',
-                      initialValue: _product.price?.toString(),
+                      initialValue: _product!.price?.toString(),
                       labelText: 'Price',
                       keyboardType: TextInputType.number,
                       suffixIcon: Icon(Icons.attach_money),
@@ -127,18 +127,19 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
                     Row(
                       children: [
                         Expanded(
-                         child: _formFactory.buildDropdownField(
-                           fieldName: 'type',
-                           initialValue: (_product.type ?? ProductType.BURGER).toString(),
-                           labelText: 'Type',
-                           items: ProductsModel.availableProductsTypesGeneric,
-                         ),
-                       ),
+                          child: _formFactory.buildDropdownField(
+                            fieldName: 'type',
+                            initialValue: (_product!.type ?? ProductType.BURGER)
+                                .toString(),
+                            labelText: 'Type',
+                            items: ProductsModel.availableProductsTypesGeneric,
+                          ),
+                        ),
                         formSizedBoxWidth,
                         Expanded(
                           child: _formFactory.buildDropdownField(
                             fieldName: 'prepareTime',
-                            initialValue:  _product.prepareTime ?? '30',
+                            initialValue: _product!.prepareTime ?? '30',
                             labelText: 'Prepare time',
                             items: ProductsModel.times,
                           ),
@@ -173,13 +174,13 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
         ),
       ],
     );
-    Widget image;
-    if (_product.imageUrl != null) {
-      image = Image.network(_product.imageUrl);
+    Widget? image;
+    if (_product!.imageUrl != null) {
+      image = Image.network(_product!.imageUrl!);
     }
 
     if (_imageFile != null) {
-      image = Image.file(File(_imageFile.path));
+      image = Image.file(File(_imageFile!.path));
     }
 
     if (image == null) {

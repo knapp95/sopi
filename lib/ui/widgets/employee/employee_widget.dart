@@ -47,10 +47,7 @@ class _EmployeeWidgetState extends State<EmployeeWidget> {
   }
 
   Widget _buildPageView() {
-    List<Widget> children = [
-      EmployeeOrderWidget(),
-      AccountWidget()
-    ];
+    List<Widget> children = [EmployeeOrderWidget(), AccountWidget()];
     return PageView(
       controller: _pageController,
       onPageChanged: (index) {

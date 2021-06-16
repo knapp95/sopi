@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sopi/common/scripts.dart';
@@ -6,9 +7,9 @@ import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class EmployeeOrderDialogAddExtraTimeWidget extends StatefulWidget {
-  final int initialTime;
+  final int? initialTime;
   final int extraTime;
-  final DateTime startOrderTime;
+  final DateTime? startOrderTime;
 
   EmployeeOrderDialogAddExtraTimeWidget(
       this.initialTime, this.extraTime, this.startOrderTime);
@@ -20,10 +21,10 @@ class EmployeeOrderDialogAddExtraTimeWidget extends StatefulWidget {
 
 class _EmployeeOrderDialogAddExtraTimeWidgetState
     extends State<EmployeeOrderDialogAddExtraTimeWidget> {
-  Duration _timePrepare;
-  Timer _timer;
-  int _extraTime;
-  double size = MediaQuery.of(Get.context).size.width / 6;
+  Duration? _timePrepare;
+  late Timer _timer;
+  int? _extraTime;
+  double size = MediaQuery.of(Get.context!).size.width / 6;
 
   @override
   void initState() {
@@ -40,7 +41,7 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
   }
 
   void changeExtraTime(int addTime) {
-    int newCurrentTime = this._extraTime + addTime;
+    int newCurrentTime = this._extraTime! + addTime;
     setState(() {
       this._extraTime = newCurrentTime;
     });
@@ -49,7 +50,7 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
   void _getTime() {
     setState(() {
       final now = DateTime.now();
-      _timePrepare = now.difference(widget.startOrderTime);
+      _timePrepare = now.difference(widget.startOrderTime!);
     });
   }
 
@@ -59,7 +60,7 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
 
   Color get colorForOrderTime {
     final int differenceInMinutes =
-        _timePrepare.inMinutes - (widget.initialTime + _extraTime);
+        _timePrepare!.inMinutes - (widget.initialTime! + _extraTime!);
     Color colorForOrderTime = Colors.black;
 
     if (differenceInMinutes < -5) {
@@ -73,7 +74,7 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
     return colorForOrderTime;
   }
 
-  Color get colorForExtraTime => _extraTime > 0 ? Colors.red : primaryColor;
+  Color get colorForExtraTime => _extraTime! > 0 ? Colors.red : primaryColor;
 
   Future<void> _submit() async {
     Get.back(result: _extraTime);
@@ -168,7 +169,9 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
                   ),
                   if (_extraTime != 0)
                     Text(
-                      _extraTime > 0 ? '+$_extraTime' : '-${_extraTime.abs()}',
+                      _extraTime! > 0
+                          ? '+$_extraTime'
+                          : '-${_extraTime!.abs()}',
                       style: TextStyle(
                         color: colorForExtraTime,
                         fontWeight: FontWeight.bold,

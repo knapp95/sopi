@@ -1,16 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:sopi/home_page_wrapper.dart';
 import 'package:sopi/models/assets/assets_model.dart';
 import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/models/user/user_model.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sopi/services/authentication/authentication_service.dart';
 import 'package:sopi/ui/shared/styles/theme_data_style.dart';
 import 'package:sopi/ui/widgets/authorization/authorization_widget.dart';
+import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
+
 import 'models/products/products_model.dart';
 
 Future<void> main() async {
@@ -45,6 +47,7 @@ class MyApp extends StatelessWidget {
         StreamProvider(
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
+          initialData: null,
         )
       ],
       child: GetMaterialApp(
@@ -60,14 +63,18 @@ class MyApp extends StatelessWidget {
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User>();
-
-    if (firebaseUser != null) {
-      Provider.of<UserModel>(context, listen: false)
-          .getUserTypeAccountFromFirebase();
-
-      return HomePageWrapper();
-    }
-    return AuthorizationWidget();
+    return StreamBuilder(
+        stream: context.read<AuthenticationService>().authStateChanges,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return LoadingDataInProgressWidget(withScaffold: true);
+          } else if (snapshot.hasData) {
+            Provider.of<UserModel>(context, listen: false)
+                .getUserTypeAccountFromFirebase();
+            return HomePageWrapper();
+          } else {
+            return AuthorizationWidget();
+          }
+        });
   }
 }

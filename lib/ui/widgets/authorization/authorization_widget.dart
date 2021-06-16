@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/common/scripts.dart';
-import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/factory/field_builder_factory.dart';
+import 'package:sopi/models/generic/generic_response_model.dart';
 import 'package:sopi/services/authentication/authentication_service.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
@@ -32,7 +32,7 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
     //   return;
     // }
 
-    _formKey.currentState.save();
+    _formKey.currentState!.save();
     GenericResponseModel responseMessage;
     switch (_authMode) {
       case AuthMode.singIn:
@@ -76,7 +76,7 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
         }
         break;
     }
-    if (responseMessage != null)
+    if (responseMessage.message != null)
       showBottomNotification(context, responseMessage);
   }
 
@@ -84,7 +84,7 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
     return _authMode == AuthMode.singIn;
   }
 
-  void _switchAuthMode({AuthMode resetPassword}) {
+  void _switchAuthMode({AuthMode? resetPassword}) {
     if (resetPassword != null) {
       setState(() {
         _authMode = AuthMode.resetPassword;
