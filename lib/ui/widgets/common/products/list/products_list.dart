@@ -9,10 +9,11 @@ import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/products/product_service.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/widgets/client/products/product_item_dialog.dart'
-as productClient;
+    as productClient;
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 import 'package:sopi/ui/widgets/common/products/list/productsEmpty_list.dart';
-import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog.dart' as productManager;
+import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog.dart'
+    as productManager;
 
 class ProductsList extends StatelessWidget {
   final _productService = ProductService.singleton;

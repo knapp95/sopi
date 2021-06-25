@@ -129,8 +129,8 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
                         Expanded(
                           child: _formFactory.buildDropdownField(
                             fieldName: 'type',
-                            initialValue: (_product!.type ?? ProductType.BURGER)
-                                .toString(),
+                            initialValue:
+                                (_product!.type ?? ProductType.BURGER),
                             labelText: 'Type',
                             items: ProductsModel.availableProductsTypesGeneric,
                           ),
@@ -139,7 +139,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
                         Expanded(
                           child: _formFactory.buildDropdownField(
                             fieldName: 'prepareTime',
-                            initialValue: _product!.prepareTime ?? '30',
+                            initialValue: _product!.prepareTime ?? 30,
                             labelText: 'Prepare time',
                             items: ProductsModel.times,
                           ),

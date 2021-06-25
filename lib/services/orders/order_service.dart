@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:get/get.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/generic/generic_response_model.dart';
@@ -32,7 +33,7 @@ class OrderService {
   Future<void> updateOrderStatusToProcessing(oid) async {
     _ordersCollection
         .doc(oid)
-        .update({'status': OrderStatus.PROCESSING.toString()});
+        .update({'status': OrderStatus.PROCESSING});
   }
 
   void updateOrder(String? oid, OrderModel order) {
@@ -58,14 +59,14 @@ class OrderService {
   Stream<QuerySnapshot> get processingOrderClient {
     return _ordersCollection
         .where('clientID', isEqualTo: AuthenticationService.uid)
-        .where('status', isNotEqualTo: OrderStatus.RECEIVED.toString())
+        .where('status', isNotEqualTo: EnumToString.convertToString(OrderStatus.RECEIVED))
         .snapshots();
   }
 
   Stream<QuerySnapshot> get pastOrdersClient {
     return _ordersCollection
         .where('clientID', isEqualTo: AuthenticationService.uid)
-        .where('status', isEqualTo: OrderStatus.RECEIVED.toString())
+        .where('status', isEqualTo: EnumToString.convertToString(OrderStatus.RECEIVED))
         .snapshots();
   }
 

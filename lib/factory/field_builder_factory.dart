@@ -129,7 +129,7 @@ class FieldBuilderFactory {
                 items: items!
                     .map((GenericItemModel item) => DropdownMenuItem(
                           child: Text(
-                            item.name as String,
+                            item.name!,
                             style: TextStyle(color: labelDropdownColor),
                           ),
                           value: item.id,

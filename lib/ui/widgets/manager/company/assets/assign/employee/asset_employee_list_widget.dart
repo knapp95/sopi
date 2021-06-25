@@ -38,7 +38,6 @@ class AssetEmployeeListWidget extends StatelessWidget {
                     .map(
                       (employee) => LongPressDraggable<UserModel>(
                         data: employee,
-                        dragAnchor: DragAnchor.pointer,
                         feedback: FractionalTranslation(
                           key: _draggableKey,
                           translation: const Offset(-0.5, -0.5),

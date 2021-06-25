@@ -59,7 +59,7 @@ class _ProductButtonsState extends State<ProductButtons> {
             ),
             backgroundColor: item.color,
             onTap: () => item.funHandler!(),
-            label: item.name as String?,
+            label: item.name,
             labelStyle: TextStyle(color: Colors.white),
             labelBackgroundColor: item.color,
           );

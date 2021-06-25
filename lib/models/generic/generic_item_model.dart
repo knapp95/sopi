@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GenericItemModel {
-  String? id;
-  Object? name;
+  Object? id;
+  String? name;
   Color? color;
   IconData? icon;
   Function? funHandler;

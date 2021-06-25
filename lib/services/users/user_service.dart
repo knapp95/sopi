@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:sopi/models/user/enums/user_enum_type.dart';
 import 'package:sopi/models/user/user_model.dart';
-
-import '../authentication/authentication_service.dart';
 
 class UserService {
   final _usersCollection = FirebaseFirestore.instance.collection('users');
@@ -19,9 +18,8 @@ class UserService {
   Future<List<UserModel>> fetchAllEmployees() async {
     List<UserModel> userList = [];
     QuerySnapshot querySnapshot = await _usersCollection
-        .where('typeAccount', isEqualTo: UserType.EMPLOYEE.toString())
+        .where('typeAccount', isEqualTo: EnumToString.convertToString(UserType.EMPLOYEE))
         .get();
-
     querySnapshot.docs.forEach((userDoc) {
 
       final data = userDoc.data()! as Map<String, dynamic>;
@@ -38,18 +36,9 @@ class UserService {
     DocumentReference doc = _usersCollection.doc(uid);
     final data = {
       'uid': uid,
-      'typeAccount': UserType.CLIENT.toString(),
+      'typeAccount': UserType.CLIENT,
     };
     doc.set(data);
   }
 
-  Future<String?> getUserTypeAccount() async {
-    try {
-      DocumentReference doc = _usersCollection.doc(AuthenticationService.uid);
-      final data = (await doc.get()).data()! as Map<String, dynamic>;
-      return data['typeAccount'];
-    } catch (e) {
-      throw e;
-    }
-  }
 }

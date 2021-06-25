@@ -65,7 +65,6 @@ class ImageSourceSheet extends StatelessWidget {
         assert(!kIsWeb);
 
         final imageFile = File(pickedFile.path);
-        assert(null != imageFile);
         onImageSelected!(imageFile);
       }
     }

@@ -1,12 +1,16 @@
 import 'dart:io';
 import 'dart:math';
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/products/primitive_product_item_model.dart';
 import 'package:sopi/services/products/product_service.dart';
+import 'package:sopi/models/products/enums/product_enum_type.dart';
 
-class ProductItemModel extends PrimitiveProductItemModel {
+part 'product_item_model.g.dart';
+
+@JsonSerializable()
+class ProductItemModel extends PrimitiveProductItemModel  {
   final _productService = ProductService.singleton;
   String? imageUrl;
   String? description;
@@ -21,28 +25,11 @@ class ProductItemModel extends PrimitiveProductItemModel {
 
   String get displayTotalPrice => fixedDouble(this.price! * this.count!);
 
-  ProductItemModel.fromJson(Map<String, dynamic> data) : super.fromJson(data) {
-    try {
-      this.imageUrl = data['imageUrl'];
-      this.description = data['description'];
-      this.price = data['price'];
-    } catch (e) {
-      throw e;
-    }
-  }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    try {
-      data['description'] = this.description;
-      data['imageUrl'] = this.imageUrl;
-      data['price'] = this.price;
-    } catch (e) {
-      throw e;
-    }
-    data.addAll(super.toJson());
-    return data;
-  }
+  factory ProductItemModel.fromJson(Map<String, dynamic> json) =>
+      _$ProductItemModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductItemModelToJson(this);
 
   void changeValueInForm(String fieldName, value) {
     try {
@@ -64,7 +51,7 @@ class ProductItemModel extends PrimitiveProductItemModel {
           this.count = value?.toInt();
           break;
         case 'prepareTime':
-          this.prepareTime = int.tryParse(value);
+          this.prepareTime = value;
           break;
       }
     } catch (e) {

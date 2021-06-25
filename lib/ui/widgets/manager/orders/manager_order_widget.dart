@@ -44,7 +44,8 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
                             itemBuilder: (_, int index) {
                               QueryDocumentSnapshot assetDoc =
                                   (snapshot.data! as QuerySnapshot).docs[index];
-                              final data = assetDoc.data()! as Map<String, dynamic>;
+                              final data =
+                                  assetDoc.data()! as Map<String, dynamic>;
                               AssetItemModel assetItem =
                                   AssetItemModel.fromJson(data);
                               return ManagerOrderTimelineRight(assetItem);

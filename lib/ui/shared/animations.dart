@@ -15,7 +15,8 @@ showScaleDialog(Widget dialog) {
     transitionDuration: Duration(milliseconds: 200),
     context: Get.context!,
     // ignore: missing_return
-    pageBuilder: (context, animation1, animation2) {} as Widget Function(
-        BuildContext, Animation<double>, Animation<double>),
+    pageBuilder: (_, __, ___) {
+      return dialog;
+    },
   );
 }

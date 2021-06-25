@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/assets/assets_model.dart';
@@ -35,9 +36,11 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
               List<AssetProductModel> allQueueProductsInAssetsForEmployee =
                   AssetsModel.getAllQueueProductsInAssetsForEmployee(
                       (snapshot.data! as QuerySnapshot).docs);
-              AssetProductModel processingProduct =
-                  allQueueProductsInAssetsForEmployee.firstWhere((element) =>
-                      element.status == AssetEnumStatus.PROCESSING);
+
+              AssetProductModel? processingProduct =
+                  allQueueProductsInAssetsForEmployee.firstWhereOrNull(
+                      (element) =>
+                          element.status == AssetEnumStatus.PROCESSING);
               List<AssetProductModel> waitingProducts =
                   allQueueProductsInAssetsForEmployee
                       .where((element) =>
@@ -79,7 +82,7 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
     );
   }
 
-  Widget _buildProcessingOrder(AssetProductModel processingProduct) {
+  Widget _buildProcessingOrder(AssetProductModel? processingProduct) {
     return processingProduct != null
         ? Expanded(
             child: EmployeeOrderProcessingItemWidget(

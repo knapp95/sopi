@@ -69,8 +69,8 @@ class AuthenticationWrapper extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return LoadingDataInProgressWidget(withScaffold: true);
           } else if (snapshot.hasData) {
-            Provider.of<UserModel>(context, listen: false)
-                .getUserTypeAccountFromFirebase();
+            Provider.of<UserModel>(context)
+                .setTypeAccount();
             return HomePageWrapper();
           } else {
             return AuthorizationWidget();

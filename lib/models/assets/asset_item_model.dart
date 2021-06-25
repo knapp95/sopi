@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart' show IterableExtension;
+import 'package:json_annotation/json_annotation.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
 import 'package:sopi/models/assets/asset_timeline_settings.dart';
 import 'package:sopi/models/assets/enums/asset_enum_status.dart';
@@ -11,14 +12,19 @@ import 'package:sopi/services/assets/asset_service.dart';
 import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/services/users/user_service.dart';
 
+part 'asset_item_model.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class AssetItemModel {
   final _orderService = OrderService.singleton;
   final _userService = UserService.singleton;
   final _assetService = AssetService.singleton;
   String? aid;
   String? name;
+  @JsonKey(ignore: true)
   bool editMode = false;
   ProductType? assignedProductType;
+  @JsonKey(ignore: true)
   List<UserModel?> assignedEmployees = [];
   List<AssetProductModel> queueProducts = [];
 
@@ -46,24 +52,12 @@ class AssetItemModel {
     }).toList();
   }
 
-  AssetItemModel.fromJson(Map<String, dynamic> data) {
-    try {
-      this.aid = data['aid'];
-      this.name = data['name'];
-      this.assignedProductType =
-          getProductTypeFromString(data['assignedProductType']);
-      List<dynamic>? extractedQueueProducts = data['queueProducts'];
-      if (extractedQueueProducts != null) {
-        List<AssetProductModel> queueProductsTmp = [];
-        for (dynamic product in extractedQueueProducts) {
-          queueProductsTmp.add(AssetProductModel.fromJson(product));
-        }
-        this.queueProducts = queueProductsTmp;
-      }
-    } catch (e) {
-      throw e;
-    }
-  }
+  AssetItemModel();
+
+  factory AssetItemModel.fromJson(Map<String, dynamic> json) =>
+      _$AssetItemModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AssetItemModelToJson(this);
 
   /// CALLING WHEN CLIENT ORDERED A NEW ORDER
   Future<void> addProduct(

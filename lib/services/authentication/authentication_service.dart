@@ -6,7 +6,7 @@ class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
   final _userService = UserService.singleton;
 
-  static String get uid => FirebaseAuth.instance.currentUser!.uid;
+  static String? get uid => FirebaseAuth.instance.currentUser?.uid;
 
   AuthenticationService(this._firebaseAuth);
 

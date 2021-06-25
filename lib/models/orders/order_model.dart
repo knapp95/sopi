@@ -2,22 +2,29 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:collection/collection.dart' show IterableExtension;
-
+import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
+import 'package:sopi/models/serializers/color_serializer.dart';
 import 'package:sopi/services/authentication/authentication_service.dart';
 
 import 'products/order_product_model.dart';
 
+part 'order_model.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class OrderModel {
   OrderStatus? status = OrderStatus.WAITING;
   DateTime? createDate;
   String? clientID;
   List<String>? assignedPerson;
-  int? currentPositionInQueue;
-  late Color color;
+  @ColorSerializer()
+  Color color = Color(Random().nextInt(0xffffffff));
   int? humanNumber;
   List<OrderProductModel>? products = [];
   double? totalPrice;
+
+  OrderModel();
 
   OrderModel.fromBasket({
     this.createDate,
@@ -28,51 +35,10 @@ class OrderModel {
     this.clientID = AuthenticationService.uid;
   }
 
-  OrderModel.fromJson(Map<String, dynamic> data) {
-    try {
-      this.createDate = data['createDate']?.toDate();
-      this.status = getOrderStatusFromString(data['status']);
-      this.clientID = data['clientID'];
+  factory OrderModel.fromJson(Map<String, dynamic> json) =>
+      _$OrderModelFromJson(json);
 
-      this.assignedPerson = data['assignedPerson'];
-      this.humanNumber = data['humanNumber'];
-      this.color = Color(data['color']);
-      List<dynamic>? extractedProducts = data['products'];
-      if (extractedProducts != null) {
-        List<OrderProductModel> productsTmp = [];
-        for (dynamic product in extractedProducts) {
-          productsTmp.add(OrderProductModel.fromJson(product));
-        }
-        this.products = productsTmp;
-      }
-      this.totalPrice = data['totalPrice']?.toDouble();
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    try {
-      data['createDate'] = this.createDate;
-      data['status'] = this.status.toString();
-      data['clientID'] = this.clientID;
-      data['humanNumber'] = this.humanNumber;
-      data['prepareTime'] = this.prepareTime;
-      data['color'] = Random().nextInt(0xffffffff);
-      if (this.products != null) {
-        List<dynamic> productsTmp = [];
-        for (OrderProductModel product in this.products!) {
-          productsTmp.add(product.toJson());
-        }
-        data['products'] = productsTmp;
-      }
-      data['totalPrice'] = this.totalPrice;
-    } catch (e) {
-      throw e;
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$OrderModelToJson(this);
 
   int get prepareTime {
     int prepareTime = 0;
