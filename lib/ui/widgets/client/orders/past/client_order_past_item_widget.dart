@@ -25,7 +25,7 @@ class ClientOrderPastItemWidget extends StatelessWidget {
             Text('#${orderPast.humanNumber}', style: textStyle),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: orderPast.products!
+              children: orderPast.products
                   .map((product) => Row(
                         children: [
                           Text('${product.count}x ', style: textStyle),

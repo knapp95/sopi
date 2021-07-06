@@ -5,6 +5,7 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
+import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/serializers/color_serializer.dart';
 import 'package:sopi/services/authentication/authentication_service.dart';
 
@@ -21,7 +22,7 @@ class OrderModel {
   @ColorSerializer()
   Color color = Color(Random().nextInt(0xffffffff));
   int? humanNumber;
-  List<OrderProductModel>? products = [];
+  List<OrderProductModel> products = [];
   double? totalPrice;
 
   OrderModel();
@@ -29,7 +30,7 @@ class OrderModel {
   OrderModel.fromBasket({
     this.createDate,
     this.humanNumber,
-    this.products,
+    required this.products,
     this.totalPrice,
   }) {
     this.clientID = AuthenticationService.uid;
@@ -43,7 +44,7 @@ class OrderModel {
   int get prepareTime {
     int prepareTime = 0;
     try {
-      this.products!.forEach((product) {
+      this.products.forEach((product) {
         prepareTime +=
             product.extraPrepareTime + (product.count! * product.prepareTime!);
       });
@@ -54,7 +55,7 @@ class OrderModel {
   }
 
   OrderProductModel? getProductByPid(String? pid) {
-    return this.products!.firstWhereOrNull((element) => element.pid == pid);
+    return this.products.firstWhereOrNull((element) => element.pid == pid);
   }
 
   String get statusDisplay {
@@ -71,4 +72,15 @@ class OrderModel {
         return 'Almost done';
     }
   }
+
+  List<OrderProductModel> getProductsForType(ProductType type) {
+    return this.products.where((element) => element.type == type).toList();
+  }
+
+  bool checkProductsContainsType(ProductType type) {
+    return this.products.any((product) =>
+    type == product.type);
+  }
+
+
 }

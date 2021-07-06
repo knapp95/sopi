@@ -15,7 +15,7 @@ class OrderFactory {
   final _assetService = AssetService.singleton;
   final _orderService = OrderService.singleton;
   static final OrderFactory _singleton = OrderFactory._internal();
-  AssetsModel _assets = Provider.of<AssetsModel>(Get.context!, listen: false);
+  AssetsModel _assets = Provider.of<AssetsModel>(Get.context!);
 
   factory OrderFactory() {
     return _singleton;
@@ -27,9 +27,9 @@ class OrderFactory {
 
   Future<void> generateOrders(int ordersCount) async {
     List<ProductItemModel> products = [];
-
     for (int i = 0; i < ordersCount; i++) {
       int productsCount = Random().nextInt(6) + 1;
+
       if (products.isEmpty) {
         ProductsModel _productsModel =
             Provider.of<ProductsModel>(Get.context!, listen: false);
@@ -68,14 +68,19 @@ class OrderFactory {
 
   Future<void> addNewOrderToProcess(String oid, OrderModel newOrder) async {
     await _assets.fetchAssets();
-    for (OrderProductModel product in newOrder.products!) {
-      AssetItemModel assignedAsset =
-          _assets.findAssetByProductType(product.type);
-      await assignedAsset.addProduct(
-          product.name, product.pid, oid, product.totalPrepareTime);
-      if (assignedAsset.processingProduct!.oid == oid) {
-        await _orderService.updateOrderStatusToProcessing(oid);
-      }
+
+    List<AssetItemModel> assetExistsInOrder = _assets.assets
+        .where((assetItem) =>
+            newOrder.checkProductsContainsType(assetItem.assignedProductType))
+        .toList();
+
+    DateTime theLatestAssetEnd =
+        _assets.findTheLatestAssetEndIncludeOrder(newOrder, assetExistsInOrder);
+    for (AssetItemModel asset in assetExistsInOrder) {
+      List<OrderProductModel> productsByType =
+          newOrder.getProductsForType(asset.assignedProductType);
+      await asset.addProductsFromOrderToQueue(
+          oid, theLatestAssetEnd, productsByType);
     }
   }
 

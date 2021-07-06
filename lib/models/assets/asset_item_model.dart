@@ -23,10 +23,12 @@ class AssetItemModel {
   String? name;
   @JsonKey(ignore: true)
   bool editMode = false;
-  ProductType? assignedProductType;
+  late ProductType assignedProductType;
   @JsonKey(ignore: true)
   List<UserModel?> assignedEmployees = [];
   List<AssetProductModel> queueProducts = [];
+
+  AssetItemModel();
 
   List<AssetProductModel> get waitingProducts {
     return this
@@ -43,29 +45,17 @@ class AssetItemModel {
   /// Get's products from queue who startTimeline < product < endTimeline
   List<AssetProductModel> get queueProductsTimeline {
     return this.queueProducts.where((product) {
-      DateTime productEndDate =
-          product.createDate!.add(Duration(minutes: product.totalPrepareTime!));
-      return productEndDate
+      return product.plannedStartProcessingDate
               .isAfter(AssetTimelineSettings.availableStartTimeline) &&
-          product.createDate!
+          product.plannedEndProcessingDate
               .isBefore(AssetTimelineSettings.availableEndTimeline);
     }).toList();
   }
-
-  AssetItemModel();
 
   factory AssetItemModel.fromJson(Map<String, dynamic> json) =>
       _$AssetItemModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$AssetItemModelToJson(this);
-
-  /// CALLING WHEN CLIENT ORDERED A NEW ORDER
-  Future<void> addProduct(
-      String? name, String? pid, String oid, int totalPrepareTime) async {
-    AssetProductModel assetProductModel =
-        AssetProductModel(name, pid, oid, totalPrepareTime);
-    await this.addProductToQueue(assetProductModel);
-  }
 
   /// CALLING WHEN EMPLOYEE SET ACTUAL PREPARE PRODUCT AS COMPLETED
   Future<void> completeProcessingProduct() async {
@@ -92,14 +82,26 @@ class AssetItemModel {
   }
 
   /// Add product to queque as WAITING, if queue don't have PROCESSING product set it
-  Future<void> addProductToQueue(AssetProductModel assetProductModel) async {
-    if (this.processingProduct == null) {
-      assetProductModel.status = AssetEnumStatus.PROCESSING;
+  Future<void> addProductsFromOrderToQueue(String oid,
+      DateTime theLatestAssetEnd, List<OrderProductModel> products) async {
+    int totalTime = products.fold(0,
+        (previousValue, element) => previousValue + element.totalPrepareTime);
+    for (OrderProductModel product in products) {
+      AssetProductModel assetProductModel = AssetProductModel.fromOrder(
+        product.name,
+        product.pid,
+        oid,
+        product.totalPrepareTime,
+      );
+      if (this.processingProduct == null) {
+        assetProductModel.status = AssetEnumStatus.PROCESSING;
+      }
+      assetProductModel.plannedStartProcessingDate =
+          theLatestAssetEnd.add(Duration(minutes: -totalTime));
+      totalTime = totalTime - product.totalPrepareTime;
+      this.queueProducts.add(assetProductModel);
+      await this.updateQueueProducts();
     }
-    this.queueProducts.add(assetProductModel);
-
-    /// await this.sortProductsByPriorityAndPrepareTime();
-    await this.updateQueueProducts();
   }
 
   Future<void> setAssignedEmployees(List<String> assignedEmployeesIds) async {

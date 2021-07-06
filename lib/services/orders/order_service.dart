@@ -33,7 +33,7 @@ class OrderService {
   Future<void> updateOrderStatusToProcessing(oid) async {
     _ordersCollection
         .doc(oid)
-        .update({'status': OrderStatus.PROCESSING});
+        .update({'status': EnumToString.convertToString(OrderStatus.PROCESSING)});
   }
 
   void updateOrder(String? oid, OrderModel order) {

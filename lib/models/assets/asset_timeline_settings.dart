@@ -3,8 +3,8 @@ import 'package:sopi/common/scripts.dart';
 /// In feature can be configured by user
 class AssetTimelineSettings {
   static const differenceInMinutes = 15;
-  static const rangeHoursForwards = 3;
-  static const rangeHoursBackwards = 2;
+  static const rangeHoursForwards = 6;
+  static const rangeHoursBackwards = 1;
 
   static DateTime get availableStartTimeline {
     DateTime availableStartTimeline = DateTime(

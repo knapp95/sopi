@@ -27,7 +27,7 @@ class _ManagerOrderGenerateMockedButtonState
         color: Colors.red,
       )
     ];
-    for (var count in [15, 10, 5]) {
+    for (var count in [15, 10, 2]) {
       allItems.add(
         GenericItemModel(
           funHandler: () => _orderFactory.generateOrders(count),

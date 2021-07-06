@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
+import 'package:sopi/models/orders/order_model.dart';
+import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/services/assets/asset_service.dart';
 
@@ -34,6 +36,26 @@ class AssetsModel with ChangeNotifier {
     return this
         .assets
         .firstWhere((asset) => asset.assignedProductType == productType);
+  }
+
+  DateTime findTheLatestAssetEndIncludeOrder(
+      OrderModel order, List<AssetItemModel> assetExistsInOrder) {
+    DateTime theLatestAssetEnd = DateTime.now();
+    for (AssetItemModel asset in assetExistsInOrder) {
+      DateTime assetPlannedEnd = asset.queueProducts.isNotEmpty
+          ? asset.queueProducts.last.plannedEndProcessingDate
+          : DateTime.now();
+      List<OrderProductModel> productsByType =
+          order.getProductsForType(asset.assignedProductType);
+      int assignedProductsTime =
+          productsByType.fold(0, (sum, item) => sum + item.totalPrepareTime);
+      assetPlannedEnd =
+          assetPlannedEnd.add(Duration(minutes: assignedProductsTime));
+      if (theLatestAssetEnd.isBefore(assetPlannedEnd)) {
+        theLatestAssetEnd = assetPlannedEnd;
+      }
+    }
+    return theLatestAssetEnd;
   }
 
   static List<AssetProductModel> getAllQueueProductsInAssetsForEmployee(
