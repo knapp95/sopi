@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
-import 'package:sopi/models/assets/assets_model.dart';
+import 'package:sopi/models/assets/asset_model.dart';
 import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
@@ -15,7 +15,7 @@ class OrderFactory {
   final _assetService = AssetService.singleton;
   final _orderService = OrderService.singleton;
   static final OrderFactory _singleton = OrderFactory._internal();
-  AssetsModel _assets = Provider.of<AssetsModel>(Get.context!);
+  AssetModel _assets = Provider.of<AssetModel>(Get.context!);
 
   factory OrderFactory() {
     return _singleton;

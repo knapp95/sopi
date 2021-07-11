@@ -6,11 +6,27 @@ import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/services/assets/asset_service.dart';
+import 'package:sopi/services/settings/settings_service.dart';
+import 'timeline/asset_timeline_settings_model.dart';
 
-class AssetsModel with ChangeNotifier {
+class AssetModel with ChangeNotifier {
   final _assetService = AssetService.singleton;
+  final _settingsService = SettingsService.singleton;
   bool isInit = false;
   List<AssetItemModel> assets = [];
+  AssetTimelineSettingsModel? assetTimelineSettings;
+
+  Future<void> fetchAssetsTimelineSettings() async {
+    try {
+      DocumentSnapshot doc =
+          await _settingsService.getDoc(AssetTimelineSettingsModel.id).get();
+      final data = doc.data()! as Map<String, dynamic>;
+      print(data);
+      this.assetTimelineSettings = AssetTimelineSettingsModel.fromJson(data);
+    } catch (e) {
+      throw e;
+    }
+  }
 
   Future<void> fetchAssets() async {
     try {

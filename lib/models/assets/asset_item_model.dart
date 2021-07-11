@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
-import 'package:sopi/models/assets/asset_timeline_settings.dart';
 import 'package:sopi/models/assets/enums/asset_enum_status.dart';
 import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/models/orders/products/order_product_model.dart';
@@ -43,12 +42,12 @@ class AssetItemModel {
   }
 
   /// Get's products from queue who startTimeline < product < endTimeline
-  List<AssetProductModel> get queueProductsTimeline {
+  List<AssetProductModel> getQueueProductsTimeline(
+      DateTime availableStartTimeLine, DateTime availableEndTimeLine) {
     return this.queueProducts.where((product) {
-      return product.plannedStartProcessingDate
-              .isAfter(AssetTimelineSettings.availableStartTimeline) &&
-          product.plannedEndProcessingDate
-              .isBefore(AssetTimelineSettings.availableEndTimeline);
+      return product.plannedEndProcessingDate
+              .isAfter(availableStartTimeLine) &&
+          product.plannedStartProcessingDate.isBefore(availableEndTimeLine);
     }).toList();
   }
 
