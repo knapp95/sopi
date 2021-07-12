@@ -7,6 +7,7 @@ import 'package:sopi/models/orders/products/order_product_model.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/services/assets/asset_service.dart';
 import 'package:sopi/services/settings/settings_service.dart';
+
 import 'timeline/asset_timeline_settings_model.dart';
 
 class AssetModel with ChangeNotifier {
@@ -21,7 +22,6 @@ class AssetModel with ChangeNotifier {
       DocumentSnapshot doc =
           await _settingsService.getDoc(AssetTimelineSettingsModel.id).get();
       final data = doc.data()! as Map<String, dynamic>;
-      print(data);
       this.assetTimelineSettings = AssetTimelineSettingsModel.fromJson(data);
     } catch (e) {
       throw e;
@@ -48,14 +48,31 @@ class AssetModel with ChangeNotifier {
     }
   }
 
+
   AssetItemModel findAssetByProductType(ProductType? productType) {
     return this
         .assets
         .firstWhere((asset) => asset.assignedProductType == productType);
   }
 
-  DateTime findTheLatestAssetEndIncludeOrder(
-      OrderModel order, List<AssetItemModel> assetExistsInOrder) {
+  List<AssetItemModel> getAssetExistsInOrder(OrderModel orderModel) {
+    return this
+        .assets
+        .where((assetItem) =>
+            orderModel.checkProductsContainsType(assetItem.assignedProductType))
+        .toList();
+  }
+
+
+
+
+  Future<DateTime> findTheLatestAssetEndIncludeOrder(
+      OrderModel order,[List<AssetItemModel>? assetExistsInOrder]) async {
+    await fetchAssets();
+    if (assetExistsInOrder == null) {
+      assetExistsInOrder = this.getAssetExistsInOrder(order);
+    }
+
     DateTime theLatestAssetEnd = DateTime.now();
     for (AssetItemModel asset in assetExistsInOrder) {
       DateTime assetPlannedEnd = asset.queueProducts.isNotEmpty

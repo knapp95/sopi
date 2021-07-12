@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/assets/asset_model.dart';
 import 'package:sopi/models/assets/timeline/asset_timeline_settings_model.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
 
 enum Timeline { BEFORE, AFTER }
 
@@ -26,24 +27,39 @@ class ManagerOrderTimelineLeft extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ..._buildTimeline(Timeline.BEFORE),
-          Container(color: Colors.red, child: _buildSingleTime(_time)),
+          Container(
+            color: primaryColor,
+            child: _buildSingleTime(
+              _time,
+              Colors.white,
+            ),
+          ),
           ..._buildTimeline(Timeline.AFTER),
         ],
       ),
     );
   }
 
-  Widget _buildSingleTime(DateTime time) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        formatDateToString(
-          time,
-          format: 'HH:mm',
+  Widget _buildSingleTime(DateTime time, [Color? fontColor]) {
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: primaryColor, width: 1),
+          left: BorderSide(color: primaryColor, width: 1),
         ),
-        style: TextStyle(
-          color: Colors.grey,
-          fontWeight: FontWeight.bold,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          formatDateToString(
+            time,
+            format: 'HH:mm',
+          ),
+          style: TextStyle(
+            color: fontColor ?? Colors.grey,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

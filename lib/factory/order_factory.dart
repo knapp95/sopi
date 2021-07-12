@@ -59,28 +59,28 @@ class OrderFactory {
       humanNumber: humanNumber,
       totalPrice: summaryPrice,
     );
+
     final document = _orderService.getDoc();
+    newOrder.oid = document.id;
     final data = newOrder.toJson();
+
     document.set(data);
-    await this.addNewOrderToProcess(document.id, newOrder);
+    await this.addNewOrderToProcess(newOrder);
     return humanNumber;
   }
 
-  Future<void> addNewOrderToProcess(String oid, OrderModel newOrder) async {
+  Future<void> addNewOrderToProcess(OrderModel newOrder) async {
     await _assets.fetchAssets();
 
-    List<AssetItemModel> assetExistsInOrder = _assets.assets
-        .where((assetItem) =>
-            newOrder.checkProductsContainsType(assetItem.assignedProductType))
-        .toList();
-
+    List<AssetItemModel> assetExistsInOrder =
+        _assets.getAssetExistsInOrder(newOrder);
     DateTime theLatestAssetEnd =
-        _assets.findTheLatestAssetEndIncludeOrder(newOrder, assetExistsInOrder);
+        await _assets.findTheLatestAssetEndIncludeOrder(newOrder, assetExistsInOrder);
     for (AssetItemModel asset in assetExistsInOrder) {
       List<OrderProductModel> productsByType =
           newOrder.getProductsForType(asset.assignedProductType);
       await asset.addProductsFromOrderToQueue(
-          oid, theLatestAssetEnd, productsByType);
+          newOrder.oid, theLatestAssetEnd, productsByType);
     }
   }
 

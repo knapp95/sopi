@@ -113,8 +113,7 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
                                     assetDoc.data()! as Map<String, dynamic>;
                                 AssetItemModel assetItem =
                                     AssetItemModel.fromJson(data);
-                                return ManagerOrderTimelineRight(
-                                    assetItem, _roundingNow);
+                                return ManagerOrderTimelineRight(assetItem);
                               },
                             ),
                           ),

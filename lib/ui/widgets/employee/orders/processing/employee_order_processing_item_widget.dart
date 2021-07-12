@@ -96,7 +96,7 @@ class _EmployeeOrderProcessingItemWidgetState
     );
     if (confirm) {
       _orderProductModel!.setAsComplete();
-      _orderService.updateOrder(oid, _orderModel);
+      _orderService.updateOrder(_orderModel);
       _orderFactory.completeOrderProduct(oid, _orderProductModel!);
     }
   }
@@ -108,7 +108,7 @@ class _EmployeeOrderProcessingItemWidgetState
     );
     if (result != null) {
       _orderProductModel!.extraPrepareTime = result;
-      _orderService.updateOrder(oid, _orderModel);
+      _orderService.updateOrder(_orderModel);
     }
   }
 

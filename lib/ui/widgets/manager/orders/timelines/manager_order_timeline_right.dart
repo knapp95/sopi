@@ -15,10 +15,10 @@ class ManagerOrderTimelineRight extends StatelessWidget {
   final AssetItemModel _assetItem;
   final AssetTimelineSettingsModel _assetTimelineSettingsModel =
       Provider.of<AssetModel>(Get.context!).assetTimelineSettings!;
-  final DateTime _time;
+
   final _orderService = OrderService.singleton;
 
-  ManagerOrderTimelineRight(this._assetItem, this._time);
+  ManagerOrderTimelineRight(this._assetItem);
 
   AssetTypeMocked? get assetTypeMocked =>
       assetsTypeMocked[_assetItem.assignedProductType];
@@ -55,17 +55,17 @@ class ManagerOrderTimelineRight extends StatelessWidget {
       AssetProductModel earlierProduct =
           this.availableQueueProductsTimeline[index - 1];
       differenceInMinutes = waitingProduct.plannedStartProcessingDate
-              .difference(earlierProduct.plannedStartProcessingDate)
-              .inMinutes -
-          earlierProduct.totalPrepareTime;
+          .difference(earlierProduct.plannedEndProcessingDate)
+          .inMinutes;
     }
     return _getHeightForMinutes(differenceInMinutes);
   }
 
   double _getHeightForMinutes(int minutes) {
+
     return minutes < 0
         ? 0
-        : 32 * (minutes / _assetTimelineSettingsModel.differenceInMinutes);
+        : 33 * (minutes / _assetTimelineSettingsModel.differenceInMinutes);
   }
 
   Widget _buildWaitingBlocks() {

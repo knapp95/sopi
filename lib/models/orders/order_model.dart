@@ -15,6 +15,7 @@ part 'order_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class OrderModel {
+  late String oid;
   OrderStatus? status = OrderStatus.WAITING;
   DateTime? createDate;
   String? clientID;

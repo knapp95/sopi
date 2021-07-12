@@ -77,7 +77,7 @@ class AssetItemModel {
 
     OrderProductModel orderProductModel = order.getProductByPid(pid)!;
     orderProductModel.startProcessingDate = DateTime.now();
-    _orderService.updateOrder(oid, order);
+    _orderService.updateOrder(order);
   }
 
   /// Add product to queque as WAITING, if queue don't have PROCESSING product set it
