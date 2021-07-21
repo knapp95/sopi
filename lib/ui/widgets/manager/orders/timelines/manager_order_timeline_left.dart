@@ -1,42 +1,19 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:sopi/common/scripts.dart';
-import 'package:sopi/models/assets/asset_timeline_settings.dart';
-
-class ManagerOrderTimelineLeft extends StatefulWidget {
-  @override
-  _ManagerOrderTimelineLeftState createState() =>
-      _ManagerOrderTimelineLeftState();
-}
+import 'package:sopi/models/assets/asset_model.dart';
+import 'package:sopi/models/assets/timeline/asset_timeline_settings_model.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
 
 enum Timeline { BEFORE, AFTER }
 
-class _ManagerOrderTimelineLeftState extends State<ManagerOrderTimelineLeft> {
-  late Timer _timer;
-  bool _isInit = true;
-  DateTime now = roundingNow;
+class ManagerOrderTimelineLeft extends StatelessWidget {
+  final DateTime _time;
+  final AssetTimelineSettingsModel _assetTimelineSettingsModel =
+      Provider.of<AssetModel>(Get.context!).assetTimelineSettings!;
 
-  @override
-  void initState() {
-    super.initState();
-    if (_isInit) {
-      _isInit = false;
-      _timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
-    }
-  }
-
-  void _getTime() {
-    setState(() {
-      now = roundingNow;
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
+  ManagerOrderTimelineLeft(this._time);
 
   @override
   Widget build(BuildContext context) {
@@ -50,24 +27,39 @@ class _ManagerOrderTimelineLeftState extends State<ManagerOrderTimelineLeft> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ..._buildTimeline(Timeline.BEFORE),
-          Container(color: Colors.red, child: _buildSingleTime(now)),
+          Container(
+            color: primaryColor,
+            child: _buildSingleTime(
+              _time,
+              Colors.white,
+            ),
+          ),
           ..._buildTimeline(Timeline.AFTER),
         ],
       ),
     );
   }
 
-  Widget _buildSingleTime(DateTime time) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        formatDateToString(
-          time,
-          format: 'HH:mm',
-        )!,
-        style: TextStyle(
-          color: Colors.grey,
-          fontWeight: FontWeight.bold,
+  Widget _buildSingleTime(DateTime time, [Color? fontColor]) {
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: primaryColor, width: 1),
+          left: BorderSide(color: primaryColor, width: 1),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          formatDateToString(
+            time,
+            format: 'HH:mm',
+          ),
+          style: TextStyle(
+            color: fontColor ?? Colors.grey,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -75,20 +67,21 @@ class _ManagerOrderTimelineLeftState extends State<ManagerOrderTimelineLeft> {
 
   List<Widget> _buildTimeline(Timeline timeline) {
     DateTime time = timeline == Timeline.BEFORE
-        ? AssetTimelineSettings.availableStartTimeline
-        : AssetTimelineSettings.availableEndTimeline;
-    DateTime nowTmp = now;
+        ? _assetTimelineSettingsModel.availableStartTimeline
+        : _assetTimelineSettingsModel.availableEndTimeline;
+
+    DateTime nowTmp = _time;
     List<Widget> timelineWidgets = [];
     if (timeline == Timeline.BEFORE) {
       while (nowTmp.isAfter(time)) {
         timelineWidgets.add(_buildSingleTime(time));
-        time = time
-            .add(Duration(minutes: AssetTimelineSettings.differenceInMinutes));
+        time = time.add(
+            Duration(minutes: _assetTimelineSettingsModel.differenceInMinutes));
       }
     } else if (timeline == Timeline.AFTER) {
       while (nowTmp.isBefore(time)) {
-        nowTmp = nowTmp
-            .add(Duration(minutes: AssetTimelineSettings.differenceInMinutes));
+        nowTmp = nowTmp.add(
+            Duration(minutes: _assetTimelineSettingsModel.differenceInMinutes));
         timelineWidgets.add(_buildSingleTime(nowTmp));
       }
     }

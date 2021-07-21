@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
-import 'package:sopi/models/assets/assets_model.dart';
+import 'package:sopi/models/assets/asset_model.dart';
 import 'package:sopi/models/assets/enums/asset_enum_status.dart';
 import 'package:sopi/services/assets/asset_service.dart';
 import 'package:sopi/ui/shared/systems_parameters.dart';
@@ -34,7 +34,7 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
               if ((snapshot.data! as QuerySnapshot).docs.isEmpty)
                 return EmployeeOrderWaitingEmptyWidget();
               List<AssetProductModel> allQueueProductsInAssetsForEmployee =
-                  AssetsModel.getAllQueueProductsInAssetsForEmployee(
+                  AssetModel.getAllQueueProductsInAssetsForEmployee(
                       (snapshot.data! as QuerySnapshot).docs);
 
               AssetProductModel? processingProduct =

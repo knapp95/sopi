@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sopi/factory/field_validation_factory.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
+import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class FieldBuilderFactory {
@@ -19,7 +20,7 @@ class FieldBuilderFactory {
   static FieldBuilderFactory get singleton => _singleton;
 
   Widget buildTextField({
-    String? fieldName = 'field',
+    String fieldName = 'field',
     dynamic initialValue,
     bool isVisible = true,
     Color? valueColor,
@@ -38,7 +39,7 @@ class FieldBuilderFactory {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               FormBuilderTextField(
-                name: fieldName!,
+                name: fieldName,
                 initialValue: initialValue,
                 keyboardType: keyboardType,
                 controller: controller,
@@ -63,6 +64,39 @@ class FieldBuilderFactory {
               formSizedBoxHeight
             ],
           );
+  }
+
+  Widget buildSliderField({
+    required double initialValue,
+    required double min,
+    required double max,
+    String fieldName = 'field',
+    String? labelText,
+    Color labelColor = primaryColor,
+    Function? onChangedHandler,
+  }) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        FormBuilderSlider(
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            labelText: labelText,
+            labelStyle: TextStyle(
+              color: labelColor,
+            ),
+          ),
+          onChanged: (dynamic value) =>
+              _onChanged(fieldName, value, onChangedHandler: onChangedHandler),
+          displayValues: DisplayValues.none,
+          initialValue: initialValue,
+          min: min,
+          max: max,
+          name: fieldName,
+        ),
+        formSizedBoxHeight
+      ],
+    );
   }
 
   Widget buildNumberPicker({
@@ -110,6 +144,7 @@ class FieldBuilderFactory {
     Color? labelColor,
     Color? labelDropdownColor,
     Color? dropdownColor,
+    InputBorder? border,
     List<GenericItemModel>? items,
     Function? onChangedHandler,
     dynamic initialValue,
@@ -121,6 +156,7 @@ class FieldBuilderFactory {
               FormBuilderDropdown(
                 name: labelText!,
                 decoration: InputDecoration(
+                  border: border,
                   labelText: labelText,
                   labelStyle: TextStyle(
                     color: labelColor,

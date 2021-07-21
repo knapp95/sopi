@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
-import 'package:sopi/models/assets/assets_model.dart';
+import 'package:sopi/models/assets/asset_model.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/assets/asset_service.dart';
 import 'package:sopi/services/users/user_service.dart';
@@ -21,11 +21,11 @@ class _AssetWidgetState extends State<AssetWidget>
   final _assetService = AssetService.singleton;
   bool _isInit = true;
   bool _isLoading = false;
-  late AssetsModel _assets;
+  late AssetModel _assets;
   List<UserModel> _employees = [];
 
   Future<void> _loadData() async {
-    _assets = Provider.of<AssetsModel>(context);
+    _assets = Provider.of<AssetModel>(context);
     if (!_assets.isInit) {
       await _assets.fetchAssets();
     }

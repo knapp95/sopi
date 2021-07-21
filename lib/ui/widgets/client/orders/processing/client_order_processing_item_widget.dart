@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:sopi/common/scripts.dart';
+import 'package:sopi/models/assets/asset_model.dart';
 import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class ClientOrderProcessingItemWidget extends StatelessWidget {
   final OrderModel orderProcessing;
+  final _assets = Provider.of<AssetModel>(Get.context!);
 
   ClientOrderProcessingItemWidget(this.orderProcessing);
+
+  Future<String> get processingEndDate async {
+    DateTime processingEndDateTmp =
+        await _assets.findTheLatestAssetEndIncludeOrder(orderProcessing);
+    String processingEndDate = formatDateToString(
+      processingEndDateTmp,
+      format: 'HH:mm',
+    );
+    return processingEndDate;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +50,17 @@ class ClientOrderProcessingItemWidget extends StatelessWidget {
                       color: Colors.white,
                     ),
                     formSizedBoxWidth,
-                    Text('~11:22', style: textStyle),
-
-                    ///TODO
+                    FutureBuilder(
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.none ||
+                            snapshot.data == null) {
+                          return Container();
+                        } else {
+                          return Text('${snapshot.data}', style: textStyle);
+                        }
+                      },
+                      future: processingEndDate,
+                    ),
                   ],
                 ),
               ],

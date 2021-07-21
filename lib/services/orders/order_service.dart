@@ -36,10 +36,10 @@ class OrderService {
         .update({'status': EnumToString.convertToString(OrderStatus.PROCESSING)});
   }
 
-  void updateOrder(String? oid, OrderModel order) {
+  void updateOrder(OrderModel order) {
     try {
       final data = order.toJson();
-      _ordersCollection.doc(oid).update(data);
+      _ordersCollection.doc(order.oid).update(data);
       showBottomNotification(
         Get.context,
         GenericResponseModel('Order update successfully.'),

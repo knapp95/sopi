@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
+import 'package:sopi/models/assets/asset_model.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
-import 'package:sopi/models/assets/asset_timeline_settings.dart';
 import 'package:sopi/models/assets/asset_type_mocked.dart';
+import 'package:sopi/models/assets/timeline/asset_timeline_settings_model.dart';
 import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/manager/orders/timelines/manager_order_timeline_footer.dart';
 
 class ManagerOrderTimelineRight extends StatelessWidget {
-  final AssetItemModel assetItem;
+  final AssetItemModel _assetItem;
+  final AssetTimelineSettingsModel _assetTimelineSettingsModel =
+      Provider.of<AssetModel>(Get.context!).assetTimelineSettings!;
+
   final _orderService = OrderService.singleton;
 
-  // this.firstAvailableDisplayTimeline, this.lastAvailableDisplayTimeline
-  ManagerOrderTimelineRight(
-    this.assetItem,
-  );
+  ManagerOrderTimelineRight(this._assetItem);
 
   AssetTypeMocked? get assetTypeMocked =>
-      assetsTypeMocked[assetItem.assignedProductType];
+      assetsTypeMocked[_assetItem.assignedProductType];
+
+  List<AssetProductModel> get availableQueueProductsTimeline =>
+      _assetItem.getQueueProductsTimeline(
+        _assetTimelineSettingsModel.availableStartTimeline,
+        _assetTimelineSettingsModel.availableEndTimeline,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +35,8 @@ class ManagerOrderTimelineRight extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          ManagerOrderTimelineFooter(assetItem.name, assetTypeMocked!.iconPath),
+          ManagerOrderTimelineFooter(
+              _assetItem.name, assetTypeMocked!.iconPath),
           Expanded(child: _buildWaitingBlocks()),
         ],
       ),
@@ -34,42 +44,44 @@ class ManagerOrderTimelineRight extends StatelessWidget {
   }
 
   double _getEmptySpaceBetweenBlocks(int index) {
-    AssetProductModel waitingProduct = assetItem.queueProductsTimeline[index];
+    AssetProductModel waitingProduct =
+        this.availableQueueProductsTimeline[index];
+    late int differenceInMinutes;
     if (index == 0) {
-      int differenceInMinutes = waitingProduct.plannedStartProcessingDate
-          .difference(AssetTimelineSettings.availableStartTimeline)
+      differenceInMinutes = waitingProduct.plannedStartProcessingDate
+          .difference(_assetTimelineSettingsModel.availableStartTimeline)
           .inMinutes;
-      return _getHeightForMinutes(differenceInMinutes);
     } else {
       AssetProductModel earlierProduct =
-          assetItem.queueProductsTimeline[index - 1];
-      int differenceMinutes = waitingProduct.plannedStartProcessingDate
-              .difference(earlierProduct.plannedStartProcessingDate)
-              .inMinutes -
-          earlierProduct.totalPrepareTime;
-      return _getHeightForMinutes(differenceMinutes);
+          this.availableQueueProductsTimeline[index - 1];
+      differenceInMinutes = waitingProduct.plannedStartProcessingDate
+          .difference(earlierProduct.plannedEndProcessingDate)
+          .inMinutes;
     }
+    return _getHeightForMinutes(differenceInMinutes);
   }
 
   double _getHeightForMinutes(int minutes) {
+
     return minutes < 0
         ? 0
-        : 32 * (minutes / AssetTimelineSettings.differenceInMinutes);
+        : 33 * (minutes / _assetTimelineSettingsModel.differenceInMinutes);
   }
 
   Widget _buildWaitingBlocks() {
     return Container(
       width: 75,
       child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
-        itemCount: assetItem.queueProductsTimeline.length,
+        itemCount: this.availableQueueProductsTimeline.length,
         itemBuilder: (_, int index) {
           AssetProductModel waitingProduct =
-              assetItem.queueProductsTimeline[index];
+              this.availableQueueProductsTimeline[index];
           double heightBlock =
               _getHeightForMinutes(waitingProduct.totalPrepareTime);
           if (index == 0) {
-            int startBeforeTimeline = AssetTimelineSettings
+            int startBeforeTimeline = _assetTimelineSettingsModel
                 .availableStartTimeline
                 .difference(waitingProduct.plannedStartProcessingDate)
                 .inMinutes;

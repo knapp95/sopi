@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sopi/home_page_wrapper.dart';
-import 'package:sopi/models/assets/assets_model.dart';
+import 'package:sopi/models/assets/asset_model.dart';
 import 'package:sopi/models/basket/basket_model.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/authentication/authentication_service.dart';
@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<UserModel>(
           create: (_) => UserModel(),
         ),
-        ChangeNotifierProvider<AssetsModel>(
-          create: (_) => AssetsModel(),
+        ChangeNotifierProvider<AssetModel>(
+          create: (_) => AssetModel(),
         ),
         ChangeNotifierProvider<ProductsModel>(
           create: (_) => ProductsModel(),

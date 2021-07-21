@@ -8,16 +8,29 @@ bool? containsIgnoreCase(String string1, String string2) {
   return string1.toLowerCase().contains(string2.toLowerCase());
 }
 
-DateTime get roundingNow {
-  DateTime now = DateTime.now();
-  int minuteTmp = now.minute < 5 ? 0 : 5;
+DateTime getRoundingTime({DateTime? sourceDate}) {
+  DateTime time = sourceDate ?? DateTime.now();
+  late int minuteTmp;
+  if (time.minute < 9) {
+    minuteTmp = time.minute % 10 < 5 ? 0 : 5;
+  } else {
+    minuteTmp = int.parse(
+        '${firstDigit(time.minute)}${time.minute % 10 < 5 ? '0' : '5'}');
+  }
   return DateTime(
-    now.year,
-    now.month,
-    now.day,
-    now.hour,
+    time.year,
+    time.month,
+    time.day,
+    time.hour,
     minuteTmp,
   );
+}
+
+int firstDigit(int x) {
+  while (x > 9) {
+    x = x ~/ 10;
+  }
+  return x;
 }
 
 Future<void> showBottomNotification(
@@ -41,8 +54,8 @@ String fixedDouble(double? value, [fractionDigits = 2]) {
   return fixedDouble ?? '0,00';
 }
 
-String? formatDateToString(DateTime? date, {format = 'yyyy-MM-dd'}) {
-  String? result;
+String formatDateToString(DateTime? date, {format = 'yyyy-MM-dd'}) {
+  String result = '';
   if (date != null) {
     result = DateFormat(format).format(date);
   }
