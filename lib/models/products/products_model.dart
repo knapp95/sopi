@@ -22,21 +22,11 @@ class ProductsModel with ChangeNotifier {
 
   static List<ProductTypeModel> get availableProductsTypes =>
       ProductsModel.types
-          .where((element) => element.type != ProductType.SPECIAL)
+          .where((element) => element.id != ProductType.SPECIAL)
           .toList();
 
-  static List<GenericItemModel> get availableProductsTypesGeneric {
-    List<GenericItemModel> availableProductsTypesGeneric = [];
-
-    availableProductsTypes.forEach((productType) =>
-        availableProductsTypesGeneric.add(GenericItemModel(
-            id: productType.type, name: productType.name)));
-
-    return availableProductsTypesGeneric;
-  }
-
-  static String getTypeName(ProductType? type) {
-    return types.firstWhere((product) => product.type == type).name;
+  static String getTypeName(ProductType? id) {
+    return types.firstWhere((product) => product.id == id).name;
   }
 
   static List<GenericItemModel> times = [
@@ -49,6 +39,8 @@ class ProductsModel with ChangeNotifier {
     GenericItemModel(id: 50, name: '50'),
     GenericItemModel(id: 60, name: '60'),
   ];
+
+
 
   List<ProductItemModel> products = [];
 

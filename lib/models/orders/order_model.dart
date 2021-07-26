@@ -1,9 +1,9 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sopi/common/scripts.dart';
 import 'package:sopi/models/orders/enums/order_enum_status.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/serializers/color_serializer.dart';
@@ -21,7 +21,7 @@ class OrderModel {
   String? clientID;
   List<String>? assignedPerson;
   @ColorSerializer()
-  Color color = Color(Random().nextInt(0xffffffff));
+  Color color = randomColor;
   int? humanNumber;
   List<OrderProductModel> products = [];
   double? totalPrice;

@@ -4,17 +4,11 @@ import 'package:sopi/ui/shared/app_colors.dart';
 
 const RoundedRectangleBorder shapeDialog = const RoundedRectangleBorder(
   side: BorderSide(color: primaryColor, width: 1),
-  borderRadius: const BorderRadius.all(
-    Radius.circular(8.0),
-  ),
+  borderRadius: defaultRadius,
 );
 
 const RoundedRectangleBorder shapeDialogRed = const RoundedRectangleBorder(
-  side: BorderSide(color: Colors.red, width: 1),
-  borderRadius: const BorderRadius.all(
-    Radius.circular(8.0),
-  ),
-);
+    side: BorderSide(color: Colors.red, width: 1), borderRadius: defaultRadius);
 
 const RoundedRectangleBorder shapeCard = const RoundedRectangleBorder(
   borderRadius: const BorderRadius.all(
@@ -31,8 +25,10 @@ const double fontSize10 = 10;
 const double fontSize20 = 20;
 const double fontSize40 = 40;
 
+const BorderRadius defaultRadius = BorderRadius.all(Radius.circular(8.0));
+
 /// ELEVATION
-const double defaultElevation = 5;
+const double defaultElevation = 8;
 
 TextStyle mainTimeStyle =
     TextStyle(fontSize: fontSize20, fontWeight: FontWeight.bold);
@@ -44,6 +40,16 @@ TextButton backDialogButton = TextButton(
   ),
   onPressed: () => Get.back(),
 );
+
+TextButton submitDialogButton(onSubmitHandler) {
+  return TextButton(
+    onPressed: onSubmitHandler,
+    child: Text(
+      'Submit',
+      style: TextStyle(color: primaryColor),
+    ),
+  );
+}
 
 BoxDecoration getBoxDecoration(Color color,
     {withOpacity = 0.7,
@@ -62,7 +68,7 @@ BoxDecoration getBoxDecoration(Color color,
       end: Alignment.bottomRight,
     ),
     borderRadius: all
-        ? BorderRadius.all(Radius.circular(8.0))
+        ? defaultRadius
         : BorderRadius.only(
             topLeft: Radius.circular(topLeft),
             topRight: Radius.circular(topRight),

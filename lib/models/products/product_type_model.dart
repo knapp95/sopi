@@ -1,8 +1,8 @@
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 
 class ProductTypeModel {
-  ProductType type;
+  ProductType id;
   String name;
 
-  ProductTypeModel(this.type, this.name);
+  ProductTypeModel(this.id, this.name);
 }

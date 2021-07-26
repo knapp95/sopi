@@ -20,7 +20,7 @@ class ManagerOrderTimelineLeft extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(
         left: 8,
-        top: 58,
+        top: 52,
         right: 8,
       ),
       child: Column(
@@ -41,7 +41,6 @@ class ManagerOrderTimelineLeft extends StatelessWidget {
   }
 
   Widget _buildSingleTime(DateTime time, [Color? fontColor]) {
-
     return Container(
       decoration: BoxDecoration(
         border: Border(

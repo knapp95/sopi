@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:json_annotation/json_annotation.dart';
+
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:sopi/common/scripts.dart';
+import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/products/primitive_product_item_model.dart';
 import 'package:sopi/services/products/product_service.dart';
-import 'package:sopi/models/products/enums/product_enum_type.dart';
 
 part 'product_item_model.g.dart';
 
@@ -16,6 +17,7 @@ class ProductItemModel extends PrimitiveProductItemModel  {
   String? description;
   double? price;
 
+  bool get isNew => this.pid == null;
   ProductItemModel();
 
   double get rate {

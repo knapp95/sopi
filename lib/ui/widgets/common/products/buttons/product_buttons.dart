@@ -5,7 +5,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sopi/models/generic/generic_item_model.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
-import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog.dart';
+import 'package:sopi/ui/widgets/manager/company/assets/item/asset_item_dialog_widget.dart';
+import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog_widget.dart';
 
 class ProductButtons extends StatefulWidget {
   @override
@@ -13,47 +14,36 @@ class ProductButtons extends StatefulWidget {
 }
 
 class _ProductButtonsState extends State<ProductButtons> {
-  Map<String, GenericItemModel> get allItems {
-    Map<String, GenericItemModel> allItems = {};
-    allItems['addProductManual'] = GenericItemModel(
-      name: 'Add product manual',
-      icon: Icons.add,
+  final List<GenericItemModel> visibleItems = [
+    GenericItemModel(
+      name: 'Add product',
+      icon: Icons.food_bank,
       funHandler: () => showScaleDialog(
-        ProductItemDialog(
-          isNew: true,
-        ),
+        ProductItemDialogWidget(),
       ),
       color: primaryColor,
-    );
-
-    ///TODO
-    allItems['addProductImport'] = GenericItemModel(
-      name: 'Add products from file (JSON)',
-      icon: Icons.file_upload,
-      color: Colors.blue,
-    );
-
-    return allItems;
-  }
-
-  List<GenericItemModel?> get visibleItems {
-    List<GenericItemModel?> visibleItems = [];
-    visibleItems.add(allItems['addProductImport']);
-    visibleItems.add(allItems['addProductManual']);
-    return visibleItems;
-  }
+    ),
+    GenericItemModel(
+      name: 'Add asset',
+      icon: Icons.kitchen,
+      funHandler: () => showScaleDialog(
+        AssetItemDialogWidget(),
+      ),
+      color: primaryColor,
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
     return SpeedDial(
         backgroundColor: Colors.white,
         foregroundColor: primaryColor,
-        animatedIcon: AnimatedIcons.list_view,
-        children: visibleItems.map((GenericItemModel? item) {
+        animatedIcon: AnimatedIcons.view_list,
+        children: visibleItems.map((GenericItemModel item) {
           return SpeedDialChild(
             child: Center(
               child: FaIcon(
-                item!.icon,
+                item.icon,
                 color: Colors.white,
               ),
             ),

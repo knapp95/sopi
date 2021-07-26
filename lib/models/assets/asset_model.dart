@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
@@ -34,11 +36,8 @@ class AssetModel with ChangeNotifier {
       List<AssetItemModel> assets = [];
       for (QueryDocumentSnapshot doc in docs) {
         final data = doc.data()! as Map<String, dynamic>;
-        final assetTmp = AssetItemModel.fromJson(data);
-        List<String> assignedEmployeesIds =
-            List<String>.from(data['assignedEmployeesIds']);
-        await assetTmp.setAssignedEmployees(assignedEmployeesIds);
-        assets.add(assetTmp);
+        final asset = AssetItemModel.fromJson(data);
+        assets.add(asset);
       }
       this.assets = assets;
       this.isInit = true;
@@ -48,6 +47,16 @@ class AssetModel with ChangeNotifier {
     }
   }
 
+  static Future<List<String>> getAvailableTypesImagePath(BuildContext ctx) async {
+    final manifestContent =
+        await DefaultAssetBundle.of(ctx).loadString('AssetManifest.json');
+    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+    final imagePaths = manifestMap.keys
+        .where((String key) => key.contains('images/types/'))
+        .where((String key) => key.contains('.png'))
+        .toList();
+    return imagePaths;
+  }
 
   AssetItemModel findAssetByProductType(ProductType? productType) {
     return this
@@ -63,11 +72,8 @@ class AssetModel with ChangeNotifier {
         .toList();
   }
 
-
-
-
-  Future<DateTime> findTheLatestAssetEndIncludeOrder(
-      OrderModel order,[List<AssetItemModel>? assetExistsInOrder]) async {
+  Future<DateTime> findTheLatestAssetEndIncludeOrder(OrderModel order,
+      [List<AssetItemModel>? assetExistsInOrder]) async {
     await fetchAssets();
     if (assetExistsInOrder == null) {
       assetExistsInOrder = this.getAssetExistsInOrder(order);

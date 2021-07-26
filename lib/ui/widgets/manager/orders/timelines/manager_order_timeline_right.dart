@@ -4,12 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:sopi/models/assets/asset_item_model.dart';
 import 'package:sopi/models/assets/asset_model.dart';
 import 'package:sopi/models/assets/asset_product_model.dart';
-import 'package:sopi/models/assets/asset_type_mocked.dart';
 import 'package:sopi/models/assets/timeline/asset_timeline_settings_model.dart';
 import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/services/orders/order_service.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
-import 'package:sopi/ui/widgets/manager/orders/timelines/manager_order_timeline_footer.dart';
+import 'package:sopi/ui/widgets/manager/common/asset_show_image.dart';
 
 class ManagerOrderTimelineRight extends StatelessWidget {
   final AssetItemModel _assetItem;
@@ -20,9 +19,6 @@ class ManagerOrderTimelineRight extends StatelessWidget {
 
   ManagerOrderTimelineRight(this._assetItem);
 
-  AssetTypeMocked? get assetTypeMocked =>
-      assetsTypeMocked[_assetItem.assignedProductType];
-
   List<AssetProductModel> get availableQueueProductsTimeline =>
       _assetItem.getQueueProductsTimeline(
         _assetTimelineSettingsModel.availableStartTimeline,
@@ -32,11 +28,10 @@ class ManagerOrderTimelineRight extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(2.0),
       child: Column(
         children: [
-          ManagerOrderTimelineFooter(
-              _assetItem.name, assetTypeMocked!.iconPath),
+          AssetShowImage(_assetItem.imagePath),
           Expanded(child: _buildWaitingBlocks()),
         ],
       ),
@@ -62,7 +57,6 @@ class ManagerOrderTimelineRight extends StatelessWidget {
   }
 
   double _getHeightForMinutes(int minutes) {
-
     return minutes < 0
         ? 0
         : 33 * (minutes / _assetTimelineSettingsModel.differenceInMinutes);
@@ -70,7 +64,8 @@ class ManagerOrderTimelineRight extends StatelessWidget {
 
   Widget _buildWaitingBlocks() {
     return Container(
-      width: 75,
+      color: _assetItem.color.withOpacity(0.05),
+      width: 80,
       child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
@@ -104,7 +99,6 @@ class ManagerOrderTimelineRight extends StatelessWidget {
                       padding: EdgeInsets.only(
                           top: _getEmptySpaceBetweenBlocks(index)),
                       child: Container(
-                        width: 70,
                         decoration:
                             getBoxDecoration(order.color, withOpacity: 0.9),
                         height: heightBlock,

@@ -10,7 +10,7 @@ part 'user_model.g.dart';
 @JsonSerializable()
 class UserModel with ChangeNotifier {
   UserType? typeAccount;
-  String? uid;
+  late String uid;
   String? name;
   String? email;
   String? username;
@@ -22,13 +22,17 @@ class UserModel with ChangeNotifier {
 
   Future<void> setTypeAccount() async {
     if (this.typeAccount != null || AuthenticationService.uid == null) return;
-    final userService = UserService.singleton;
-
-    DocumentSnapshot user =
-        await userService.getDoc(uid: AuthenticationService.uid).get();
-    final data = user.data()! as Map<String, dynamic>;
-    this.typeAccount = UserModel.fromJson(data).typeAccount;
+    UserModel user = await UserModel.getUser(AuthenticationService.uid);
+    this.typeAccount = user.typeAccount;
     notifyListeners();
+  }
+
+  static Future<UserModel> getUser(String? uid) async {
+    final userService = UserService.singleton;
+    DocumentSnapshot user =
+    await userService.getDoc(uid: uid).get();
+    final data = user.data()! as Map<String, dynamic>;
+    return UserModel.fromJson(data);
   }
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

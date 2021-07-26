@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +9,9 @@ import 'package:sopi/ui/widgets/common/notifications/bottom_notification.dart';
 bool? containsIgnoreCase(String string1, String string2) {
   return string1.toLowerCase().contains(string2.toLowerCase());
 }
+
+Color get randomColor =>
+  Color(Random().nextInt(0xffffffff));
 
 DateTime getRoundingTime({DateTime? sourceDate}) {
   DateTime time = sourceDate ?? DateTime.now();
@@ -69,4 +74,8 @@ String durationInMinutes(Duration? duration) {
       twoDigits((duration.inHours * 60) + duration.inMinutes.remainder(60));
   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
   return '$twoDigitMinutes:$twoDigitSeconds';
+}
+
+Color getColorFromHash(String hashColor) {
+  return Color(int.parse(hashColor.replaceFirst('#', '0xff')));
 }

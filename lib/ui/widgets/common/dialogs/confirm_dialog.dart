@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class ConfirmDialog extends StatelessWidget {
@@ -21,13 +20,7 @@ class ConfirmDialog extends StatelessWidget {
       content: Text(content),
       actions: [
         backDialogButton,
-        TextButton(
-          onPressed: _submit,
-          child: Text(
-            'Confirm',
-            style: TextStyle(color: primaryColor),
-          ),
-        ),
+        submitDialogButton(_submit),
       ],
     );
   }

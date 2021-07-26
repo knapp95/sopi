@@ -119,13 +119,7 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
       ),
       actions: [
         backDialogButton,
-        TextButton(
-          onPressed: _submit,
-          child: Text(
-            'Submit',
-            style: TextStyle(color: primaryColor),
-          ),
-        ),
+        submitDialogButton(_submit),
       ],
     );
   }
