@@ -62,7 +62,7 @@ class _ProductsScreenState extends State<ProductWidget>
       }
       ProductTypeModel openedProducts = ProductsModel.types[_selectedIndex];
       List<ProductItemModel> productsByType =
-          _products.getSortedProductsByType(openedProducts.type);
+          _products.getSortedProductsByType(openedProducts.id);
       _searchResult = productsByType
           .where((product) => containsIgnoreCase(product.name!, text)!)
           .toList();
@@ -137,7 +137,7 @@ class _ProductsScreenState extends State<ProductWidget>
       if (_searchResult.length != 0 || _searchController!.text.isNotEmpty) {
         productsByType = _searchResult;
       } else {
-        productsByType = _products.getSortedProductsByType(element.type);
+        productsByType = _products.getSortedProductsByType(element.id);
       }
       return ProductsList(productsByType);
     }).toList();

@@ -1,36 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:sopi/models/user/user_model.dart';
-import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class AssetEmployeeWidget extends StatelessWidget {
-  final UserModel? employee;
-  final Function? onDeleteHandler;
+  final UserModel employee;
 
-  AssetEmployeeWidget(this.employee, {this.onDeleteHandler});
+  AssetEmployeeWidget(this.employee);
 
   @override
   Widget build(BuildContext context) {
     return Chip(
-      deleteIconColor: Colors.red,
-      onDeleted: onDeleteHandler != null
-          ? () => onDeleteHandler!(employee!.uid)
-          : null,
       backgroundColor: Colors.white,
-      shape: shapeDialog,
-      elevation: defaultElevation,
       avatar: ClipOval(
         child: SizedBox(
-          width: 46,
-          height: 46,
+          width: 40,
+          height: 40,
           child: Image.network(
-            employee!.profilePhoto!,
+            employee.profilePhoto!,
             fit: BoxFit.cover,
           ),
         ),
       ),
       label: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(employee!.username!),
+        child: Text(employee.username!),
       ),
     );
   }

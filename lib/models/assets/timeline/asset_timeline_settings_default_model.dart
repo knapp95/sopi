@@ -1,5 +1,6 @@
 import 'package:sopi/models/generic/generic_item_model.dart';
 
+
 class AssetTimelineSettingsDefaultModel {
   static  const int differenceInMinutes = 15;
   static  const double rangeForwards = 6;

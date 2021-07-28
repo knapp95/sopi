@@ -1,9 +1,7 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/products/primitive_product_item_model.dart';
 import 'package:sopi/models/products/product_item_model.dart';
-import 'package:json_annotation/json_annotation.dart';
-
-
 
 part 'order_product_model.g.dart';
 

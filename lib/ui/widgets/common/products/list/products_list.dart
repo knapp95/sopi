@@ -8,11 +8,13 @@ import 'package:sopi/models/user/enums/user_enum_type.dart';
 import 'package:sopi/models/user/user_model.dart';
 import 'package:sopi/services/products/product_service.dart';
 import 'package:sopi/ui/shared/animations.dart';
+import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/client/products/product_item_dialog.dart'
     as productClient;
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 import 'package:sopi/ui/widgets/common/products/list/productsEmpty_list.dart';
-import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog.dart'
+import 'package:sopi/ui/widgets/manager/common/asset_show_image.dart';
+import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog_widget.dart'
     as productManager;
 
 class ProductsList extends StatelessWidget {
@@ -21,8 +23,8 @@ class ProductsList extends StatelessWidget {
 
   ProductsList(this.displayProductsList);
 
-  void _editProduct(String? pid) {
-    showScaleDialog(productManager.ProductItemDialog(pid: pid));
+  void _editProduct(ProductItemModel product) {
+    showScaleDialog(productManager.ProductItemDialogWidget(product));
   }
 
   void _removeProduct(String? pid) async {
@@ -46,110 +48,112 @@ class ProductsList extends StatelessWidget {
                 itemCount: this.displayProductsList.length,
                 itemBuilder: (_, int index) {
                   ProductItemModel product = this.displayProductsList[index];
-                  return InkWell(
-                    onTap: () => !isManager
-                        ? showScaleDialog(
-                            productClient.ProductItemDialog(product))
-                        : null,
-                    child: Card(
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: Text(
-                              product.name!,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text(
-                              product.description!,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey,
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap: () => !isManager
+                          ? showScaleDialog(
+                              productClient.ProductItemDialog(product))
+                          : null,
+                      child: Card(
+                        elevation: defaultElevation,
+                        shape: shapeCard,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Text(
+                                product.name!,
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                            ),
-                            trailing: product.imageUrl != null
-                                ? Image.network(product.imageUrl!,
-                                    fit: BoxFit.cover)
-                                : Image.asset(
-                                    'assets/images/no_photo.png',
-                                  ),
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: <Widget>[
-                                    TextButton.icon(
-                                      onPressed: null,
-                                      icon: FaIcon(
-                                        FontAwesomeIcons.dollarSign,
-                                      ),
-                                      label: Text(
-                                        product.price!.toStringAsFixed(2),
-                                      ),
-                                    ),
-                                    TextButton.icon(
-                                      onPressed: null,
-                                      icon: FaIcon(
-                                        FontAwesomeIcons.clock,
-                                      ),
-                                      label: Text('${product.prepareTime} min'),
-                                    ),
-                                    TextButton.icon(
-                                      onPressed: () {},
-                                      icon: FaIcon(
-                                        FontAwesomeIcons.solidStar,
-                                        color: Colors.yellow,
-                                      ),
-                                      label: Text(
-                                          '${product.rate} / ${ProductsModel.maxAvailableRate.toStringAsFixed(2)}'),
-                                    ),
-                                  ],
+                              subtitle: Text(
+                                product.description!,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
                                 ),
-                              )
-                            ],
-                          ),
-                          if (isManager)
+                              ),
+                              trailing: AssetShowImage(product.imageUrl,
+                                  fromAsset: false),
+                            ),
                             Column(
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: <Widget>[
-                                          TextButton.icon(
-                                            onPressed: () =>
-                                                _editProduct(product.pid),
-                                            icon: FaIcon(
-                                                FontAwesomeIcons.pencilAlt),
-                                            label: Text('Edit'),
-                                          ),
-                                          TextButton.icon(
-                                            style: TextButton.styleFrom(
-                                              primary: Colors.red,
-                                            ),
-                                            onPressed: () =>
-                                                _removeProduct(product.pid),
-                                            icon: FaIcon(
-                                              FontAwesomeIcons.trash,
-                                            ),
-                                            label: Text(
-                                              'Remove',
-                                            ),
-                                          ),
-                                        ],
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      TextButton.icon(
+                                        onPressed: null,
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.dollarSign,
+                                        ),
+                                        label: Text(
+                                          product.price!.toStringAsFixed(2),
+                                        ),
+                                      ),
+                                      TextButton.icon(
+                                        onPressed: null,
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.clock,
+                                        ),
+                                        label:
+                                            Text('${product.prepareTime} min'),
+                                      ),
+                                      TextButton.icon(
+                                        onPressed: () {},
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.solidStar,
+                                          color: Colors.yellow,
+                                        ),
+                                        label: Text(
+                                            '${product.rate} / ${ProductsModel.maxAvailableRate.toStringAsFixed(2)}'),
                                       ),
                                     ],
                                   ),
                                 )
                               ],
                             ),
-                        ],
+                            if (isManager)
+                              Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: <Widget>[
+                                            TextButton.icon(
+                                              onPressed: () =>
+                                                  _editProduct(product),
+                                              icon: FaIcon(
+                                                  FontAwesomeIcons.pencilAlt),
+                                              label: Text('Edit'),
+                                            ),
+                                            TextButton.icon(
+                                              style: TextButton.styleFrom(
+                                                primary: Colors.red,
+                                              ),
+                                              onPressed: () =>
+                                                  _removeProduct(product.pid),
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.trash,
+                                              ),
+                                              label: Text(
+                                                'Remove',
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   );

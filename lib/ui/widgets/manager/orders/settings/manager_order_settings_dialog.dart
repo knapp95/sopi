@@ -128,7 +128,6 @@ class _ManagerOrderSettingsDialogState
                     labelText: 'Do',
                     onChangedHandler: _changeSelectedRangeForwards,
                   ),
-
                 ],
               ),
       ),

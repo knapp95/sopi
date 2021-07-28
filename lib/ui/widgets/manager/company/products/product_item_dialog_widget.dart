@@ -13,35 +13,31 @@ import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/common/images/image_source_sheet.dart';
 
-class ProductItemDialog extends StatefulWidget {
-  final bool isNew;
-  final String? pid;
+class ProductItemDialogWidget extends StatefulWidget {
+  final ProductItemModel? productItem;
 
-  ProductItemDialog({this.isNew = false, this.pid});
+  ProductItemDialogWidget([this.productItem]);
 
   @override
-  _ProductItemDialogState createState() => _ProductItemDialogState();
+  _ProductItemDialogWidgetState createState() =>
+      _ProductItemDialogWidgetState();
 }
 
-class _ProductItemDialogState extends State<ProductItemDialog> {
+class _ProductItemDialogWidgetState extends State<ProductItemDialogWidget> {
   final FieldBuilderFactory _formFactory = FieldBuilderFactory();
   bool _isInit = false;
   late ProductsModel _products;
-  ProductItemModel? _product;
+  late ProductItemModel _product;
   PickedFile? _imageFile;
 
   @override
   void initState() {
     if (!_isInit) {
+      _product = widget.productItem ?? ProductItemModel();
       _products = Provider.of<ProductsModel>(context, listen: false);
       _isInit = true;
     }
-    if (widget.isNew) {
-      _product = ProductItemModel();
-    } else {
-      _product =
-          _products.products.firstWhere((element) => element.pid == widget.pid);
-    }
+
     _formFactory.data = _product;
     super.initState();
   }
@@ -86,7 +82,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
 
   Future<void> _submit() async {
     final image = _imageFile != null ? File(_imageFile!.path) : null;
-    await _product!.saveProductToFirebase(image: image);
+    await _product.saveProductToFirebase(image: image);
     _products.fetchProducts();
     Get.back();
   }
@@ -94,7 +90,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.isNew ? 'Add product' : 'Edit product'),
+      title: Text(_product.isNew ? 'Add product' : 'Edit product'),
       shape: shapeDialog,
       elevation: defaultElevation,
       content: Form(
@@ -109,17 +105,17 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
                     _formFactory.buildTextField(
                       labelText: 'Name',
                       fieldName: 'name',
-                      initialValue: _product!.name,
+                      initialValue: _product.name,
                     ),
                     _formFactory.buildTextField(
                       labelText: 'Description',
                       fieldName: 'description',
-                      initialValue: _product!.description,
+                      initialValue: _product.description,
                       maxLines: 5,
                     ),
                     _formFactory.buildTextField(
                       fieldName: 'price',
-                      initialValue: _product!.price?.toString(),
+                      initialValue: _product.price?.toString(),
                       labelText: 'Price',
                       keyboardType: TextInputType.number,
                       suffixIcon: Icon(Icons.attach_money),
@@ -129,17 +125,16 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
                         Expanded(
                           child: _formFactory.buildDropdownField(
                             fieldName: 'type',
-                            initialValue:
-                                (_product!.type ?? ProductType.BURGER),
+                            initialValue: (_product.type ?? ProductType.BURGER),
                             labelText: 'Type',
-                            items: ProductsModel.availableProductsTypesGeneric,
+                            items: ProductsModel.types,
                           ),
                         ),
                         formSizedBoxWidth,
                         Expanded(
                           child: _formFactory.buildDropdownField(
                             fieldName: 'prepareTime',
-                            initialValue: _product!.prepareTime ?? 30,
+                            initialValue: _product.prepareTime ?? 30,
                             labelText: 'Prepare time',
                             items: ProductsModel.times,
                           ),
@@ -153,15 +148,7 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
           ),
         ),
       ),
-      actions: [
-        backDialogButton,
-        TextButton(
-          onPressed: _submit,
-          child: Text(
-            'Submit',
-          ),
-        ),
-      ],
+      actions: [backDialogButton, submitDialogButton(_submit)],
     );
   }
 
@@ -175,8 +162,8 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
       ],
     );
     Widget? image;
-    if (_product!.imageUrl != null) {
-      image = Image.network(_product!.imageUrl!);
+    if (_product.imageUrl != null) {
+      image = Image.network(_product.imageUrl!);
     }
 
     if (_imageFile != null) {
