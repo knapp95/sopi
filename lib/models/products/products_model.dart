@@ -11,18 +11,18 @@ class ProductsModel with ChangeNotifier {
   static const double maxAvailableRate = 6.0;
 
   static List<ProductTypeModel> types = [
-    ProductTypeModel(ProductType.SPECIAL, 'Special for your'),
-    ProductTypeModel(ProductType.DESSERT, 'Desserts'),
-    ProductTypeModel(ProductType.BURGER, 'Burger'),
-    ProductTypeModel(ProductType.PIZZA, 'Pizza'),
-    ProductTypeModel(ProductType.PASTA, 'Pastas'),
-    ProductTypeModel(ProductType.VEGE, 'Vegan'),
-    ProductTypeModel(ProductType.OTHER, 'Other'),
+    ProductTypeModel(ProductType.special, 'Special for your'),
+    ProductTypeModel(ProductType.dessert, 'Desserts'),
+    ProductTypeModel(ProductType.burger, 'Burger'),
+    ProductTypeModel(ProductType.pizza, 'Pizza'),
+    ProductTypeModel(ProductType.pasta, 'Pastas'),
+    ProductTypeModel(ProductType.vege, 'Vegan'),
+    ProductTypeModel(ProductType.other, 'Other'),
   ];
 
   static List<ProductTypeModel> get availableProductsTypes =>
       ProductsModel.types
-          .where((element) => element.id != ProductType.SPECIAL)
+          .where((element) => element.id != ProductType.special)
           .toList();
 
   static String getTypeName(ProductType? id) {
@@ -40,29 +40,26 @@ class ProductsModel with ChangeNotifier {
     GenericItemModel(id: 60, name: '60'),
   ];
 
-
-
   List<ProductItemModel> products = [];
 
   Future<void> fetchProducts() async {
-    this.products = await _productService.fetchProducts();
-    this.isInit = true;
+    products = await _productService.fetchProducts();
+    isInit = true;
     notifyListeners();
   }
 
   List<ProductItemModel> getSortedProductsByType(ProductType type) {
     List<ProductItemModel> productsByType = [];
     switch (type) {
-      case ProductType.VEGE:
-        productsByType =
-            this.products.where((product) => product.isVeg).toList();
+      case ProductType.vege:
+        productsByType = products.where((product) => product.isVeg).toList();
         break;
-      case ProductType.SPECIAL:
-        productsByType = this.products..shuffle();
+      case ProductType.special:
+        productsByType = products..shuffle();
         break;
       default:
         productsByType =
-            this.products.where((product) => product.type == type).toList();
+            products.where((product) => product.type == type).toList();
     }
     productsByType.sort((a, b) => a.price!.compareTo(b.price!));
     return productsByType;

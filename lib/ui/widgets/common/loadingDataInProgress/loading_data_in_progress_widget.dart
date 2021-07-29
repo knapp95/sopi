@@ -4,12 +4,15 @@ class LoadingDataInProgressWidget extends StatelessWidget {
   final String message;
   final bool withScaffold;
 
-  LoadingDataInProgressWidget(
-      {this.message = 'Loading data is progress', this.withScaffold = false});
+  const LoadingDataInProgressWidget({
+    this.message = 'Loading data is progress',
+    this.withScaffold = false,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return this.withScaffold
+    return withScaffold
         ? Scaffold(body: _buildLoadingDataInProgressBody())
         : _buildLoadingDataInProgressBody();
   }
@@ -19,8 +22,8 @@ class LoadingDataInProgressWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          CircularProgressIndicator(),
-          Padding(
+          const CircularProgressIndicator(),
+          const Padding(
             padding: EdgeInsets.only(top: 30),
           ),
           Text(message),

@@ -5,10 +5,11 @@ class EmployeeOrderProcessingEmptyWidget extends StatelessWidget {
   final IconData icon;
   final String statusLabel;
 
-  EmployeeOrderProcessingEmptyWidget({
-    this.icon = Icons.calendar_today,
-    this.statusLabel = 'No processing order',
-  });
+  const EmployeeOrderProcessingEmptyWidget(
+      {this.icon = Icons.calendar_today,
+      this.statusLabel = 'No processing order',
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +19,8 @@ class EmployeeOrderProcessingEmptyWidget extends StatelessWidget {
           Expanded(child: Lottie.asset('assets/animations/lazy_cat.json')),
           Text(
             statusLabel,
-            style:
-                TextStyle(fontWeight: FontWeight.bold, color: Colors.black12),
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black12),
           ),
         ],
       ),

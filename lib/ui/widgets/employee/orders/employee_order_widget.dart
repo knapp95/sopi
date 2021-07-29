@@ -15,6 +15,8 @@ import '../../common/loadingDataInProgress/loading_data_in_progress_widget.dart'
 import 'waiting/employee_order_waiting_empty_widget.dart';
 
 class EmployeeOrderWidget extends StatefulWidget {
+  const EmployeeOrderWidget({Key? key}) : super(key: key);
+
   @override
   _EmployeeOrderWidgetState createState() => _EmployeeOrderWidgetState();
 }
@@ -30,21 +32,23 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
         child: StreamBuilder(
             stream: _assetService.queueProductsInAssetsForEmployee,
             builder: (ctx, snapshot) {
-              if (!snapshot.hasData) return LoadingDataInProgressWidget();
-              if ((snapshot.data! as QuerySnapshot).docs.isEmpty)
-                return EmployeeOrderWaitingEmptyWidget();
-              List<AssetProductModel> allQueueProductsInAssetsForEmployee =
+              if (!snapshot.hasData) return const LoadingDataInProgressWidget();
+              if ((snapshot.data! as QuerySnapshot).docs.isEmpty) {
+                return const EmployeeOrderWaitingEmptyWidget();
+              }
+              final List<AssetProductModel>
+                  allQueueProductsInAssetsForEmployee =
                   AssetModel.getAllQueueProductsInAssetsForEmployee(
                       (snapshot.data! as QuerySnapshot).docs);
 
-              AssetProductModel? processingProduct =
+              final AssetProductModel? processingProduct =
                   allQueueProductsInAssetsForEmployee.firstWhereOrNull(
                       (element) =>
-                          element.status == AssetEnumStatus.PROCESSING);
-              List<AssetProductModel> waitingProducts =
+                          element.status == AssetEnumStatus.processing);
+              final List<AssetProductModel> waitingProducts =
                   allQueueProductsInAssetsForEmployee
                       .where((element) =>
-                          element.status == AssetEnumStatus.WAITING)
+                          element.status == AssetEnumStatus.waiting)
                       .toList();
               return Column(
                 children: [
@@ -72,7 +76,7 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
             Center(
               child: Text(
                 title,
-                style: TextStyle(color: Colors.grey),
+                style: const TextStyle(color: Colors.grey),
               ),
             ),
             child!,
@@ -87,17 +91,17 @@ class _EmployeeOrderWidgetState extends State<EmployeeOrderWidget> {
         ? Expanded(
             child: EmployeeOrderProcessingItemWidget(
                 processingProduct, ObjectKey(processingProduct)))
-        : EmployeeOrderProcessingEmptyWidget();
+        : const EmployeeOrderProcessingEmptyWidget();
   }
 
   Widget _buildWaitingOrders(List<AssetProductModel> waitingProducts) {
     return Expanded(
       child: waitingProducts.isEmpty
-          ? EmployeeOrderWaitingEmptyWidget()
+          ? const EmployeeOrderWaitingEmptyWidget()
           : ListView.builder(
               itemCount: waitingProducts.length,
               itemBuilder: (_, int index) {
-                AssetProductModel assetProduct = waitingProducts[index];
+                final AssetProductModel assetProduct = waitingProducts[index];
                 return EmployeeOrderWaitingItemWidget(
                   assetProduct,
                   ObjectKey(assetProduct),

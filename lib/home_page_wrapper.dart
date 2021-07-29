@@ -8,6 +8,8 @@ import 'package:sopi/ui/widgets/employee/employee_widget.dart';
 import 'package:sopi/ui/widgets/manager/manager_widget.dart';
 
 class HomePageWrapper extends StatefulWidget {
+  const HomePageWrapper({Key? key}) : super(key: key);
+
   @override
   _HomePageWrapperState createState() => _HomePageWrapperState();
 }
@@ -24,20 +26,20 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
   @override
   Widget build(BuildContext context) {
     return _typeAccount == null
-        ? LoadingDataInProgressWidget(withScaffold: true)
+        ? const LoadingDataInProgressWidget(withScaffold: true)
         : _buildPageForTypeAccount(context);
   }
 
   Widget _buildPageForTypeAccount(BuildContext context) {
     switch (_typeAccount) {
-      case UserType.CLIENT:
-        return ClientWidget();
-      case UserType.MANAGER:
-        return ManagerWidget();
-      case UserType.EMPLOYEE:
-        return EmployeeWidget();
+      case UserType.client:
+        return const ClientWidget();
+      case UserType.manager:
+        return const ManagerWidget();
+      case UserType.employee:
+        return const EmployeeWidget();
       default:
-        return Container(child: Text('No data'));
+        return const Text('No data');
     }
   }
 }

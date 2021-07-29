@@ -9,17 +9,11 @@ part 'asset_product_model.g.dart';
 class AssetProductModel extends PrimitiveProductItemModel {
   String? oid;
   late int totalPrepareTime;
-  AssetEnumStatus? status = AssetEnumStatus.WAITING;
+  AssetEnumStatus? status = AssetEnumStatus.waiting;
   late DateTime plannedStartProcessingDate;
 
-  DateTime get plannedEndProcessingDate => this
-      .plannedStartProcessingDate
-      .add(Duration(minutes: this.totalPrepareTime));
-
-  factory AssetProductModel.fromJson(Map<String, dynamic> json) =>
-      _$AssetProductModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AssetProductModelToJson(this);
+  DateTime get plannedEndProcessingDate =>
+      plannedStartProcessingDate.add(Duration(minutes: totalPrepareTime));
 
   AssetProductModel(String? name, String? pid, this.oid, this.totalPrepareTime)
       : super(pid: pid, name: name);
@@ -27,4 +21,9 @@ class AssetProductModel extends PrimitiveProductItemModel {
   AssetProductModel.fromOrder(
       String? name, String? pid, this.oid, this.totalPrepareTime)
       : super(pid: pid, name: name);
+
+  factory AssetProductModel.fromJson(Map<String, dynamic> json) =>
+      _$AssetProductModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AssetProductModelToJson(this);
 }

@@ -6,6 +6,8 @@ import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_pro
 import 'package:sopi/ui/widgets/manager/company/assets/item/asset_item_widget.dart';
 
 class AssetWidget extends StatefulWidget {
+  const AssetWidget({Key? key}) : super(key: key);
+
   @override
   _AssetWidgetState createState() => _AssetWidgetState();
 }
@@ -18,15 +20,15 @@ class _AssetWidgetState extends State<AssetWidget> {
     return StreamBuilder(
       stream: _assetService.assets,
       builder: (ctx, snapshot) {
-        if (!snapshot.hasData) return LoadingDataInProgressWidget();
+        if (!snapshot.hasData) return const LoadingDataInProgressWidget();
         if ((snapshot.data! as QuerySnapshot).docs.isEmpty) return Container();
         return ListView.builder(
           itemCount: (snapshot.data! as QuerySnapshot).docs.length,
           itemBuilder: (_, int index) {
-            QueryDocumentSnapshot orderDoc =
+            final QueryDocumentSnapshot orderDoc =
                 (snapshot.data! as QuerySnapshot).docs[index];
             final data = orderDoc.data()! as Map<String, dynamic>;
-            AssetItemModel asset = AssetItemModel.fromJson(data);
+            final AssetItemModel asset = AssetItemModel.fromJson(data);
             return AssetItemWidget(asset);
           },
         );

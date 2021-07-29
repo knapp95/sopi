@@ -8,20 +8,21 @@ import 'package:sopi/ui/widgets/manager/company/assets/common/color_box_widget.d
 class AssetItemNoEditableWidget extends StatelessWidget {
   final AssetItemModel _assetItem;
 
-  AssetItemNoEditableWidget(this._assetItem);
+  const AssetItemNoEditableWidget(this._assetItem, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
           leading: AssetShowImage(_assetItem.imagePath),
           trailing: ColorBoxWidget(
               _assetItem.color, '${_assetItem.maxWaitingTime ?? '-'}'),
           title: Text(
             _assetItem.name ?? '',
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: fontSize20,
             ),

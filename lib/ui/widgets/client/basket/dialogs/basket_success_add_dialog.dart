@@ -6,7 +6,7 @@ import 'package:sopi/ui/shared/styles/shared_style.dart';
 class BasketSuccessAddDialog extends StatelessWidget {
   final int? orderNumber;
 
-  BasketSuccessAddDialog(this.orderNumber);
+  const BasketSuccessAddDialog(this.orderNumber, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +18,8 @@ class BasketSuccessAddDialog extends StatelessWidget {
         children: [
           Lottie.asset('assets/animations/success.json', repeat: false),
           Text(
-            'Your\'s order #$orderNumber',
-            style: TextStyle(
+            "Your's order #$orderNumber",
+            style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: fontSize20,
                 color: primaryColor),

@@ -4,6 +4,8 @@ import 'package:sopi/services/authentication/authentication_service.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 
 class AccountWidget extends StatelessWidget {
+  const AccountWidget({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
@@ -22,23 +24,20 @@ class AccountWidget extends StatelessWidget {
                           height: double.infinity,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(
-                              width: 1,
-                              color: primaryColor,
-                            ),
+                            border: Border.all(color: primaryColor),
                           ),
                           child: CircleAvatar(
                             backgroundColor: Colors.white.withOpacity(0.9),
                             radius: double.infinity,
                             backgroundImage:
-                                AssetImage('assets/images/sopi_logo.png'),
+                                const AssetImage('assets/images/sopi_logo.png'),
                           )),
                       Align(
                         alignment: Alignment.bottomRight,
                         child: CircleAvatar(
                           backgroundColor: Colors.grey.withOpacity(.7),
                           radius: 14.0,
-                          child: Icon(
+                          child: const Icon(
                             Icons.photo_camera,
                             color: Colors.white,
                           ),
@@ -47,17 +46,17 @@ class AccountWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text('Hi, Thomas'),
+                const Text('Hi, Thomas'),
                 ElevatedButton(
                   onPressed: () {
                     context.read<AuthenticationService>().signOut();
                   },
-                  child: Text("Sign out"),
+                  child: const Text("Sign out"),
                 ),
               ],
             ),
           ),
-          Expanded(flex: 2, child: Text('  ')),
+          const Expanded(flex: 2, child: Text('  ')),
         ],
       ),
     );

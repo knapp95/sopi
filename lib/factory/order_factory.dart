@@ -15,7 +15,7 @@ class OrderFactory {
   final _assetService = AssetService.singleton;
   final _orderService = OrderService.singleton;
   static final OrderFactory _singleton = OrderFactory._internal();
-  AssetModel _assets = Provider.of<AssetModel>(Get.context!);
+  final AssetModel _assets = Provider.of<AssetModel>(Get.context!);
 
   factory OrderFactory() {
     return _singleton;
@@ -28,32 +28,34 @@ class OrderFactory {
   Future<void> generateOrders(int ordersCount) async {
     List<ProductItemModel> products = [];
     for (int i = 0; i < ordersCount; i++) {
-      int productsCount = Random().nextInt(6) + 1;
+      final int productsCount = Random().nextInt(6) + 1;
 
       if (products.isEmpty) {
-        ProductsModel _productsModel =
+        final ProductsModel _productsModel =
             Provider.of<ProductsModel>(Get.context!, listen: false);
         await _productsModel.fetchProducts();
         products = _productsModel.products;
       }
       products.shuffle();
-      List<ProductItemModel> randomProducts = products.length > productsCount
-          ? products.sublist(0, productsCount)
-          : products;
+      final List<ProductItemModel> randomProducts =
+          products.length > productsCount
+              ? products.sublist(0, productsCount)
+              : products;
       double summaryPrice = 0.0;
-      List<OrderProductModel> randomProductsOrder = [];
-      randomProducts.forEach((product) {
+      final List<OrderProductModel> randomProductsOrder = [];
+      for (final ProductItemModel product in randomProducts) {
         randomProductsOrder.add(OrderProductModel.fromProduct(product));
         summaryPrice += product.count! * product.price!;
-      });
-      await this.createOrder(randomProductsOrder, summaryPrice);
+      }
+
+      await createOrder(randomProductsOrder, summaryPrice);
     }
   }
 
   Future<int?> createOrder(
       List<OrderProductModel> products, double summaryPrice) async {
     final humanNumber = await _orderService.getNextHumanNumberForOrder();
-    OrderModel newOrder = OrderModel.fromBasket(
+    final OrderModel newOrder = OrderModel.fromBasket(
       products: products,
       createDate: DateTime.now(),
       humanNumber: humanNumber,
@@ -65,19 +67,19 @@ class OrderFactory {
     final data = newOrder.toJson();
 
     document.set(data);
-    await this.addNewOrderToProcess(newOrder);
+    await addNewOrderToProcess(newOrder);
     return humanNumber;
   }
 
   Future<void> addNewOrderToProcess(OrderModel newOrder) async {
     await _assets.fetchAssets();
 
-    List<AssetItemModel> assetExistsInOrder =
+    final List<AssetItemModel> assetExistsInOrder =
         _assets.getAssetExistsInOrder(newOrder);
-    DateTime theLatestAssetEnd =
-        await _assets.findTheLatestAssetEndIncludeOrder(newOrder, assetExistsInOrder);
-    for (AssetItemModel asset in assetExistsInOrder) {
-      List<OrderProductModel> productsByType =
+    final DateTime theLatestAssetEnd = await _assets
+        .findTheLatestAssetEndIncludeOrder(newOrder, assetExistsInOrder);
+    for (final AssetItemModel asset in assetExistsInOrder) {
+      final List<OrderProductModel> productsByType =
           newOrder.getProductsForType(asset.assignedProductType);
       await asset.addProductsFromOrderToQueue(
           newOrder.oid, theLatestAssetEnd, productsByType);
@@ -87,7 +89,7 @@ class OrderFactory {
   Future<void> completeOrderProduct(
       String? oid, OrderProductModel orderProductModel) async {
     await _assets.fetchAssets();
-    AssetItemModel assignedAsset =
+    final AssetItemModel assignedAsset =
         _assets.findAssetByProductType(orderProductModel.type);
     assignedAsset.completeProcessingProduct();
   }
@@ -95,7 +97,7 @@ class OrderFactory {
   /// Clear assigned orders in assets, and all orders collection
   Future<void> clearDataFactory() async {
     await _assets.fetchAssets();
-    for (AssetItemModel asset in _assets.assets) {
+    for (final AssetItemModel asset in _assets.assets) {
       final data = {
         'queueProducts': [],
       };

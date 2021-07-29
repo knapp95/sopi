@@ -5,7 +5,7 @@ import 'package:sopi/ui/shared/styles/shared_style.dart';
 class ConfirmDialog extends StatelessWidget {
   final String content;
 
-  ConfirmDialog(this.content);
+  const ConfirmDialog(this.content, {Key? key}) : super(key: key);
 
   Future<void> _submit() async {
     Get.back(result: true);
@@ -16,7 +16,7 @@ class ConfirmDialog extends StatelessWidget {
     return AlertDialog(
       shape: shapeDialog,
       elevation: defaultElevation,
-      title: Text('Question'),
+      title: const Text('Question'),
       content: Text(content),
       actions: [
         backDialogButton,

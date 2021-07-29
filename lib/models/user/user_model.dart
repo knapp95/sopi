@@ -21,16 +21,15 @@ class UserModel with ChangeNotifier {
   UserModel();
 
   Future<void> setTypeAccount() async {
-    if (this.typeAccount != null || AuthenticationService.uid == null) return;
-    UserModel user = await UserModel.getUser(AuthenticationService.uid);
-    this.typeAccount = user.typeAccount;
+    if (typeAccount != null || AuthenticationService.uid == null) return;
+    final UserModel user = await UserModel.getUser(AuthenticationService.uid);
+    typeAccount = user.typeAccount;
     notifyListeners();
   }
 
   static Future<UserModel> getUser(String? uid) async {
     final userService = UserService.singleton;
-    DocumentSnapshot user =
-    await userService.getDoc(uid: uid).get();
+    final DocumentSnapshot user = await userService.getDoc(uid: uid).get();
     final data = user.data()! as Map<String, dynamic>;
     return UserModel.fromJson(data);
   }

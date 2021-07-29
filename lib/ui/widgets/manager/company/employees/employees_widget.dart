@@ -6,6 +6,8 @@ import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 
 class EmployeesWidget extends StatefulWidget {
+  const EmployeesWidget({Key? key}) : super(key: key);
+
   @override
   _EmployeesWidgetState createState() => _EmployeesWidgetState();
 }
@@ -40,14 +42,14 @@ class _EmployeesWidgetState extends State<EmployeesWidget> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? LoadingDataInProgressWidget()
+        ? const LoadingDataInProgressWidget()
         : Column(
             children: [
               Expanded(
                 child: ListView.builder(
                   itemCount: _users.length,
                   itemBuilder: (_, int index) {
-                    UserModel user = _users[index];
+                    final UserModel user = _users[index];
                     return Card(
                         child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -55,15 +57,15 @@ class _EmployeesWidgetState extends State<EmployeesWidget> {
                         children: [
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   user.username!,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
+                                  children: const [
                                     FaIcon(
                                       FontAwesomeIcons.solidStar,
                                       color: Colors.yellow,
@@ -76,13 +78,14 @@ class _EmployeesWidgetState extends State<EmployeesWidget> {
                                     Container(
                                       height: 20,
                                       width: 20,
-                                      margin: EdgeInsets.only(right: 8, top: 8),
-                                      decoration: BoxDecoration(
+                                      margin: const EdgeInsets.only(
+                                          right: 8, top: 8),
+                                      decoration: const BoxDecoration(
                                         color: Colors.red,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
-                                    Text('Offline'),
+                                    const Text('Offline'),
                                   ],
                                 ),
                               ],
@@ -92,19 +95,16 @@ class _EmployeesWidgetState extends State<EmployeesWidget> {
                             width: 100.0,
                             height: 100.0,
                             decoration: BoxDecoration(
-                              image: DecorationImage(
+                              image: const DecorationImage(
                                 image: AssetImage(
                                   'assets/images/no_photo.png',
                                 ),
                                 fit: BoxFit.cover,
                               ),
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(50.0),
                               ),
-                              border: Border.all(
-                                color: primaryColor,
-                                width: 1,
-                              ),
+                              border: Border.all(color: primaryColor),
                             ),
                           ),
                         ],

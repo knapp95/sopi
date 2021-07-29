@@ -7,26 +7,27 @@ class AssetShowImage extends StatelessWidget {
   final double height;
   final bool fromAsset;
 
-  AssetShowImage(this.imagePath,
-      {this.width = 50, this.height = 50, this.fromAsset = true});
+  const AssetShowImage(this.imagePath,
+      {this.width = 50, this.height = 50, this.fromAsset = true, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String imagePath = this.imagePath ?? 'assets/images/no_photo.png';
+    final String imagePath = this.imagePath ?? 'assets/images/no_photo.png';
     return ClipRRect(
         borderRadius: defaultRadius,
-        child: this.fromAsset
+        child: fromAsset
             ? Image.asset(
                 imagePath,
                 fit: BoxFit.fill,
-                height: this.width,
-                width: this.height,
+                height: width,
+                width: height,
               )
             : Image.network(
                 imagePath,
                 fit: BoxFit.fill,
-                height: this.width,
-                width: this.height,
+                height: width,
+                width: height,
               ));
   }
 }

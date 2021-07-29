@@ -10,24 +10,24 @@ import 'package:sopi/services/products/product_service.dart';
 import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/client/products/product_item_dialog.dart'
-    as productClient;
+    as product_client;
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
-import 'package:sopi/ui/widgets/common/products/list/productsEmpty_list.dart';
+import 'package:sopi/ui/widgets/common/products/list/products_empty_list.dart';
 import 'package:sopi/ui/widgets/manager/common/asset_show_image.dart';
 import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog_widget.dart'
-    as productManager;
+    as product_manager;
 
 class ProductsList extends StatelessWidget {
   final _productService = ProductService.singleton;
   final List<ProductItemModel> displayProductsList;
 
-  ProductsList(this.displayProductsList);
+  ProductsList(this.displayProductsList, {Key? key}) : super(key: key);
 
   void _editProduct(ProductItemModel product) {
-    showScaleDialog(productManager.ProductItemDialogWidget(product));
+    showScaleDialog(product_manager.ProductItemDialogWidget(product));
   }
 
-  void _removeProduct(String? pid) async {
+  Future<void> _removeProduct(String? pid) async {
     await _productService.removeDoc(pid);
 
     Provider.of<ProductsModel>(Get.context!, listen: false).fetchProducts();
@@ -39,21 +39,21 @@ class ProductsList extends StatelessWidget {
         Provider.of<ProductsModel>(context, listen: false).isInit;
     final isManager =
         Provider.of<UserModel>(context, listen: false).typeAccount ==
-            UserType.MANAGER;
+            UserType.manager;
     return !productsLoaded
-        ? LoadingDataInProgressWidget()
-        : this.displayProductsList.length == 0
-            ? ProductEmptyList()
+        ? const LoadingDataInProgressWidget()
+        : displayProductsList.isEmpty
+            ? const ProductEmptyList()
             : ListView.builder(
-                itemCount: this.displayProductsList.length,
+                itemCount: displayProductsList.length,
                 itemBuilder: (_, int index) {
-                  ProductItemModel product = this.displayProductsList[index];
+                  final ProductItemModel product = displayProductsList[index];
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
                       onTap: () => !isManager
                           ? showScaleDialog(
-                              productClient.ProductItemDialog(product))
+                              product_client.ProductItemDialog(product))
                           : null,
                       child: Card(
                         elevation: defaultElevation,
@@ -63,11 +63,12 @@ class ProductsList extends StatelessWidget {
                             ListTile(
                               title: Text(
                                 product.name!,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
                                 product.description!,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey,
                                 ),
@@ -85,7 +86,7 @@ class ProductsList extends StatelessWidget {
                                     children: <Widget>[
                                       TextButton.icon(
                                         onPressed: null,
-                                        icon: FaIcon(
+                                        icon: const FaIcon(
                                           FontAwesomeIcons.dollarSign,
                                         ),
                                         label: Text(
@@ -94,7 +95,7 @@ class ProductsList extends StatelessWidget {
                                       ),
                                       TextButton.icon(
                                         onPressed: null,
-                                        icon: FaIcon(
+                                        icon: const FaIcon(
                                           FontAwesomeIcons.clock,
                                         ),
                                         label:
@@ -102,7 +103,7 @@ class ProductsList extends StatelessWidget {
                                       ),
                                       TextButton.icon(
                                         onPressed: () {},
-                                        icon: FaIcon(
+                                        icon: const FaIcon(
                                           FontAwesomeIcons.solidStar,
                                           color: Colors.yellow,
                                         ),
@@ -128,9 +129,9 @@ class ProductsList extends StatelessWidget {
                                             TextButton.icon(
                                               onPressed: () =>
                                                   _editProduct(product),
-                                              icon: FaIcon(
+                                              icon: const FaIcon(
                                                   FontAwesomeIcons.pencilAlt),
-                                              label: Text('Edit'),
+                                              label: const Text('Edit'),
                                             ),
                                             TextButton.icon(
                                               style: TextButton.styleFrom(
@@ -138,12 +139,10 @@ class ProductsList extends StatelessWidget {
                                               ),
                                               onPressed: () =>
                                                   _removeProduct(product.pid),
-                                              icon: FaIcon(
+                                              icon: const FaIcon(
                                                 FontAwesomeIcons.trash,
                                               ),
-                                              label: Text(
-                                                'Remove',
-                                              ),
+                                              label: const Text('Remove'),
                                             ),
                                           ],
                                         ),

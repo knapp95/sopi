@@ -11,8 +11,10 @@ class EmployeeOrderDialogAddExtraTimeWidget extends StatefulWidget {
   final int extraTime;
   final DateTime? startOrderTime;
 
-  EmployeeOrderDialogAddExtraTimeWidget(
-      this.initialTime, this.extraTime, this.startOrderTime);
+  const EmployeeOrderDialogAddExtraTimeWidget(
+      this.initialTime, this.extraTime, this.startOrderTime,
+      {Key? key})
+      : super(key: key);
 
   @override
   _EmployeeOrderDialogAddExtraTimeWidgetState createState() =>
@@ -30,7 +32,8 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
   void initState() {
     _extraTime = widget.extraTime;
     _getTime();
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
+    _timer =
+        Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
     super.initState();
   }
 
@@ -41,9 +44,9 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
   }
 
   void changeExtraTime(int addTime) {
-    int newCurrentTime = this._extraTime! + addTime;
+    final int newCurrentTime = _extraTime! + addTime;
     setState(() {
-      this._extraTime = newCurrentTime;
+      _extraTime = newCurrentTime;
     });
   }
 
@@ -83,7 +86,7 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Center(child: Text('Change order time')),
+      title: const Center(child: Text('Change order time')),
       shape: shapeDialog,
       elevation: defaultElevation,
       content: Column(
@@ -124,8 +127,8 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
     );
   }
 
-  Widget _buildSingleBlockTime(int time, {withOpacity = 1.0}) {
-    bool isPositive = time > 0;
+  Widget _buildSingleBlockTime(int time, {double withOpacity = 1.0}) {
+    final bool isPositive = time > 0;
     return GestureDetector(
       onTap: () => changeExtraTime(time),
       child: Container(
@@ -136,7 +139,7 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
         child: Center(
           child: Text(
             isPositive ? '+ $time' : '- ${time.abs()}',
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
         ),
       ),
@@ -144,7 +147,7 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
   }
 
   Widget _buildCurrencyTime() {
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
       child: Center(
@@ -156,7 +159,7 @@ class _EmployeeOrderDialogAddExtraTimeWidgetState
                 children: [
                   Text(
                     '${widget.initialTime}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 30,
                     ),

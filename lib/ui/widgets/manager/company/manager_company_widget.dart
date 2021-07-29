@@ -7,6 +7,8 @@ import 'package:sopi/ui/widgets/manager/company/products/products_widget.dart';
 import 'employees/employees_widget.dart';
 
 class ManagerCompanyWidget extends StatelessWidget {
+  const ManagerCompanyWidget({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -15,7 +17,7 @@ class ManagerCompanyWidget extends StatelessWidget {
         appBar: AppBar(
           flexibleSpace: Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
+            children: const [
               TabBar(
                 tabs: [
                   Tab(
@@ -29,14 +31,14 @@ class ManagerCompanyWidget extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             EmployeesWidget(),
             ProductsWidget(),
             AssetWidget(),
           ],
         ),
-        floatingActionButton: ProductButtons(),
+        floatingActionButton: const ProductButtons(),
       ),
     );
   }

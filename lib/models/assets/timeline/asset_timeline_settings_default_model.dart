@@ -1,10 +1,10 @@
 import 'package:sopi/models/generic/generic_item_model.dart';
 
-
+// ignore: avoid_classes_with_only_static_members
 class AssetTimelineSettingsDefaultModel {
-  static  const int differenceInMinutes = 15;
-  static  const double rangeForwards = 6;
-  static  const double rangeBackwards = -5;
+  static const int differenceInMinutes = 15;
+  static const double rangeForwards = 6;
+  static const double rangeBackwards = -5;
 
   static List<GenericItemModel> availableDifferenceInMinutes = [
     GenericItemModel(id: 5, name: '5'),

@@ -16,6 +16,8 @@ import 'package:sopi/ui/widgets/manager/orders/timelines/manager_order_timeline_
 import 'package:sopi/ui/widgets/manager/orders/timelines/manager_order_timeline_right.dart';
 
 class ManagerOrderWidget extends StatefulWidget {
+  const ManagerOrderWidget({Key? key}) : super(key: key);
+
   @override
   _ManagerOrderWidgetState createState() => _ManagerOrderWidgetState();
 }
@@ -24,7 +26,7 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
   final _assetService = AssetService.singleton;
   bool _isLoading = false;
   bool _isInit = true;
-  GlobalKey _timelineKey = GlobalKey();
+  final GlobalKey _timelineKey = GlobalKey();
   late Timer _timer;
   DateTime _roundingNow = getRoundingTime();
 
@@ -32,7 +34,8 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
   void initState() {
     super.initState();
     if (_isInit) {
-      _timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
+      _timer =
+          Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
       _isInit = false;
 
       setState(() {
@@ -54,8 +57,8 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
     super.dispose();
   }
 
-  void _prepareData() async {
-    AssetModel assets = Provider.of<AssetModel>(Get.context!);
+  Future<void> _prepareData() async {
+    final AssetModel assets = Provider.of<AssetModel>(Get.context!);
     if (assets.assetTimelineSettings == null) {
       await assets.fetchAssetsTimelineSettings();
     }
@@ -72,8 +75,10 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
     double heightDependentTimelineLeft = 0;
     final keyContext = _timelineKey.currentContext;
     if (keyContext != null) {
-      final box = keyContext.findRenderObject() as RenderBox;
-      heightDependentTimelineLeft = box.size.height;
+      final box = keyContext.findRenderObject() as RenderBox?;
+      if (box != null) {
+        heightDependentTimelineLeft = box.size.height;
+      }
     }
     return heightDependentTimelineLeft;
   }
@@ -81,15 +86,16 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? LoadingDataInProgressWidget()
+        ? const LoadingDataInProgressWidget()
         : Scaffold(
             body: Padding(
               padding: EdgeInsets.only(top: statusBarHeight + 20),
               child: StreamBuilder(
                 stream: _assetService.assets,
                 builder: (ctx, snapshot) {
-                  if (snapshot.data == null)
-                    return LoadingDataInProgressWidget();
+                  if (snapshot.data == null) {
+                    return const LoadingDataInProgressWidget();
+                  }
                   return SingleChildScrollView(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,19 +105,19 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
                           child: ManagerOrderTimelineLeft(_roundingNow),
                         ),
                         Expanded(
-                          child: Container(
+                          child: SizedBox(
                             height: _getHeightDependentTimelineLeft(),
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount:
                                   (snapshot.data! as QuerySnapshot).docs.length,
                               itemBuilder: (_, int index) {
-                                QueryDocumentSnapshot assetDoc =
+                                final QueryDocumentSnapshot assetDoc =
                                     (snapshot.data! as QuerySnapshot)
                                         .docs[index];
                                 final data =
                                     assetDoc.data()! as Map<String, dynamic>;
-                                AssetItemModel assetItem =
+                                final AssetItemModel assetItem =
                                     AssetItemModel.fromJson(data);
                                 return ManagerOrderTimelineRight(assetItem);
                               },
@@ -124,7 +130,7 @@ class _ManagerOrderWidgetState extends State<ManagerOrderWidget> {
                 },
               ),
             ),
-            floatingActionButton: ManagerOrderFloatingButton(),
+            floatingActionButton: const ManagerOrderFloatingButton(),
           );
   }
 }

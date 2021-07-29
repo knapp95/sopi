@@ -7,15 +7,13 @@ part 'order_product_model.g.dart';
 
 @JsonSerializable()
 class OrderProductModel extends PrimitiveProductItemModel {
-
   int extraPrepareTime = 0;
-  int get totalPrepareTime =>
-      this.extraPrepareTime + (this.count! * this.prepareTime!);
+
+  int get totalPrepareTime => extraPrepareTime + (count! * prepareTime!);
   DateTime? startProcessingDate;
   DateTime? completeDate;
 
   OrderProductModel();
-
 
   factory OrderProductModel.fromJson(Map<String, dynamic> json) =>
       _$OrderProductModelFromJson(json);
@@ -23,14 +21,14 @@ class OrderProductModel extends PrimitiveProductItemModel {
   Map<String, dynamic> toJson() => _$OrderProductModelToJson(this);
 
   OrderProductModel.fromProduct(ProductItemModel product) {
-    this.pid = product.pid;
-    this.name = product.name;
-    this.type = product.type;
-    this.count = product.count;
-    this.prepareTime = product.prepareTime;
+    pid = product.pid;
+    name = product.name;
+    type = product.type;
+    count = product.count;
+    prepareTime = product.prepareTime;
   }
 
   void setAsComplete() {
-    this.completeDate = DateTime.now();
+    completeDate = DateTime.now();
   }
 }

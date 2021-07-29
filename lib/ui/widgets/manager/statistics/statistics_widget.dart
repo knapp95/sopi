@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class StatisticsWidget extends StatefulWidget {
+  const StatisticsWidget({Key? key}) : super(key: key);
+
   @override
   _StatisticsWidgetState createState() => _StatisticsWidgetState();
 }
@@ -8,6 +10,6 @@ class StatisticsWidget extends StatefulWidget {
 class _StatisticsWidgetState extends State<StatisticsWidget> {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Container(child: Text('TODO')));
+    return const Center(child: Text('TODO'));
   }
 }

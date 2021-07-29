@@ -10,11 +10,10 @@ bool? containsIgnoreCase(String string1, String string2) {
   return string1.toLowerCase().contains(string2.toLowerCase());
 }
 
-Color get randomColor =>
-  Color(Random().nextInt(0xffffffff));
+Color get randomColor => Color(Random().nextInt(0xffffffff));
 
 DateTime getRoundingTime({DateTime? sourceDate}) {
-  DateTime time = sourceDate ?? DateTime.now();
+  final DateTime time = sourceDate ?? DateTime.now();
   late int minuteTmp;
   if (time.minute < 9) {
     minuteTmp = time.minute % 10 < 5 ? 0 : 5;
@@ -32,10 +31,11 @@ DateTime getRoundingTime({DateTime? sourceDate}) {
 }
 
 int firstDigit(int x) {
-  while (x > 9) {
-    x = x ~/ 10;
+  int firstDigit = x;
+  while (firstDigit > 9) {
+    firstDigit = firstDigit ~/ 10;
   }
-  return x;
+  return firstDigit;
 }
 
 Future<void> showBottomNotification(
@@ -46,20 +46,16 @@ Future<void> showBottomNotification(
       BottomNotification(responseMessage).build(context) as SnackBar,
     );
   } catch (e) {
-    throw e;
+    rethrow;
   }
 }
 
-bool isNullOrEmpty(dynamic object) {
-  return object == null || object.isEmpty;
-}
-
-String fixedDouble(double? value, [fractionDigits = 2]) {
-  String? fixedDouble = value?.toStringAsFixed(fractionDigits);
+String fixedDouble(double? value, [int fractionDigits = 2]) {
+  final String? fixedDouble = value?.toStringAsFixed(fractionDigits);
   return fixedDouble ?? '0,00';
 }
 
-String formatDateToString(DateTime? date, {format = 'yyyy-MM-dd'}) {
+String formatDateToString(DateTime? date, {String format = 'yyyy-MM-dd'}) {
   String result = '';
   if (date != null) {
     result = DateFormat(format).format(date);
@@ -70,9 +66,9 @@ String formatDateToString(DateTime? date, {format = 'yyyy-MM-dd'}) {
 String durationInMinutes(Duration? duration) {
   if (duration == null) return '';
   String twoDigits(int n) => n.toString().padLeft(2, "0");
-  String twoDigitMinutes =
+  final String twoDigitMinutes =
       twoDigits((duration.inHours * 60) + duration.inMinutes.remainder(60));
-  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  final String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
   return '$twoDigitMinutes:$twoDigitSeconds';
 }
 

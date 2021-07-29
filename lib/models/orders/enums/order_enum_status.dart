@@ -1,1 +1,1 @@
-enum OrderStatus { WAITING, PROCESSING, COMPLETED, RECEIVED, CANCELLED }
+enum OrderStatus { waiting, processing, completed, received, cancelled }

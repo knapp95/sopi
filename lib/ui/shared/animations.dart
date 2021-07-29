@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-showScaleDialog(Widget dialog) {
+Future<dynamic> showScaleDialog(Widget dialog) {
   return showGeneralDialog(
     transitionBuilder: (context, a1, a2, widget) {
       return Transform.scale(
@@ -12,7 +12,7 @@ showScaleDialog(Widget dialog) {
         ),
       );
     },
-    transitionDuration: Duration(milliseconds: 200),
+    transitionDuration: const Duration(milliseconds: 200),
     context: Get.context!,
     // ignore: missing_return
     pageBuilder: (_, __, ___) {

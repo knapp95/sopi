@@ -8,15 +8,18 @@ class BasketButtonWidget extends StatelessWidget {
   final Color backgroundColor;
   final Function? onPressedHandler;
 
-  BasketButtonWidget(this.title, this.subTitle,
+  const BasketButtonWidget(this.title, this.subTitle,
       {this.color = Colors.black,
       this.backgroundColor = primaryColor,
-      this.onPressedHandler});
+      this.onPressedHandler,
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      style: TextButton.styleFrom(backgroundColor: this.backgroundColor),
+      style: TextButton.styleFrom(backgroundColor: backgroundColor),
+      onPressed: onPressedHandler as void Function()?,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -27,7 +30,6 @@ class BasketButtonWidget extends StatelessWidget {
           Text(subTitle, style: TextStyle(color: color)),
         ],
       ),
-      onPressed: onPressedHandler as void Function()?,
     );
   }
 }

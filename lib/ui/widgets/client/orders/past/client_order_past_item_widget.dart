@@ -4,13 +4,12 @@ import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class ClientOrderPastItemWidget extends StatelessWidget {
+  const ClientOrderPastItemWidget(this.orderPast, {Key? key}) : super(key: key);
   final OrderModel orderPast;
-
-  ClientOrderPastItemWidget(this.orderPast);
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = TextStyle(
+    const TextStyle textStyle = TextStyle(
       fontWeight: FontWeight.bold,
       color: Colors.grey,
     );
@@ -39,15 +38,14 @@ class ClientOrderPastItemWidget extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.attach_money),
-                    Text('${fixedDouble(orderPast.totalPrice)}',
-                        style: textStyle),
+                    const Icon(Icons.attach_money),
+                    Text(fixedDouble(orderPast.totalPrice), style: textStyle),
                   ],
                 ),
                 Row(
                   children: [
-                    Icon(Icons.date_range),
-                    Text('${formatDateToString(orderPast.createDate)}',
+                    const Icon(Icons.date_range),
+                    Text(formatDateToString(orderPast.createDate),
                         style: textStyle),
                   ],
                 ),

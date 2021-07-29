@@ -21,10 +21,12 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -54,26 +56,27 @@ class MyApp extends StatelessWidget {
         navigatorKey: Get.addKey(GlobalKey()),
         theme: themeDataStyle,
         debugShowCheckedModeBanner: false,
-        home: AuthenticationWrapper(),
+        home: const AuthenticationWrapper(),
       ),
     );
   }
 }
 
 class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: context.read<AuthenticationService>().authStateChanges,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return LoadingDataInProgressWidget(withScaffold: true);
+            return const LoadingDataInProgressWidget(withScaffold: true);
           } else if (snapshot.hasData) {
-            Provider.of<UserModel>(context)
-                .setTypeAccount();
-            return HomePageWrapper();
+            Provider.of<UserModel>(context).setTypeAccount();
+            return const HomePageWrapper();
           } else {
-            return AuthorizationWidget();
+            return const AuthorizationWidget();
           }
         });
   }

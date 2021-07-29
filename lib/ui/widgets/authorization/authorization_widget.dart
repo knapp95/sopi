@@ -8,6 +8,8 @@ import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class AuthorizationWidget extends StatefulWidget {
+  const AuthorizationWidget({Key? key}) : super(key: key);
+
   @override
   _AuthorizationWidgetState createState() => _AuthorizationWidgetState();
 }
@@ -20,13 +22,14 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
   final FieldBuilderFactory _formFactory = FieldBuilderFactory();
   AuthMode _authMode = AuthMode.singIn;
 
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _passwordVisible = false;
 
-  void _submit(BuildContext context) async {
+  Future<void> _submit(BuildContext context) async {
     ///TODO comment for test
     // if (!_formKey.currentState.validate()) {
     //   return;
@@ -37,18 +40,18 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
     switch (_authMode) {
       case AuthMode.singIn:
         {
-          // responseMessage = await context.read<AuthenticationService>().signIn(
-          //       email: 'client@wp.pl',
-          //       password: 'client123',
-          //     );
+          responseMessage = await context.read<AuthenticationService>().signIn(
+                email: 'client@wp.pl',
+                password: 'client123',
+              );
           // responseMessage = await context.read<AuthenticationService>().signIn(
           //       email: 'kamil@wp.pl',
           //       password: 'kamil123',
           //     );
-          responseMessage = await context.read<AuthenticationService>().signIn(
-                email: 'manager@wp.pl',
-                password: 'manager123',
-              );
+          // responseMessage = await context.read<AuthenticationService>().signIn(
+          //       email: 'manager@wp.pl',
+          //       password: 'manager123',
+          //     );
         }
         break;
       case AuthMode.singUp:
@@ -76,8 +79,9 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
         }
         break;
     }
-    if (responseMessage.message != null)
+    if (responseMessage.message != null) {
       showBottomNotification(context, responseMessage);
+    }
   }
 
   bool get _isSingInShow {
@@ -151,8 +155,8 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
                   'assets/images/sopi_logo.png',
                   width: mediaQuery.size.width * 0.7,
                 ),
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   'Rich flavors and unique interiors, \n a restaurant with deep traditions.',
                   style: TextStyle(color: Colors.white),
                 ),
@@ -180,7 +184,7 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
                   suffixIcon: _buildSuffixIconPassword(),
                   obscureText: !_passwordVisible,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   style: TextButton.styleFrom(
                     backgroundColor: accentColor,
@@ -188,18 +192,18 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
+                  onPressed: () => _submit(context),
                   child: Text(_getNameForButton,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: fontSize20,
                         color: Colors.black,
                       )),
-                  onPressed: () => _submit(context),
                 ),
                 if (_authMode != AuthMode.resetPassword)
                   TextButton(
                     onPressed: () =>
                         _switchAuthMode(resetPassword: AuthMode.resetPassword),
-                    child: Text(
+                    child: const Text(
                       'Forgot password',
                       style: TextStyle(
                         color: accentColor,
@@ -210,7 +214,7 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
                   onPressed: _switchAuthMode,
                   child: Text(
                     _isSingInShow ? 'Register' : 'Log in',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: accentColor,
                     ),
                   ),

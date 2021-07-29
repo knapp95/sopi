@@ -4,15 +4,14 @@ import 'package:sopi/ui/widgets/common/account/account_widget.dart';
 import 'package:sopi/ui/widgets/employee/orders/employee_order_widget.dart';
 
 class EmployeeWidget extends StatefulWidget {
+  const EmployeeWidget({Key? key}) : super(key: key);
+
   @override
   _EmployeeWidgetState createState() => _EmployeeWidgetState();
 }
 
 class _EmployeeWidgetState extends State<EmployeeWidget> {
-  PageController _pageController = PageController(
-    initialPage: 0,
-    keepPage: true,
-  );
+  final PageController _pageController = PageController();
 
   int _bottomSelectedIndex = 0;
 
@@ -20,7 +19,7 @@ class _EmployeeWidgetState extends State<EmployeeWidget> {
     setState(() {
       _bottomSelectedIndex = index;
       _pageController.animateToPage(index,
-          duration: Duration(milliseconds: 500), curve: Curves.ease);
+          duration: const Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
 
@@ -47,7 +46,7 @@ class _EmployeeWidgetState extends State<EmployeeWidget> {
   }
 
   Widget _buildPageView() {
-    List<Widget> children = [EmployeeOrderWidget(), AccountWidget()];
+    const List<Widget> children = [EmployeeOrderWidget(), AccountWidget()];
     return PageView(
       controller: _pageController,
       onPageChanged: (index) {
@@ -59,13 +58,13 @@ class _EmployeeWidgetState extends State<EmployeeWidget> {
 
   List<BottomNavigationBarItem> _buildBottomNavBarItems() {
     return [
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(
           Icons.list_alt,
         ),
         label: 'Orders',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(
           Icons.person,
         ),

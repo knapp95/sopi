@@ -1,1 +1,1 @@
-enum AssetEnumStatus { PAST, PROCESSING, WAITING }
+enum AssetEnumStatus { past, processing, waiting }

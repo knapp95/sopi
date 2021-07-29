@@ -1,1 +1,1 @@
-enum ProductType { DESSERT, BURGER, PIZZA, PASTA, OTHER, VEGE, SPECIAL }
+enum ProductType { dessert, burger, pizza, pasta, other, vege, special }

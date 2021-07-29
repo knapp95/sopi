@@ -13,15 +13,14 @@ import 'basket/basket_bottom_widget.dart';
 import 'orders/client_order_widget.dart';
 
 class ClientWidget extends StatefulWidget {
+  const ClientWidget({Key? key}) : super(key: key);
+
   @override
   _ClientWidgetState createState() => _ClientWidgetState();
 }
 
 class _ClientWidgetState extends State<ClientWidget> {
-  PageController _pageController = PageController(
-    initialPage: 0,
-    keepPage: true,
-  );
+  final PageController _pageController = PageController();
   late BasketModel _basket;
 
   int _bottomSelectedIndex = 0;
@@ -36,7 +35,7 @@ class _ClientWidgetState extends State<ClientWidget> {
     setState(() {
       _bottomSelectedIndex = index;
       _pageController.animateToPage(index,
-          duration: Duration(milliseconds: 500), curve: Curves.ease);
+          duration: const Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
 
@@ -73,17 +72,17 @@ class _ClientWidgetState extends State<ClientWidget> {
 
   Widget _buildPageView() {
     List<Widget> children = [];
-    List<Widget> widgets = [
+    const List<Widget> widgets = [
       ProductWidget(),
       ClientOrderWidget(),
       AccountWidget()
     ];
 
     /// If basket no empty add bottom widget with basket info
-    if (isNullOrEmpty(_basket.products)) {
+    if (_basket.products.isEmpty) {
       children = widgets;
     } else {
-      widgets.forEach((element) {
+      for (final Widget element in widgets) {
         children.add(
           Column(
             children: [
@@ -98,7 +97,7 @@ class _ClientWidgetState extends State<ClientWidget> {
             ],
           ),
         );
-      });
+      }
     }
     return PageView(
       controller: _pageController,
@@ -111,19 +110,19 @@ class _ClientWidgetState extends State<ClientWidget> {
 
   List<BottomNavigationBarItem> _buildBottomNavBarItems() {
     return [
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(
           Icons.food_bank,
         ),
         label: 'Menu',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(
           Icons.list_alt,
         ),
         label: 'Orders',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(
           Icons.person,
         ),

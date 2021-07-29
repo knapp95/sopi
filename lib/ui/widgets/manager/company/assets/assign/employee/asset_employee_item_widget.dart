@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sopi/models/user/user_model.dart';
 
 class AssetEmployeeWidget extends StatelessWidget {
-  final UserModel employee;
+  const AssetEmployeeWidget(this.employee, {Key? key}) : super(key: key);
 
-  AssetEmployeeWidget(this.employee);
+  final UserModel employee;
 
   @override
   Widget build(BuildContext context) {

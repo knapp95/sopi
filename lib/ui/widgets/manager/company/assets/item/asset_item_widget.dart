@@ -9,22 +9,13 @@ import 'package:sopi/ui/widgets/manager/company/assets/item/asset_item_no_editab
 import '../assign/employee/asset_employee_item_widget.dart';
 import '../assign/employee/asset_employee_unassigned_widget.dart';
 
-class AssetItemWidget extends StatefulWidget {
+class AssetItemWidget extends StatelessWidget {
   final AssetItemModel assetItem;
 
-  AssetItemWidget(this.assetItem);
-
-  @override
-  _AssetItemWidgetState createState() => _AssetItemWidgetState(this.assetItem);
-}
-
-class _AssetItemWidgetState extends State<AssetItemWidget> {
-  final AssetItemModel _assetItem;
-
-  _AssetItemWidgetState(this._assetItem);
+  const AssetItemWidget(this.assetItem, {Key? key}) : super(key: key);
 
   void _openAssetEditDialog() {
-    showScaleDialog(AssetItemDialogWidget(_assetItem));
+    showScaleDialog(AssetItemDialogWidget(assetItem));
   }
 
   @override
@@ -36,43 +27,44 @@ class _AssetItemWidgetState extends State<AssetItemWidget> {
         elevation: defaultElevation,
         child: Column(
           children: [
-            AssetItemNoEditableWidget(_assetItem),
+            AssetItemNoEditableWidget(assetItem),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _assetItem.assignedEmployeesIds.length == 0
-                    ? AssetEmployeeUnassignedWidget()
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SingleChildScrollView(
-                          child: Wrap(
-                            spacing: 5,
-                            children: _assetItem.assignedEmployeesIds
-                                .map(
-                                  (String employeeId) => FutureBuilder(
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                              ConnectionState.none ||
-                                          snapshot.data == null) {
-                                        return Container();
-                                      } else {
-                                        UserModel employee =
-                                            snapshot.data! as UserModel;
-                                        return AssetEmployeeWidget(employee);
-                                      }
-                                    },
-                                    future: UserModel.getUser(employeeId),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ),
+                if (assetItem.assignedEmployeesIds.isEmpty)
+                  const AssetEmployeeUnassignedWidget()
+                else
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        spacing: 5,
+                        children: assetItem.assignedEmployeesIds
+                            .map(
+                              (String employeeId) => FutureBuilder(
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                          ConnectionState.none ||
+                                      snapshot.data == null) {
+                                    return Container();
+                                  } else {
+                                    final UserModel employee =
+                                        snapshot.data! as UserModel;
+                                    return AssetEmployeeWidget(employee);
+                                  }
+                                },
+                                future: UserModel.getUser(employeeId),
+                              ),
+                            )
+                            .toList(),
                       ),
+                    ),
+                  ),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: TextButton(
-                    child: Text('Edit'),
                     onPressed: _openAssetEditDialog,
+                    child: const Text('Edit'),
                   ),
                 ),
               ],

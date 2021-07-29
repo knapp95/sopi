@@ -12,12 +12,13 @@ class ClientOrderProcessingItemWidget extends StatelessWidget {
   final OrderModel orderProcessing;
   final _assets = Provider.of<AssetModel>(Get.context!);
 
-  ClientOrderProcessingItemWidget(this.orderProcessing);
+  ClientOrderProcessingItemWidget(this.orderProcessing, {Key? key})
+      : super(key: key);
 
   Future<String> get processingEndDate async {
-    DateTime processingEndDateTmp =
+    final DateTime processingEndDateTmp =
         await _assets.findTheLatestAssetEndIncludeOrder(orderProcessing);
-    String processingEndDate = formatDateToString(
+    final String processingEndDate = formatDateToString(
       processingEndDateTmp,
       format: 'HH:mm',
     );
@@ -26,7 +27,7 @@ class ClientOrderProcessingItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = TextStyle(
+    const TextStyle textStyle = TextStyle(
       color: Colors.white,
       fontWeight: FontWeight.bold,
     );
@@ -42,10 +43,10 @@ class ClientOrderProcessingItemWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('#${orderProcessing.humanNumber}', style: textStyle),
-                Text('${orderProcessing.statusDisplay}', style: textStyle),
+                Text(orderProcessing.statusDisplay, style: textStyle),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.timer,
                       color: Colors.white,
                     ),

@@ -20,7 +20,7 @@ import 'package:sopi/ui/widgets/manager/company/assets/pickers/picker_type_widge
 class AssetItemDialogWidget extends StatefulWidget {
   final AssetItemModel? assetItem;
 
-  AssetItemDialogWidget([this.assetItem]);
+  const AssetItemDialogWidget([this.assetItem, Key? key]) : super(key: key);
 
   @override
   _AssetItemDialogWidgetState createState() => _AssetItemDialogWidgetState();
@@ -67,31 +67,33 @@ class _AssetItemDialogWidgetState extends State<AssetItemDialogWidget> {
       )
       .toList();
 
-  void _changeTypeImage() async {
-    String? imagePath =
-        await showScaleDialog(PickerTypeWidget(_assetItem.imagePath));
+  Future<void> _changeTypeImage() async {
+    final String? imagePath =
+        await showScaleDialog(PickerTypeWidget(_assetItem.imagePath))
+            as String?;
     setState(() {
       _assetItem.imagePath = imagePath;
     });
   }
 
-  void _changeColor() async {
-    Color? selectedColor = await showScaleDialog(PickerColorWidget());
+  Future<void> _changeColor() async {
+    final Color? selectedColor =
+        await showScaleDialog(const PickerColorWidget()) as Color?;
     setState(() {
       _assetItem.color = selectedColor ?? Colors.grey;
     });
   }
 
-  void _submit() async {
+  Future<void> _submit() async {
     await _assetItem.saveAssetToFirebase();
     Navigator.of(context).pop();
   }
 
-  void _removeAsset() async {
-    final confirm = await showScaleDialog(
+  Future<void> _removeAsset() async {
+    final bool? confirm = await showScaleDialog(
       ConfirmDialog('Remove ${_assetItem.name}?'),
-    );
-    if (confirm) {
+    ) as bool?;
+    if (confirm == true) {
       await _assetService.removeDoc(_assetItem.aid);
       Navigator.of(context).pop();
     }
@@ -104,7 +106,7 @@ class _AssetItemDialogWidgetState extends State<AssetItemDialogWidget> {
       shape: shapeDialog,
       elevation: defaultElevation,
       content: _isLoading
-          ? LoadingDataInProgressWidget()
+          ? const LoadingDataInProgressWidget()
           : SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -118,17 +120,15 @@ class _AssetItemDialogWidgetState extends State<AssetItemDialogWidget> {
                           height: 130,
                           child: Stack(
                             children: <Widget>[
-                              Container(
-                                child: AssetShowImage(
-                                  _assetItem.imagePath,
-                                  width: 130,
-                                  height: 130,
-                                ),
+                              AssetShowImage(
+                                _assetItem.imagePath,
+                                width: 130,
+                                height: 130,
                               ),
                               Container(
-                                padding: EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(8.0),
                                 alignment: Alignment.bottomRight,
-                                child: Icon(
+                                child: const Icon(
                                   Icons.change_circle,
                                   size: 40,
                                   color: primaryColor,
@@ -195,7 +195,7 @@ class _AssetItemDialogWidgetState extends State<AssetItemDialogWidget> {
   TextButton _buildRemoveButton() {
     return TextButton(
       onPressed: _removeAsset,
-      child: Text(
+      child: const Text(
         'Remove',
         style: TextStyle(color: Colors.red),
       ),

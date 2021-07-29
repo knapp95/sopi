@@ -9,6 +9,8 @@ import 'package:sopi/ui/widgets/manager/company/assets/item/asset_item_dialog_wi
 import 'package:sopi/ui/widgets/manager/company/products/product_item_dialog_widget.dart';
 
 class ProductButtons extends StatefulWidget {
+  const ProductButtons({Key? key}) : super(key: key);
+
   @override
   _ProductButtonsState createState() => _ProductButtonsState();
 }
@@ -19,7 +21,7 @@ class _ProductButtonsState extends State<ProductButtons> {
       name: 'Add product',
       icon: Icons.food_bank,
       funHandler: () => showScaleDialog(
-        ProductItemDialogWidget(),
+        const ProductItemDialogWidget(),
       ),
       color: primaryColor,
     ),
@@ -27,7 +29,7 @@ class _ProductButtonsState extends State<ProductButtons> {
       name: 'Add asset',
       icon: Icons.kitchen,
       funHandler: () => showScaleDialog(
-        AssetItemDialogWidget(),
+        const AssetItemDialogWidget(),
       ),
       color: primaryColor,
     )
@@ -50,7 +52,7 @@ class _ProductButtonsState extends State<ProductButtons> {
             backgroundColor: item.color,
             onTap: () => item.funHandler!(),
             label: item.name,
-            labelStyle: TextStyle(color: Colors.white),
+            labelStyle: const TextStyle(color: Colors.white),
             labelBackgroundColor: item.color,
           );
         }).toList());

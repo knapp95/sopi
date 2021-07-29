@@ -11,6 +11,8 @@ import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 
 class ManagerOrderSettingsDialog extends StatefulWidget {
+  const ManagerOrderSettingsDialog({Key? key}) : super(key: key);
+
   @override
   _ManagerOrderSettingsDialogState createState() =>
       _ManagerOrderSettingsDialogState();
@@ -26,7 +28,7 @@ class _ManagerOrderSettingsDialogState
   late double _selectedRangeBackwards;
   bool _isLoading = false;
 
-  void _assignTimelineSettingsData() async {
+  Future<void> _assignTimelineSettingsData() async {
     _selectedDifferenceInMinutes =
         _assetTimelineSettingsModel.differenceInMinutes;
     _selectedRangeBackwards = _assetTimelineSettingsModel.rangeBackwards;
@@ -37,7 +39,7 @@ class _ManagerOrderSettingsDialogState
     });
   }
 
-  void _setTimelineSettings() async {
+  Future<void> _setTimelineSettings() async {
     _assetTimelineSettingsModel.update(
       selectedDifferenceInMinutes: _selectedDifferenceInMinutes,
       selectedRangeBackwards: _selectedRangeBackwards,
@@ -65,10 +67,10 @@ class _ManagerOrderSettingsDialogState
   }
 
   String get selectedRange {
-    String selectedRangeBackwards = formatDateToString(
+    final String selectedRangeBackwards = formatDateToString(
         _assetTimelineSettingsModel.getRangeDate(_selectedRangeBackwards),
         format: 'HH:mm');
-    String selectedRangeForwards = formatDateToString(
+    final String selectedRangeForwards = formatDateToString(
         _assetTimelineSettingsModel.getRangeDate(_selectedRangeForwards),
         format: 'HH:mm');
     return '$selectedRangeBackwards - $selectedRangeForwards';
@@ -88,7 +90,7 @@ class _ManagerOrderSettingsDialogState
       content: SingleChildScrollView(
         reverse: true,
         child: _isLoading
-            ? LoadingDataInProgressWidget()
+            ? const LoadingDataInProgressWidget()
             : Column(
                 children: [
                   Align(
@@ -116,7 +118,7 @@ class _ManagerOrderSettingsDialogState
                   ),
                   Text(
                     selectedRange,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: primaryColor,
                       fontWeight: FontWeight.bold,
                     ),
@@ -135,7 +137,7 @@ class _ManagerOrderSettingsDialogState
         backDialogButton,
         TextButton(
           onPressed: _setTimelineSettings,
-          child: Text(
+          child: const Text(
             'Confirm',
             style: TextStyle(color: primaryColor),
           ),

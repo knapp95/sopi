@@ -14,15 +14,14 @@ class AssetTimelineSettingsModel {
   double? selectedRangeBackwards;
 
   int get differenceInMinutes =>
-      this.selectedDifferenceInMinutes ??
+      selectedDifferenceInMinutes ??
       AssetTimelineSettingsDefaultModel.differenceInMinutes;
 
   double get rangeForwards =>
-      this.selectedRangeForwards ??
-      AssetTimelineSettingsDefaultModel.rangeForwards;
+      selectedRangeForwards ?? AssetTimelineSettingsDefaultModel.rangeForwards;
 
   double get rangeBackwards =>
-      this.selectedRangeBackwards ??
+      selectedRangeBackwards ??
       AssetTimelineSettingsDefaultModel.rangeBackwards;
 
   AssetTimelineSettingsModel();
@@ -33,10 +32,10 @@ class AssetTimelineSettingsModel {
   Map<String, dynamic> toJson() => _$AssetTimelineSettingsModelToJson(this);
 
   DateTime getRangeDate(double range) {
-    int flooredValue = range.floor();
-    double decimalValue = range - flooredValue;
-    DateTime now = DateTime.now();
-    DateTime rangeDate = DateTime(
+    final int flooredValue = range.floor();
+    final double decimalValue = range - flooredValue;
+    final DateTime now = DateTime.now();
+    final DateTime rangeDate = DateTime(
       now.year,
       now.month,
       now.day,
@@ -46,19 +45,19 @@ class AssetTimelineSettingsModel {
     return getRoundingTime(sourceDate: rangeDate);
   }
 
-  DateTime get availableStartTimeline => this.getRangeDate(this.rangeBackwards);
+  DateTime get availableStartTimeline => getRangeDate(rangeBackwards);
 
-  DateTime get availableEndTimeline => this.getRangeDate(this.rangeForwards);
+  DateTime get availableEndTimeline => getRangeDate(rangeForwards);
 
   Future<void> update({
-    selectedDifferenceInMinutes,
-    selectedRangeForwards,
-    selectedRangeBackwards,
+    int? selectedDifferenceInMinutes,
+    double? selectedRangeForwards,
+    double? selectedRangeBackwards,
   }) async {
     this.selectedDifferenceInMinutes = selectedDifferenceInMinutes;
     this.selectedRangeForwards = selectedRangeForwards;
     this.selectedRangeBackwards = selectedRangeBackwards;
-    final data = this.toJson();
+    final data = toJson();
     await _settingsService.updateDoc(AssetTimelineSettingsModel.id, data);
   }
 }

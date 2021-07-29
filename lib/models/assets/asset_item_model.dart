@@ -23,7 +23,6 @@ class AssetItemModel {
 
   bool get isNew => aid == null;
 
-  ///TODO add configure,save this field
   String? aid;
   String? name;
   String? imagePath;
@@ -31,28 +30,27 @@ class AssetItemModel {
   Color color = randomColor;
   @JsonKey(ignore: true)
   bool editMode = false;
-  ProductType assignedProductType = ProductType.BURGER;
+  ProductType assignedProductType = ProductType.burger;
   List<String> assignedEmployeesIds = [];
   List<AssetProductModel> queueProducts = [];
 
   AssetItemModel();
 
   List<AssetProductModel> get waitingProducts {
-    return this
-        .queueProducts
-        .where((element) => element.status == AssetEnumStatus.WAITING)
+    return queueProducts
+        .where((element) => element.status == AssetEnumStatus.waiting)
         .toList();
   }
 
   AssetProductModel? get processingProduct {
-    return this.queueProducts.firstWhereOrNull(
-        (element) => element.status == AssetEnumStatus.PROCESSING);
+    return queueProducts.firstWhereOrNull(
+        (element) => element.status == AssetEnumStatus.processing);
   }
 
   /// Get's products from queue who startTimeline < product < endTimeline
   List<AssetProductModel> getQueueProductsTimeline(
       DateTime availableStartTimeLine, DateTime availableEndTimeLine) {
-    return this.queueProducts.where((product) {
+    return queueProducts.where((product) {
       return product.plannedEndProcessingDate.isAfter(availableStartTimeLine) &&
           product.plannedStartProcessingDate.isBefore(availableEndTimeLine);
     }).toList();
@@ -63,56 +61,57 @@ class AssetItemModel {
 
   Map<String, dynamic> toJson() => _$AssetItemModelToJson(this);
 
-  void changeValueInForm(String fieldName, value) {
+  void changeValueInForm(String fieldName, dynamic value) {
     try {
       if (value == null) return;
       switch (fieldName) {
         case 'name':
-          this.name = value;
+          name = value as String?;
           break;
         case 'assignedProductType':
-          this.assignedProductType = value;
+          assignedProductType = value as ProductType;
           break;
         case 'maxWaitingTime':
-          this.maxWaitingTime = value;
+          maxWaitingTime = value as int;
           break;
         case 'assignedEmployeesIds':
-          this.assignedEmployeesIds = List.from(value);
+          assignedEmployeesIds = List.from(value as List<dynamic>);
           break;
       }
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
+
   Future<void> saveAssetToFirebase() async {
     try {
-      final _document = _assetService.getDoc(this.aid);
-      bool isNew = this.aid == null;
+      final _document = _assetService.getDoc(aid);
+      final bool isNew = aid == null;
 
       if (isNew) {
-        this.aid = _document.id;
+        aid = _document.id;
       }
-      final data = this.toJson();
+      final data = toJson();
       if (isNew) {
         await _document.set(data);
       } else {
         await _document.update(data);
       }
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
   /// CALLING WHEN EMPLOYEE SET ACTUAL PREPARE PRODUCT AS COMPLETED
   Future<void> completeProcessingProduct() async {
-    this.processingProduct!.status = AssetEnumStatus.PAST;
-    AssetProductModel? firstWaitingProduct =
-        this.waitingProducts.length > 0 ? this.waitingProducts.first : null;
+    processingProduct!.status = AssetEnumStatus.past;
+    final AssetProductModel? firstWaitingProduct =
+        waitingProducts.isNotEmpty ? waitingProducts.first : null;
     if (firstWaitingProduct != null) {
-      firstWaitingProduct.status = AssetEnumStatus.PROCESSING;
-      this.updateProcessingProduct(firstWaitingProduct);
+      firstWaitingProduct.status = AssetEnumStatus.processing;
+      updateProcessingProduct(firstWaitingProduct);
     }
-    await this.updateQueueProducts();
+    await updateQueueProducts();
   }
 
   Future<void> updateProcessingProduct(
@@ -120,9 +119,9 @@ class AssetItemModel {
     final oid = assetProductModel.oid;
     final pid = assetProductModel.pid;
 
-    OrderModel order = await _orderService.getOrderById(oid);
+    final OrderModel order = await _orderService.getOrderById(oid);
 
-    OrderProductModel orderProductModel = order.getProductByPid(pid)!;
+    final OrderProductModel orderProductModel = order.getProductByPid(pid)!;
     orderProductModel.startProcessingDate = DateTime.now();
     _orderService.updateOrder(order);
   }
@@ -132,31 +131,31 @@ class AssetItemModel {
       DateTime theLatestAssetEnd, List<OrderProductModel> products) async {
     int totalPrepareTime = products.fold(0,
         (previousValue, element) => previousValue + element.totalPrepareTime);
-    for (OrderProductModel product in products) {
-      AssetProductModel assetProductModel = AssetProductModel.fromOrder(
+    for (final OrderProductModel product in products) {
+      final AssetProductModel assetProductModel = AssetProductModel.fromOrder(
         product.name,
         product.pid,
         oid,
         product.totalPrepareTime,
       );
-      if (this.processingProduct == null) {
-        assetProductModel.status = AssetEnumStatus.PROCESSING;
+      if (processingProduct == null) {
+        assetProductModel.status = AssetEnumStatus.processing;
       }
-      assetProductModel.plannedStartProcessingDate = this
-          .getPlannedStartProcessingDate(theLatestAssetEnd, totalPrepareTime);
+      assetProductModel.plannedStartProcessingDate =
+          getPlannedStartProcessingDate(theLatestAssetEnd, totalPrepareTime);
 
       totalPrepareTime = totalPrepareTime - product.totalPrepareTime;
-      this.queueProducts.add(assetProductModel);
-      await this.updateQueueProducts();
+      queueProducts.add(assetProductModel);
+      await updateQueueProducts();
     }
   }
 
   DateTime getPlannedStartProcessingDate(
       DateTime theLatestAssetEnd, int totalPrepareTime) {
     late DateTime plannedStartProcessingDate;
-    if (this.maxWaitingTime == null) {
-      plannedStartProcessingDate = this.queueProducts.isNotEmpty
-          ? this.queueProducts.last.plannedEndProcessingDate
+    if (maxWaitingTime == null) {
+      plannedStartProcessingDate = queueProducts.isNotEmpty
+          ? queueProducts.last.plannedEndProcessingDate
           : DateTime.now();
     } else {
       plannedStartProcessingDate = theLatestAssetEnd.add(
@@ -167,11 +166,11 @@ class AssetItemModel {
   }
 
   Future<void> updateQueueProducts() async {
-    List<dynamic> queueProductsJson = [];
-    for (AssetProductModel assetProduct in this.queueProducts) {
+    final List<dynamic> queueProductsJson = [];
+    for (final assetProduct in queueProducts) {
       queueProductsJson.add(assetProduct.toJson());
     }
     final data = {'queueProducts': queueProductsJson};
-    await _assetService.updateDoc(this.aid, data);
+    await _assetService.updateDoc(aid, data);
   }
 }

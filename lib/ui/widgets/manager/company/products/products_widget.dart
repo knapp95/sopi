@@ -5,6 +5,8 @@ import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/ui/widgets/common/products/list/products_list.dart';
 
 class ProductsWidget extends StatefulWidget {
+  const ProductsWidget({Key? key}) : super(key: key);
+
   @override
   _ProductsWidgetState createState() => _ProductsWidgetState();
 }
@@ -14,7 +16,7 @@ class _ProductsWidgetState extends State<ProductsWidget> {
   List<ProductItemModel> _products = [];
 
   Future<void> _loadProducts() async {
-    ProductsModel products = Provider.of<ProductsModel>(context);
+    final ProductsModel products = Provider.of<ProductsModel>(context);
     if (!products.isInit) {
       await products.fetchProducts();
     }

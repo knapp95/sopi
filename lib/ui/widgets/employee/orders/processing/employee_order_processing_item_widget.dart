@@ -15,30 +15,27 @@ import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/common/dialogs/confirm_dialog.dart';
 import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_progress_widget.dart';
-import 'package:sopi/ui/widgets/employee/orders/dialogs/employee_order_dialog_addExtraTime_widget.dart';
+import 'package:sopi/ui/widgets/employee/orders/dialogs/employee_order_dialog_add_extra_time_widget.dart';
 
 class EmployeeOrderProcessingItemWidget extends StatefulWidget {
   final AssetProductModel assetProductModel;
 
-  const EmployeeOrderProcessingItemWidget(this.assetProductModel, key)
+  const EmployeeOrderProcessingItemWidget(this.assetProductModel, Key? key)
       : super(key: key);
 
   @override
   _EmployeeOrderProcessingItemWidgetState createState() =>
-      _EmployeeOrderProcessingItemWidgetState(
-          this.assetProductModel.oid, this.assetProductModel.pid);
+      _EmployeeOrderProcessingItemWidgetState();
 }
 
 class _EmployeeOrderProcessingItemWidgetState
     extends State<EmployeeOrderProcessingItemWidget> {
   final OrderFactory _orderFactory = OrderFactory.singleton;
   final _orderService = OrderService.singleton;
-  final String? oid;
-  final String? pid;
+  late String? oid;
+  late String? pid;
   Duration? _timePrepare;
   late Timer _timer;
-
-  _EmployeeOrderProcessingItemWidgetState(this.oid, this.pid);
 
   late OrderModel _orderModel;
   OrderProductModel? _orderProductModel;
@@ -50,12 +47,15 @@ class _EmployeeOrderProcessingItemWidgetState
   @override
   void initState() {
     if (_isInit) {
+      oid = widget.assetProductModel.oid;
+      pid = widget.assetProductModel.pid;
       setState(() {
         _isLoading = true;
       });
       _loadData();
       _isInit = false;
-      _timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
+      _timer =
+          Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
     }
 
     super.initState();
@@ -73,9 +73,9 @@ class _EmployeeOrderProcessingItemWidgetState
 
   Future<void> _loadData() async {
     final productService = ProductService.singleton;
-    _orderModel = await _orderService.getOrderById(this.oid);
+    _orderModel = await _orderService.getOrderById(oid);
     _orderProductModel = _orderModel.getProductByPid(pid);
-    _productItemModel = await productService.getProductById(this.pid);
+    _productItemModel = await productService.getProductById(pid);
     if (!mounted) return;
     setState(() {
       _isLoading = false;
@@ -90,22 +90,22 @@ class _EmployeeOrderProcessingItemWidgetState
     });
   }
 
-  void _completeOrderDialog() async {
-    final confirm = await showScaleDialog(
+  Future<void> _completeOrderDialog() async {
+    final bool confirm = await showScaleDialog(
       ConfirmDialog('Set ${_productItemModel.name} as done?'),
-    );
-    if (confirm) {
+    ) as bool;
+    if (confirm == true) {
       _orderProductModel!.setAsComplete();
       _orderService.updateOrder(_orderModel);
       _orderFactory.completeOrderProduct(oid, _orderProductModel!);
     }
   }
 
-  void _addTimeToOrder() async {
-    final result = await showScaleDialog(
+  Future<void> _addTimeToOrder() async {
+    final int? result = await showScaleDialog(
       EmployeeOrderDialogAddExtraTimeWidget(_orderProductModel!.prepareTime,
           _orderProductModel!.extraPrepareTime, _orderModel.createDate),
-    );
+    ) as int?;
     if (result != null) {
       _orderProductModel!.extraPrepareTime = result;
       _orderService.updateOrder(_orderModel);
@@ -115,7 +115,7 @@ class _EmployeeOrderProcessingItemWidgetState
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? LoadingDataInProgressWidget()
+        ? const LoadingDataInProgressWidget()
         : Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
@@ -141,7 +141,7 @@ class _EmployeeOrderProcessingItemWidgetState
                         ),
                         _buildPositionedInfo(
                           label1: 'Order #${_orderModel.humanNumber}',
-                          label2: '${_productItemModel.name}',
+                          label2: _productItemModel.name,
                           left: 15.0,
                         ),
                         _buildPositionedInfo(
@@ -160,10 +160,10 @@ class _EmployeeOrderProcessingItemWidgetState
                             primary: primaryColor,
                           ),
                           onPressed: _addTimeToOrder,
-                          icon: FaIcon(
+                          icon: const FaIcon(
                             FontAwesomeIcons.stopwatch,
                           ),
-                          label: Text(
+                          label: const Text(
                             'Change order time',
                           )),
                       TextButton.icon(
@@ -171,10 +171,10 @@ class _EmployeeOrderProcessingItemWidgetState
                             primary: primaryColor,
                           ),
                           onPressed: _completeOrderDialog,
-                          icon: FaIcon(
+                          icon: const FaIcon(
                             FontAwesomeIcons.checkCircle,
                           ),
-                          label: Text(
+                          label: const Text(
                             'As completed',
                           )),
                     ],
@@ -190,8 +190,8 @@ class _EmployeeOrderProcessingItemWidgetState
       String? label2,
       Widget? child1,
       Widget? child2,
-      left,
-      right}) {
+      double? left,
+      double? right}) {
     return Positioned(
       left: left,
       right: right,
@@ -215,15 +215,16 @@ class _EmployeeOrderProcessingItemWidgetState
         padding: const EdgeInsets.all(2.0),
         child: Text(
           label,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 
   Widget _buildTimeOrder() {
-    int? prepareTime = _orderProductModel!.prepareTime;
-    int extraTime = _orderProductModel!.extraPrepareTime;
+    final int? prepareTime = _orderProductModel!.prepareTime;
+    final int extraTime = _orderProductModel!.extraPrepareTime;
 
     return Container(
       color: primaryColor,
@@ -231,7 +232,7 @@ class _EmployeeOrderProcessingItemWidgetState
         padding: const EdgeInsets.all(2.0),
         child: Row(
           children: [
-            FaIcon(
+            const FaIcon(
               FontAwesomeIcons.clock,
               size: 14,
               color: Colors.white,
@@ -239,8 +240,8 @@ class _EmployeeOrderProcessingItemWidgetState
             formSizedBoxWidth,
             Text(
               '$prepareTime:00',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             ),
             if (extraTime != 0)
               Text(
@@ -262,16 +263,16 @@ class _EmployeeOrderProcessingItemWidgetState
         padding: const EdgeInsets.all(2.0),
         child: Row(
           children: [
-            FaIcon(
+            const FaIcon(
               FontAwesomeIcons.clock,
               size: 14,
               color: Colors.white,
             ),
             formSizedBoxWidth,
             Text(
-              '$startOrderTimeDisplay',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              startOrderTimeDisplay,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ],
         ),

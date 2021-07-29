@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 
-const RoundedRectangleBorder shapeDialog = const RoundedRectangleBorder(
-  side: BorderSide(color: primaryColor, width: 1),
+const RoundedRectangleBorder shapeDialog = RoundedRectangleBorder(
+  side: BorderSide(color: primaryColor),
   borderRadius: defaultRadius,
 );
 
-const RoundedRectangleBorder shapeDialogRed = const RoundedRectangleBorder(
-    side: BorderSide(color: Colors.red, width: 1), borderRadius: defaultRadius);
+const RoundedRectangleBorder shapeDialogRed = RoundedRectangleBorder(
+    side: BorderSide(color: Colors.red), borderRadius: defaultRadius);
 
-const RoundedRectangleBorder shapeCard = const RoundedRectangleBorder(
-  borderRadius: const BorderRadius.all(
+const RoundedRectangleBorder shapeCard = RoundedRectangleBorder(
+  borderRadius: BorderRadius.all(
     Radius.circular(16.0),
   ),
 );
@@ -30,21 +30,21 @@ const BorderRadius defaultRadius = BorderRadius.all(Radius.circular(8.0));
 /// ELEVATION
 const double defaultElevation = 8;
 
-TextStyle mainTimeStyle =
+const TextStyle mainTimeStyle =
     TextStyle(fontSize: fontSize20, fontWeight: FontWeight.bold);
 
 TextButton backDialogButton = TextButton(
-  child: Text(
+  onPressed: () => Get.back(),
+  child: const Text(
     'Back',
     style: TextStyle(color: primaryColor),
   ),
-  onPressed: () => Get.back(),
 );
 
-TextButton submitDialogButton(onSubmitHandler) {
+TextButton submitDialogButton(VoidCallback onSubmitHandler) {
   return TextButton(
     onPressed: onSubmitHandler,
-    child: Text(
+    child: const Text(
       'Submit',
       style: TextStyle(color: primaryColor),
     ),
@@ -52,8 +52,8 @@ TextButton submitDialogButton(onSubmitHandler) {
 }
 
 BoxDecoration getBoxDecoration(Color color,
-    {withOpacity = 0.7,
-    all = true,
+    {double withOpacity = 0.7,
+    bool all = true,
     double topLeft = 0.0,
     double topRight = 0.0,
     double bottomLeft = 0.0,
@@ -78,7 +78,7 @@ BoxDecoration getBoxDecoration(Color color,
   );
 }
 
-Container getRoundedSquareButton(label) {
+Container getRoundedSquareButton(int label) {
   return Container(
     width: 30,
     height: 30,
@@ -86,7 +86,8 @@ Container getRoundedSquareButton(label) {
     child: Center(
       child: Text(
         '$label',
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        style:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     ),
   );

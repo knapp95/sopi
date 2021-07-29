@@ -6,15 +6,14 @@ import 'package:sopi/ui/widgets/manager/orders/manager_order_widget.dart';
 import 'package:sopi/ui/widgets/manager/statistics/statistics_widget.dart';
 
 class ManagerWidget extends StatefulWidget {
+  const ManagerWidget({Key? key}) : super(key: key);
+
   @override
   _ManagerWidgetState createState() => _ManagerWidgetState();
 }
 
 class _ManagerWidgetState extends State<ManagerWidget> {
-  PageController _pageController = PageController(
-    initialPage: 0,
-    keepPage: true,
-  );
+  final PageController _pageController = PageController();
 
   int _bottomSelectedIndex = 0;
 
@@ -22,7 +21,7 @@ class _ManagerWidgetState extends State<ManagerWidget> {
     setState(() {
       _bottomSelectedIndex = index;
       _pageController.animateToPage(index,
-          duration: Duration(milliseconds: 500), curve: Curves.ease);
+          duration: const Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
 
@@ -49,7 +48,7 @@ class _ManagerWidgetState extends State<ManagerWidget> {
   }
 
   Widget _buildPageView() {
-    List<Widget> children = [
+    const List<Widget> children = [
       ManagerOrderWidget(),
       ManagerCompanyWidget(),
       StatisticsWidget(),
@@ -66,25 +65,25 @@ class _ManagerWidgetState extends State<ManagerWidget> {
 
   List<BottomNavigationBarItem> _buildBottomNavBarItems() {
     return [
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(
           Icons.list_alt,
         ),
         label: 'Orders',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(
           Icons.business,
         ),
         label: 'Company',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(
           Icons.pie_chart,
         ),
         label: 'Statistics',
       ),
-      BottomNavigationBarItem(
+      const BottomNavigationBarItem(
         icon: Icon(
           Icons.person,
         ),

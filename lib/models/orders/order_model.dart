@@ -16,7 +16,7 @@ part 'order_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class OrderModel {
   late String oid;
-  OrderStatus? status = OrderStatus.WAITING;
+  OrderStatus? status = OrderStatus.waiting;
   DateTime? createDate;
   String? clientID;
   List<String>? assignedPerson;
@@ -34,7 +34,7 @@ class OrderModel {
     required this.products,
     this.totalPrice,
   }) {
-    this.clientID = AuthenticationService.uid;
+    clientID = AuthenticationService.uid;
   }
 
   factory OrderModel.fromJson(Map<String, dynamic> json) =>
@@ -45,29 +45,29 @@ class OrderModel {
   int get prepareTime {
     int prepareTime = 0;
     try {
-      this.products.forEach((product) {
+      for (final OrderProductModel product in products) {
         prepareTime +=
             product.extraPrepareTime + (product.count! * product.prepareTime!);
-      });
+      }
     } catch (e) {
-      throw e;
+      rethrow;
     }
     return prepareTime;
   }
 
   OrderProductModel? getProductByPid(String? pid) {
-    return this.products.firstWhereOrNull((element) => element.pid == pid);
+    return products.firstWhereOrNull((element) => element.pid == pid);
   }
 
   String get statusDisplay {
-    switch (this.status) {
-      case OrderStatus.WAITING:
+    switch (status) {
+      case OrderStatus.waiting:
         return 'Order waiting to start';
-      case OrderStatus.PROCESSING:
+      case OrderStatus.processing:
         return 'Order is processing';
-      case OrderStatus.COMPLETED:
+      case OrderStatus.completed:
         return 'Order is complete';
-      case OrderStatus.CANCELLED:
+      case OrderStatus.cancelled:
         return 'Order is cancelled';
       default:
         return 'Almost done';
@@ -75,13 +75,10 @@ class OrderModel {
   }
 
   List<OrderProductModel> getProductsForType(ProductType type) {
-    return this.products.where((element) => element.type == type).toList();
+    return products.where((element) => element.type == type).toList();
   }
 
   bool checkProductsContainsType(ProductType type) {
-    return this.products.any((product) =>
-    type == product.type);
+    return products.any((product) => type == product.type);
   }
-
-
 }

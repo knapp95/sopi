@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
 class AssetEmployeeUnassignedWidget extends StatelessWidget {
+  const AssetEmployeeUnassignedWidget({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return const Padding(
+      padding: EdgeInsets.all(8.0),
       child: Chip(
         backgroundColor: Colors.white,
         shape: shapeDialogRed,
@@ -20,7 +22,7 @@ class AssetEmployeeUnassignedWidget extends StatelessWidget {
           ),
         ),
         label: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8.0),
           child: Text(
             'Not assigned employee',
             style: TextStyle(color: Colors.red),

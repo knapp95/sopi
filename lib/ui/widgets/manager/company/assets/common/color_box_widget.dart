@@ -5,7 +5,7 @@ class ColorBoxWidget extends StatelessWidget {
   final Color color;
   final String? label;
 
-  ColorBoxWidget(this.color, [this.label]);
+  const ColorBoxWidget(this.color, [this.label, Key? key]) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +13,11 @@ class ColorBoxWidget extends StatelessWidget {
       decoration: getBoxDecoration(color),
       width: 50,
       height: 50,
-      child: this.label != null
+      child: label != null
           ? Center(
               child: Text(
-                this.label ?? '',
-                style: TextStyle(fontSize: 30, color: Colors.white),
+                label ?? '',
+                style: const TextStyle(fontSize: 30, color: Colors.white),
               ),
             )
           : null,

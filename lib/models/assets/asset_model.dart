@@ -21,36 +21,38 @@ class AssetModel with ChangeNotifier {
 
   Future<void> fetchAssetsTimelineSettings() async {
     try {
-      DocumentSnapshot doc =
+      final DocumentSnapshot doc =
           await _settingsService.getDoc(AssetTimelineSettingsModel.id).get();
       final data = doc.data()! as Map<String, dynamic>;
-      this.assetTimelineSettings = AssetTimelineSettingsModel.fromJson(data);
+      assetTimelineSettings = AssetTimelineSettingsModel.fromJson(data);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
   Future<void> fetchAssets() async {
     try {
       final docs = await _assetService.getDocs();
-      List<AssetItemModel> assets = [];
-      for (QueryDocumentSnapshot doc in docs) {
+      final List<AssetItemModel> assets = [];
+      for (final QueryDocumentSnapshot doc in docs) {
         final data = doc.data()! as Map<String, dynamic>;
         final asset = AssetItemModel.fromJson(data);
         assets.add(asset);
       }
       this.assets = assets;
-      this.isInit = true;
+      isInit = true;
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
-  static Future<List<String>> getAvailableTypesImagePath(BuildContext ctx) async {
+  static Future<List<String>> getAvailableTypesImagePath(
+      BuildContext ctx) async {
     final manifestContent =
         await DefaultAssetBundle.of(ctx).loadString('AssetManifest.json');
-    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+    final Map<String, dynamic> manifestMap =
+        json.decode(manifestContent) as Map<String, dynamic>;
     final imagePaths = manifestMap.keys
         .where((String key) => key.contains('images/types/'))
         .where((String key) => key.contains('.png'))
@@ -59,14 +61,12 @@ class AssetModel with ChangeNotifier {
   }
 
   AssetItemModel findAssetByProductType(ProductType? productType) {
-    return this
-        .assets
+    return assets
         .firstWhere((asset) => asset.assignedProductType == productType);
   }
 
   List<AssetItemModel> getAssetExistsInOrder(OrderModel orderModel) {
-    return this
-        .assets
+    return assets
         .where((assetItem) =>
             orderModel.checkProductsContainsType(assetItem.assignedProductType))
         .toList();
@@ -75,18 +75,16 @@ class AssetModel with ChangeNotifier {
   Future<DateTime> findTheLatestAssetEndIncludeOrder(OrderModel order,
       [List<AssetItemModel>? assetExistsInOrder]) async {
     await fetchAssets();
-    if (assetExistsInOrder == null) {
-      assetExistsInOrder = this.getAssetExistsInOrder(order);
-    }
+    assetExistsInOrder ??= getAssetExistsInOrder(order);
 
     DateTime theLatestAssetEnd = DateTime.now();
-    for (AssetItemModel asset in assetExistsInOrder) {
+    for (final asset in assetExistsInOrder) {
       DateTime assetPlannedEnd = asset.queueProducts.isNotEmpty
           ? asset.queueProducts.last.plannedEndProcessingDate
           : DateTime.now();
-      List<OrderProductModel> productsByType =
+      final List<OrderProductModel> productsByType =
           order.getProductsForType(asset.assignedProductType);
-      int assignedProductsTime =
+      final int assignedProductsTime =
           productsByType.fold(0, (sum, item) => sum + item.totalPrepareTime);
       assetPlannedEnd =
           assetPlannedEnd.add(Duration(minutes: assignedProductsTime));
@@ -99,10 +97,10 @@ class AssetModel with ChangeNotifier {
 
   static List<AssetProductModel> getAllQueueProductsInAssetsForEmployee(
       List<QueryDocumentSnapshot> docs) {
-    List<AssetProductModel> queueAllProductsInAssetsForEmployee = [];
-    for (QueryDocumentSnapshot doc in docs) {
+    final List<AssetProductModel> queueAllProductsInAssetsForEmployee = [];
+    for (final QueryDocumentSnapshot doc in docs) {
       final data = doc.data()! as Map<String, dynamic>;
-      AssetItemModel assetItemModel = AssetItemModel.fromJson(data);
+      final AssetItemModel assetItemModel = AssetItemModel.fromJson(data);
       queueAllProductsInAssetsForEmployee.addAll(assetItemModel.queueProducts);
     }
     return queueAllProductsInAssetsForEmployee;

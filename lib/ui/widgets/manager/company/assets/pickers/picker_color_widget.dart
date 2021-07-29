@@ -5,6 +5,8 @@ import 'package:sopi/ui/shared/styles/shared_style.dart';
 import 'package:sopi/ui/widgets/manager/company/assets/common/color_box_widget.dart';
 
 class PickerColorWidget extends StatelessWidget {
+  const PickerColorWidget({Key? key}) : super(key: key);
+
   void _chooseColor(BuildContext ctx, Color color) {
     Navigator.of(ctx).pop(color);
   }
@@ -15,12 +17,12 @@ class PickerColorWidget extends StatelessWidget {
       elevation: defaultElevation,
       child: SizedBox(
         child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 5,
           ),
           itemCount: colors.length,
           itemBuilder: (BuildContext context, int index) {
-            Color color = getColorFromHash(colors[index]);
+            final Color color = getColorFromHash(colors[index]);
             return InkWell(
               onTap: () => _chooseColor(context, color),
               child: Padding(

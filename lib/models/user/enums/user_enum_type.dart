@@ -1,1 +1,1 @@
-enum UserType { CLIENT, MANAGER, EMPLOYEE }
+enum UserType { client, manager, employee }

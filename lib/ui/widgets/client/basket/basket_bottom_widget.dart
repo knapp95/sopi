@@ -8,9 +8,10 @@ import 'package:sopi/ui/shared/animations.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/shared/styles/shared_style.dart';
 
-import 'dialogs/basket_successAdd_dialog.dart';
+import 'dialogs/basket_success_add_dialog.dart';
 
 class BasketBottomWidget extends StatelessWidget {
+  BasketBottomWidget({Key? key}) : super(key: key);
   final OrderFactory _orderFactory = OrderFactory.singleton;
   final BasketModel _basket =
       Provider.of<BasketModel>(Get.context!, listen: false);
@@ -36,7 +37,7 @@ class BasketBottomWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text(
+              title: const Text(
                 'Summary',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -46,16 +47,16 @@ class BasketBottomWidget extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              getRoundedSquareButton(product.count),
+                              getRoundedSquareButton(product.count!),
                               formSizedBoxWidth,
-                              Text('${product.name}'),
-                              Spacer(),
-                              Text('${product.displayTotalPrice}'),
+                              Text(product.name!),
+                              const Spacer(),
+                              Text(product.displayTotalPrice),
                             ],
                           ),
                         ))
                     .toList(),
-                Divider(
+                const Divider(
                   color: primaryColor,
                 ),
                 Align(
@@ -63,8 +64,8 @@ class BasketBottomWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
-                        '${fixedDouble((_basket.summaryPrice))}',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        fixedDouble(_basket.summaryPrice),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     )),
               ]),
@@ -72,8 +73,8 @@ class BasketBottomWidget extends StatelessWidget {
             TextButton(
               style: TextButton.styleFrom(backgroundColor: primaryColor),
               onPressed: _confirmOrder,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Confirm',
                   style: TextStyle(

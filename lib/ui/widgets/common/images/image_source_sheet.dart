@@ -33,7 +33,7 @@ class ImageSourceSheet extends StatelessWidget {
   /// available.
   final Function(File)? onImageSelected;
 
-  ImageSourceSheet({
+  const ImageSourceSheet({
     Key? key,
     this.maxHeight,
     this.maxWidth,
@@ -72,21 +72,19 @@ class ImageSourceSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Wrap(
-        children: <Widget>[
-          ListTile(
-            leading: const Icon(Icons.camera_enhance),
-            title: Text('Camera'),
-            onTap: () => _onPickImage(ImageSource.camera),
-          ),
-          ListTile(
-            leading: const Icon(Icons.image),
-            title: Text('Gallery'),
-            onTap: () => _onPickImage(ImageSource.gallery),
-          )
-        ],
-      ),
+    return Wrap(
+      children: <Widget>[
+        ListTile(
+          leading: const Icon(Icons.camera_enhance),
+          title: const Text('Camera'),
+          onTap: () => _onPickImage(ImageSource.camera),
+        ),
+        ListTile(
+          leading: const Icon(Icons.image),
+          title: const Text('Gallery'),
+          onTap: () => _onPickImage(ImageSource.gallery),
+        )
+      ],
     );
   }
 }

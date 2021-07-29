@@ -17,7 +17,7 @@ class ManagerOrderTimelineRight extends StatelessWidget {
 
   final _orderService = OrderService.singleton;
 
-  ManagerOrderTimelineRight(this._assetItem);
+  ManagerOrderTimelineRight(this._assetItem, {Key? key}) : super(key: key);
 
   List<AssetProductModel> get availableQueueProductsTimeline =>
       _assetItem.getQueueProductsTimeline(
@@ -39,16 +39,16 @@ class ManagerOrderTimelineRight extends StatelessWidget {
   }
 
   double _getEmptySpaceBetweenBlocks(int index) {
-    AssetProductModel waitingProduct =
-        this.availableQueueProductsTimeline[index];
+    final AssetProductModel waitingProduct =
+        availableQueueProductsTimeline[index];
     late int differenceInMinutes;
     if (index == 0) {
       differenceInMinutes = waitingProduct.plannedStartProcessingDate
           .difference(_assetTimelineSettingsModel.availableStartTimeline)
           .inMinutes;
     } else {
-      AssetProductModel earlierProduct =
-          this.availableQueueProductsTimeline[index - 1];
+      final AssetProductModel earlierProduct =
+          availableQueueProductsTimeline[index - 1];
       differenceInMinutes = waitingProduct.plannedStartProcessingDate
           .difference(earlierProduct.plannedEndProcessingDate)
           .inMinutes;
@@ -67,16 +67,16 @@ class ManagerOrderTimelineRight extends StatelessWidget {
       color: _assetItem.color.withOpacity(0.05),
       width: 80,
       child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
-        itemCount: this.availableQueueProductsTimeline.length,
+        itemCount: availableQueueProductsTimeline.length,
         itemBuilder: (_, int index) {
-          AssetProductModel waitingProduct =
-              this.availableQueueProductsTimeline[index];
+          final AssetProductModel waitingProduct =
+              availableQueueProductsTimeline[index];
           double heightBlock =
               _getHeightForMinutes(waitingProduct.totalPrepareTime);
           if (index == 0) {
-            int startBeforeTimeline = _assetTimelineSettingsModel
+            final int startBeforeTimeline = _assetTimelineSettingsModel
                 .availableStartTimeline
                 .difference(waitingProduct.plannedStartProcessingDate)
                 .inMinutes;
@@ -85,35 +85,34 @@ class ManagerOrderTimelineRight extends StatelessWidget {
                   waitingProduct.totalPrepareTime - startBeforeTimeline);
             }
           }
-          return Container(
-            child: Column(
-              children: [
-                FutureBuilder(
-                  builder: (context, orderSnap) {
-                    if (orderSnap.connectionState == ConnectionState.none ||
-                        orderSnap.data == null) {
-                      return Container();
-                    }
-                    OrderModel order = orderSnap.data as OrderModel;
-                    return Padding(
-                      padding: EdgeInsets.only(
-                          top: _getEmptySpaceBetweenBlocks(index)),
-                      child: Container(
-                        decoration:
-                            getBoxDecoration(order.color, withOpacity: 0.9),
-                        height: heightBlock,
-                        child: Center(
-                            child: Text(
-                          '#${order.humanNumber}',
-                          style: TextStyle(color: Colors.white),
-                        )),
-                      ),
-                    );
-                  },
-                  future: _orderService.getOrderById(waitingProduct.oid),
-                ),
-              ],
-            ),
+          return Column(
+            children: [
+              FutureBuilder(
+                builder: (context, orderSnap) {
+                  final OrderModel? order = orderSnap.data as OrderModel?;
+                  if (orderSnap.connectionState == ConnectionState.none ||
+                      order == null) {
+                    return Container();
+                  }
+
+                  return Padding(
+                    padding: EdgeInsets.only(
+                        top: _getEmptySpaceBetweenBlocks(index)),
+                    child: Container(
+                      decoration:
+                          getBoxDecoration(order.color, withOpacity: 0.9),
+                      height: heightBlock,
+                      child: Center(
+                          child: Text(
+                        '#${order.humanNumber}',
+                        style: const TextStyle(color: Colors.white),
+                      )),
+                    ),
+                  );
+                },
+                future: _orderService.getOrderById(waitingProduct.oid),
+              ),
+            ],
           );
         },
       ),

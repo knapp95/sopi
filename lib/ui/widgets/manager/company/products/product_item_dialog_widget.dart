@@ -16,7 +16,7 @@ import 'package:sopi/ui/widgets/common/images/image_source_sheet.dart';
 class ProductItemDialogWidget extends StatefulWidget {
   final ProductItemModel? productItem;
 
-  ProductItemDialogWidget([this.productItem]);
+  const ProductItemDialogWidget([this.productItem, Key? key]) : super(key: key);
 
   @override
   _ProductItemDialogWidgetState createState() =>
@@ -58,10 +58,10 @@ class _ProductItemDialogWidgetState extends State<ProductItemDialogWidget> {
 
   Future<void> _cropImage(File imageFile) async {
     try {
-      File? croppedFile = await ImageCropper.cropImage(
-        aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+      final File? croppedFile = await ImageCropper.cropImage(
+        aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
         sourcePath: imageFile.path,
-        androidUiSettings: AndroidUiSettings(
+        androidUiSettings: const AndroidUiSettings(
           toolbarTitle: 'Adjust Photo',
           toolbarColor: primaryColor,
           toolbarWidgetColor: Colors.white,
@@ -76,7 +76,7 @@ class _ProductItemDialogWidgetState extends State<ProductItemDialogWidget> {
         });
       }
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -118,14 +118,14 @@ class _ProductItemDialogWidgetState extends State<ProductItemDialogWidget> {
                       initialValue: _product.price?.toString(),
                       labelText: 'Price',
                       keyboardType: TextInputType.number,
-                      suffixIcon: Icon(Icons.attach_money),
+                      suffixIcon: const Icon(Icons.attach_money),
                     ),
                     Row(
                       children: [
                         Expanded(
                           child: _formFactory.buildDropdownField(
                             fieldName: 'type',
-                            initialValue: (_product.type ?? ProductType.BURGER),
+                            initialValue: _product.type ?? ProductType.burger,
                             labelText: 'Type',
                             items: ProductsModel.types,
                           ),
@@ -156,8 +156,8 @@ class _ProductItemDialogWidgetState extends State<ProductItemDialogWidget> {
     Row(
       children: <Widget>[
         TextButton(
-          child: Icon(Icons.refresh),
           onPressed: _changePhoto,
+          child: const Icon(Icons.refresh),
         ),
       ],
     );
@@ -170,9 +170,7 @@ class _ProductItemDialogWidgetState extends State<ProductItemDialogWidget> {
       image = Image.file(File(_imageFile!.path));
     }
 
-    if (image == null) {
-      image = Image.asset('assets/images/no_photo.png');
-    }
+    image ??= Image.asset('assets/images/no_photo.png');
     final finalImageWidget = SizedBox(
       height: 250,
       child: InkWell(
@@ -183,13 +181,13 @@ class _ProductItemDialogWidgetState extends State<ProductItemDialogWidget> {
               child: image,
             ),
             Container(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               alignment: Alignment.bottomRight,
               child: CircleAvatar(
                 backgroundColor: primaryColor,
                 child: IconButton(
                   onPressed: _changePhoto,
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.photo_camera,
                     color: Colors.white,
                   ),

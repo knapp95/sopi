@@ -8,6 +8,8 @@ import 'package:sopi/models/products/products_model.dart';
 import 'list/products_list.dart';
 
 class ProductWidget extends StatefulWidget {
+  const ProductWidget({Key? key}) : super(key: key);
+
   @override
   _ProductsScreenState createState() => _ProductsScreenState();
 }
@@ -60,8 +62,9 @@ class _ProductsScreenState extends State<ProductWidget>
       if (text.isEmpty) {
         return;
       }
-      ProductTypeModel openedProducts = ProductsModel.types[_selectedIndex];
-      List<ProductItemModel> productsByType =
+      final ProductTypeModel openedProducts =
+          ProductsModel.types[_selectedIndex];
+      final List<ProductItemModel> productsByType =
           _products.getSortedProductsByType(openedProducts.id);
       _searchResult = productsByType
           .where((product) => containsIgnoreCase(product.name!, text)!)
@@ -81,12 +84,12 @@ class _ProductsScreenState extends State<ProductWidget>
       appBar: AppBar(
         title: _searchActive
             ? _buildSearchSection()
-            : Text(
+            : const Text(
                 'Thomas, eat something tasty',
               ),
         actions: [
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.search,
               color: Colors.white,
             ),
@@ -111,8 +114,8 @@ class _ProductsScreenState extends State<ProductWidget>
   }
 
   List<Widget> _buildTabs() {
-    List<Widget> tabs = [];
-    ProductsModel.types.forEach((tab) {
+    final List<Widget> tabs = [];
+    for (final ProductTypeModel tab in ProductsModel.types) {
       tabs.add(
         Tab(
           child: Text(
@@ -126,15 +129,16 @@ class _ProductsScreenState extends State<ProductWidget>
           ),
         ),
       );
-    });
+    }
+
     return tabs;
   }
 
   List<Widget> _buildTabsContent() {
-    List<Widget> tabsContent = ProductsModel.types.map((element) {
+    final List<Widget> tabsContent = ProductsModel.types.map((element) {
       List<ProductItemModel> productsByType = [];
 
-      if (_searchResult.length != 0 || _searchController!.text.isNotEmpty) {
+      if (_searchResult.isNotEmpty || _searchController!.text.isNotEmpty) {
         productsByType = _searchResult;
       } else {
         productsByType = _products.getSortedProductsByType(element.id);
@@ -155,16 +159,16 @@ class _ProductsScreenState extends State<ProductWidget>
               _searchClear();
             });
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.clear,
             color: Colors.red,
           ),
         ),
         hintText: 'Filter the list',
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: const TextStyle(color: Colors.white),
         border: InputBorder.none,
       ),
-      style: TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.white),
       onChanged: _onSearchTextChange,
     );
   }

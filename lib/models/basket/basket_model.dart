@@ -12,23 +12,23 @@ class BasketModel with ChangeNotifier {
   double get summaryPrice {
     double summaryPrice = 0;
     try {
-      this.products.forEach((_, product) {
+      products.forEach((_, product) {
         summaryPrice += product.count! * product.price!;
       });
     } catch (e) {
-      throw e;
+      rethrow;
     }
     return summaryPrice;
   }
 
   void clearBasket() {
-    this.products = {};
+    products = {};
     notifyListeners();
   }
 
   List<OrderProductModel> get productsOrder {
-    List<OrderProductModel> productsOrder = [];
-    this.products.forEach((_, value) {
+    final List<OrderProductModel> productsOrder = [];
+    products.forEach((_, value) {
       productsOrder.add(OrderProductModel.fromProduct(value));
     });
     return productsOrder;

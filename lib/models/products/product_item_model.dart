@@ -11,87 +11,88 @@ import 'package:sopi/services/products/product_service.dart';
 part 'product_item_model.g.dart';
 
 @JsonSerializable()
-class ProductItemModel extends PrimitiveProductItemModel  {
+class ProductItemModel extends PrimitiveProductItemModel {
   final _productService = ProductService.singleton;
   String? imageUrl;
   String? description;
   double? price;
 
   bool get isNew => this.pid == null;
+
   ProductItemModel();
 
   double get rate {
-    var rng = Random();
+    final rng = Random();
     return rng.nextInt(6).toDouble();
   }
 
-  String get displayTotalPrice => fixedDouble(this.price! * this.count!);
-
+  String get displayTotalPrice => fixedDouble(price! * count!);
 
   factory ProductItemModel.fromJson(Map<String, dynamic> json) =>
       _$ProductItemModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductItemModelToJson(this);
 
-  void changeValueInForm(String fieldName, value) {
+  void changeValueInForm(String fieldName, dynamic value) {
     try {
       if (value == null) return;
+
       switch (fieldName) {
         case 'name':
-          this.name = value;
+          name = value as String;
           break;
         case 'description':
-          this.description = value;
+          description = value as String;
           break;
         case 'price':
-          this.price = double.tryParse(value);
+          price = double.tryParse(value as String);
           break;
         case 'type':
-          this.type = value;
+          type = value as ProductType;
           break;
         case 'count':
-          this.count = value?.toInt();
+          count = value as int;
           break;
         case 'prepareTime':
-          this.prepareTime = value;
+          prepareTime = value as int;
           break;
       }
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
   Future<void> saveProductToFirebase({File? image}) async {
     try {
       final _document = _productService.getDoc(this.pid);
-      bool isNew = this.pid == null;
+      final bool isNew = this.pid == null;
 
       if (isNew) {
         this.pid = _document.id;
       }
       if (image != null) {
-        await this.putImage(image);
+        await putImage(image);
       }
-      final data = this.toJson();
+      final data = toJson();
       if (isNew) {
         await _document.set(data);
       } else {
         await _document.update(data);
       }
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
   Future<void> putImage(File file) async {
     try {
       final FirebaseStorage _storage = FirebaseStorage.instance;
-      String filePath = '${DateTime.now()}.png';
+      final String filePath = '${DateTime.now()}.png';
       final Reference reference = _storage.ref('images/').child(filePath);
       await reference.putFile(file);
-      this.imageUrl = await reference.getDownloadURL();
+      imageUrl = await reference.getDownloadURL();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 }

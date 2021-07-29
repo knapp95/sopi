@@ -6,20 +6,18 @@ import 'package:sopi/ui/shared/styles/shared_style.dart';
 class BottomNotification extends StatelessWidget {
   final GenericResponseModel responseMessage;
 
-  BottomNotification(this.responseMessage);
+  const BottomNotification(this.responseMessage, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext? context) {
     return SnackBar(
       elevation: defaultElevation,
       backgroundColor: responseMessage.correct ? primaryColor : Colors.red,
-      content: Container(
-        child: Text(
-          responseMessage.message!,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+      content: Text(
+        responseMessage.message!,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
         ),
       ),
       duration: Duration(

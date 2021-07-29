@@ -18,5 +18,4 @@ class SettingsService {
 
   Future<void> updateDoc(String? id, Map<String, dynamic> data) async =>
       _settingsCollection.doc(id).update(data);
-
 }

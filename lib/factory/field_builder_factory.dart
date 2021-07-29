@@ -20,7 +20,7 @@ class FieldBuilderFactory {
 
   Widget buildTextField({
     String fieldName = 'field',
-    dynamic initialValue,
+    String? initialValue,
     bool isVisible = true,
     Color? valueColor,
     TextInputType? keyboardType,
@@ -35,35 +35,33 @@ class FieldBuilderFactory {
     return !isVisible
         ? Container()
         : Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        FormBuilderTextField(
-          name: fieldName,
-          initialValue: initialValue,
-          keyboardType: keyboardType,
-          controller: controller,
-          maxLines: maxLines,
-          style: TextStyle(
-            color: valueColor,
-          ),
-          obscureText: obscureText,
-          decoration: InputDecoration(
-            labelText: labelText,
-            alignLabelWithHint: true,
-            labelStyle: TextStyle(
-              color: labelColor,
-            ),
-            suffixIcon: suffixIcon,
-          ),
-          validator: (input) =>
-              _fieldValidate.validateFields(fieldName, input!),
-          onChanged: (value) =>
-              _onChanged(fieldName, value,
-                  onChangedHandler: onChangedHandler),
-        ),
-        formSizedBoxHeight
-      ],
-    );
+            children: [
+              FormBuilderTextField(
+                name: fieldName,
+                initialValue: initialValue,
+                keyboardType: keyboardType,
+                controller: controller,
+                maxLines: maxLines,
+                style: TextStyle(
+                  color: valueColor,
+                ),
+                obscureText: obscureText,
+                decoration: InputDecoration(
+                  labelText: labelText,
+                  alignLabelWithHint: true,
+                  labelStyle: TextStyle(
+                    color: labelColor,
+                  ),
+                  suffixIcon: suffixIcon,
+                ),
+                validator: (input) =>
+                    _fieldValidate.validateFields(fieldName, input!),
+                onChanged: (value) => _onChanged(fieldName, value,
+                    onChangedHandler: onChangedHandler),
+              ),
+              formSizedBoxHeight
+            ],
+          );
   }
 
   Widget buildSliderField({
@@ -76,7 +74,6 @@ class FieldBuilderFactory {
     Function? onChangedHandler,
   }) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         FormBuilderSlider(
           decoration: InputDecoration(
@@ -101,42 +98,40 @@ class FieldBuilderFactory {
 
   Widget buildNumberPicker({
     String? fieldName,
-    required dynamic value,
+    required int value,
     required int max,
     bool isVisible = true,
     Widget? suffixIcon,
     String? labelText,
     Function? onChangedHandler,
   }) {
-    final canSubtraction = value > 1;
-    final canAdd = value < max;
+    final bool canSubtraction = value > 1;
+    final bool canAdd = value < max;
     return !isVisible
         ? Container()
         : Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-            icon: Icon(Icons.arrow_left),
-            onPressed: () =>
-            canSubtraction
-                ? _onChanged(fieldName, value - 1,
-                onChangedHandler: onChangedHandler)
-                : null),
-        Text(
-          '$value',
-          style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: fontSize20),
-        ),
-        IconButton(
-          icon: Icon(Icons.arrow_right),
-          onPressed: () =>
-          canAdd
-              ? _onChanged(fieldName, value + 1,
-              onChangedHandler: onChangedHandler)
-              : null,
-        ),
-      ],
-    );
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                  icon: const Icon(Icons.arrow_left),
+                  onPressed: () => canSubtraction
+                      ? _onChanged(fieldName, value - 1,
+                          onChangedHandler: onChangedHandler)
+                      : null),
+              Text(
+                '$value',
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: fontSize20),
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_right),
+                onPressed: () => canAdd
+                    ? _onChanged(fieldName, value + 1,
+                        onChangedHandler: onChangedHandler)
+                    : null,
+              ),
+            ],
+          );
   }
 
   Widget buildDropdownField({
@@ -154,35 +149,33 @@ class FieldBuilderFactory {
     return !isVisible
         ? Container()
         : Column(
-      children: [
-        FormBuilderDropdown(
-          name: labelText!,
-          decoration: InputDecoration(
-            border: border,
-            labelText: labelText,
-            labelStyle: TextStyle(
-              color: labelColor,
-            ),
-          ),
-          items: items!
-              .map((dynamic item) =>
-              DropdownMenuItem(
-                child: Text(
-                  item.name!,
-                  style: TextStyle(color: labelDropdownColor),
+            children: [
+              FormBuilderDropdown(
+                name: labelText!,
+                decoration: InputDecoration(
+                  border: border,
+                  labelText: labelText,
+                  labelStyle: TextStyle(
+                    color: labelColor,
+                  ),
                 ),
-                value: item.id,
-              ))
-              .toList(),
-          dropdownColor: dropdownColor,
-          onChanged: (dynamic value) =>
-              _onChanged(fieldName, value,
-                  onChangedHandler: onChangedHandler),
-          initialValue: initialValue,
-        ),
-        SizedBox(height: 15),
-      ],
-    );
+                items: items!
+                    .map((dynamic item) => DropdownMenuItem(
+                          value: item.id,
+                          child: Text(
+                            item.name! as String,
+                            style: TextStyle(color: labelDropdownColor),
+                          ),
+                        ))
+                    .toList(),
+                dropdownColor: dropdownColor,
+                onChanged: (dynamic value) => _onChanged(fieldName, value,
+                    onChangedHandler: onChangedHandler),
+                initialValue: initialValue,
+              ),
+              const SizedBox(height: 15),
+            ],
+          );
   }
 
   Widget buildMultiSelectList({
@@ -196,31 +189,30 @@ class FieldBuilderFactory {
     return !isVisible
         ? Container()
         : Column(
-      children: [
-        FormBuilderFilterChip(
-          name: fieldName ?? 'filter_chip',
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            labelText: labelText,
-          ),
-          initialValue: initialValue ?? [],
-          options: options,
-          focusNode: FocusNode(),
-          selectedColor: primaryColor,
-          backgroundColor: Colors.white,
-          selectedShadowColor: Colors.white,
-          checkmarkColor: Colors.white,
-          onChanged: (dynamic value) =>
-              _onChanged(fieldName, value,
-                  onChangedHandler: onChangedHandler),
-        ),
-        formSizedBoxHeight,
-      ],
-    );
+            children: [
+              FormBuilderFilterChip(
+                name: fieldName ?? 'filter_chip',
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  labelText: labelText,
+                ),
+                initialValue: initialValue ?? [],
+                options: options,
+                focusNode: FocusNode(),
+                selectedColor: primaryColor,
+                backgroundColor: Colors.white,
+                selectedShadowColor: Colors.white,
+                checkmarkColor: Colors.white,
+                onChanged: (dynamic value) => _onChanged(fieldName, value,
+                    onChangedHandler: onChangedHandler),
+              ),
+              formSizedBoxHeight,
+            ],
+          );
   }
 
   void _onChanged(String? fieldName, value, {Function? onChangedHandler}) {
-    this.data?.changeValueInForm(fieldName, value);
+    data?.changeValueInForm(fieldName, value);
     if (onChangedHandler != null) {
       onChangedHandler(value);
     }

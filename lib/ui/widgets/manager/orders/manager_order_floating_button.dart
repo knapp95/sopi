@@ -10,6 +10,8 @@ import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/widgets/manager/orders/settings/manager_order_settings_dialog.dart';
 
 class ManagerOrderFloatingButton extends StatefulWidget {
+  const ManagerOrderFloatingButton({Key? key}) : super(key: key);
+
   @override
   _ManagerOrderFloatingButtonState createState() =>
       _ManagerOrderFloatingButtonState();
@@ -20,12 +22,12 @@ class _ManagerOrderFloatingButtonState
   List<ProductItemModel> products = [];
   final _orderFactory = OrderFactory.singleton;
 
-  _openSettingsOrdersDialog() {
-    showScaleDialog((ManagerOrderSettingsDialog()));
+  void _openSettingsOrdersDialog() {
+    showScaleDialog(const ManagerOrderSettingsDialog());
   }
 
   List<GenericItemModel> get allItems {
-    List<GenericItemModel> allItems = [
+    final List<GenericItemModel> allItems = [
       GenericItemModel(
         funHandler: _orderFactory.clearDataFactory,
         name: 'Clear factory',
@@ -39,7 +41,7 @@ class _ManagerOrderFloatingButtonState
       icon: Icons.settings,
       color: Colors.blue,
     ));
-    for (var count in [15, 10, 2]) {
+    for (final count in [15, 10, 2]) {
       allItems.add(
         GenericItemModel(
           funHandler: () => _orderFactory.generateOrders(count),
@@ -58,7 +60,7 @@ class _ManagerOrderFloatingButtonState
         backgroundColor: Colors.white,
         foregroundColor: primaryColor,
         animatedIcon: AnimatedIcons.view_list,
-        children: this.allItems.map((GenericItemModel item) {
+        children: allItems.map((GenericItemModel item) {
           return SpeedDialChild(
             child: Center(
               child: FaIcon(
@@ -69,7 +71,7 @@ class _ManagerOrderFloatingButtonState
             backgroundColor: item.color,
             onTap: () => item.funHandler!(),
             label: item.name,
-            labelStyle: TextStyle(color: Colors.white),
+            labelStyle: const TextStyle(color: Colors.white),
             labelBackgroundColor: item.color,
           );
         }).toList());

@@ -12,12 +12,14 @@ import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_pro
 import '../../common/loadingDataInProgress/loading_data_in_progress_widget.dart';
 
 class ClientOrderWidget extends StatefulWidget {
+  const ClientOrderWidget({Key? key}) : super(key: key);
+
   @override
   _ClientOrderWidgetState createState() => _ClientOrderWidgetState();
 }
 
 class _ClientOrderWidgetState extends State<ClientOrderWidget> {
-  OrderService _orderService = OrderService.singleton;
+  final OrderService _orderService = OrderService.singleton;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
           Center(
             child: Text(
               title,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
           ),
           child!,
@@ -63,13 +65,14 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
     return StreamBuilder(
       stream: _orderService.processingOrderClient,
       builder: (ctx, snapshot) {
-        if (!snapshot.hasData) return LoadingDataInProgressWidget();
-        if ((snapshot.data! as QuerySnapshot).docs.isEmpty)
-          return ClientOrderProcessingEmptyWidget();
+        if (!snapshot.hasData) return const LoadingDataInProgressWidget();
+        if ((snapshot.data! as QuerySnapshot).docs.isEmpty) {
+          return const ClientOrderProcessingEmptyWidget();
+        }
         final QueryDocumentSnapshot doc =
             (snapshot.data! as QuerySnapshot).docs[0];
         final data = doc.data()! as Map<String, dynamic>;
-        OrderModel orderProcessing = OrderModel.fromJson(data);
+        final OrderModel orderProcessing = OrderModel.fromJson(data);
         return ClientOrderProcessingItemWidget(orderProcessing);
       },
     );
@@ -79,19 +82,20 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
     return StreamBuilder(
       stream: _orderService.pastOrdersClient,
       builder: (ctx, snapshot) {
-        if (!snapshot.hasData) return LoadingDataInProgressWidget();
-        if ((snapshot.data! as QuerySnapshot).docs.isEmpty)
-          return ClientOrderPastEmptyWidget();
+        if (!snapshot.hasData) return const LoadingDataInProgressWidget();
+        if ((snapshot.data! as QuerySnapshot).docs.isEmpty) {
+          return const ClientOrderPastEmptyWidget();
+        }
 
         return ListView.builder(
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: (snapshot.data! as QuerySnapshot).docs.length,
           itemBuilder: (_, int index) {
-            QueryDocumentSnapshot orderDoc =
+            final QueryDocumentSnapshot orderDoc =
                 (snapshot.data! as QuerySnapshot).docs[index];
             final data = orderDoc.data()! as Map<String, dynamic>;
-            OrderModel pastOrder = OrderModel.fromJson(data);
+            final OrderModel pastOrder = OrderModel.fromJson(data);
             return ClientOrderPastItemWidget(pastOrder);
           },
         );

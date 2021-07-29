@@ -14,24 +14,21 @@ import 'package:sopi/ui/widgets/common/loadingDataInProgress/loading_data_in_pro
 class EmployeeOrderWaitingItemWidget extends StatefulWidget {
   final AssetProductModel assetProductModel;
 
-  const EmployeeOrderWaitingItemWidget(this.assetProductModel, key)
+  const EmployeeOrderWaitingItemWidget(this.assetProductModel, Key? key)
       : super(key: key);
 
   @override
   _EmployeeOrderWaitingItemWidgetState createState() =>
-      _EmployeeOrderWaitingItemWidgetState(
-          this.assetProductModel.oid, this.assetProductModel.pid);
+      _EmployeeOrderWaitingItemWidgetState();
 }
 
 class _EmployeeOrderWaitingItemWidgetState
     extends State<EmployeeOrderWaitingItemWidget> {
   final _orderService = OrderService.singleton;
-  final String? oid;
-  final String? pid;
+  late String? oid;
+  late String? pid;
   late Timer _timer;
   Duration? _timeWaiting;
-
-  _EmployeeOrderWaitingItemWidgetState(this.oid, this.pid);
 
   late OrderModel _orderModel;
   late ProductItemModel _productItemModel;
@@ -41,12 +38,15 @@ class _EmployeeOrderWaitingItemWidgetState
   @override
   void initState() {
     if (_isInit) {
+      oid = widget.assetProductModel.oid;
+      pid = widget.assetProductModel.pid;
       setState(() {
         _isLoading = true;
       });
       _loadData();
       _isInit = false;
-      _timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
+      _timer =
+          Timer.periodic(const Duration(seconds: 1), (Timer t) => _getTime());
     }
 
     super.initState();
@@ -72,8 +72,8 @@ class _EmployeeOrderWaitingItemWidgetState
 
   Future<void> _loadData() async {
     final productService = ProductService.singleton;
-    _orderModel = await _orderService.getOrderById(this.oid);
-    _productItemModel = await productService.getProductById(this.pid);
+    _orderModel = await _orderService.getOrderById(oid);
+    _productItemModel = await productService.getProductById(pid);
 
     if (!mounted) return;
     setState(() {
@@ -82,12 +82,12 @@ class _EmployeeOrderWaitingItemWidgetState
   }
 
   TextStyle textStyle =
-      TextStyle(fontWeight: FontWeight.bold, color: primaryColor);
+      const TextStyle(fontWeight: FontWeight.bold, color: primaryColor);
 
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? LoadingDataInProgressWidget()
+        ? const LoadingDataInProgressWidget()
         : Card(
             shape: shapeCard,
             elevation: defaultElevation,
@@ -105,11 +105,10 @@ class _EmployeeOrderWaitingItemWidgetState
                   Expanded(
                     flex: 4,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${_productItemModel.name}',
+                          _productItemModel.name!,
                           style: textStyle,
                         ),
                         Text(
@@ -119,7 +118,7 @@ class _EmployeeOrderWaitingItemWidgetState
                       ],
                     ),
                   ),
-                  Expanded(child: Text('$timeWaitingDisplay', style: textStyle))
+                  Expanded(child: Text(timeWaitingDisplay, style: textStyle))
                 ],
               ),
             ),

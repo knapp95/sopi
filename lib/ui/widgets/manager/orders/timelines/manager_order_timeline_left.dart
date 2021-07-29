@@ -6,14 +6,13 @@ import 'package:sopi/models/assets/asset_model.dart';
 import 'package:sopi/models/assets/timeline/asset_timeline_settings_model.dart';
 import 'package:sopi/ui/shared/app_colors.dart';
 
-enum Timeline { BEFORE, AFTER }
+enum Timeline { before, after }
 
 class ManagerOrderTimelineLeft extends StatelessWidget {
+  ManagerOrderTimelineLeft(this._time, {Key? key}) : super(key: key);
   final DateTime _time;
   final AssetTimelineSettingsModel _assetTimelineSettingsModel =
       Provider.of<AssetModel>(Get.context!).assetTimelineSettings!;
-
-  ManagerOrderTimelineLeft(this._time);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class ManagerOrderTimelineLeft extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ..._buildTimeline(Timeline.BEFORE),
+          ..._buildTimeline(Timeline.before),
           Container(
             color: primaryColor,
             child: _buildSingleTime(
@@ -34,7 +33,7 @@ class ManagerOrderTimelineLeft extends StatelessWidget {
               Colors.white,
             ),
           ),
-          ..._buildTimeline(Timeline.AFTER),
+          ..._buildTimeline(Timeline.after),
         ],
       ),
     );
@@ -42,10 +41,10 @@ class ManagerOrderTimelineLeft extends StatelessWidget {
 
   Widget _buildSingleTime(DateTime time, [Color? fontColor]) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: primaryColor, width: 1),
-          left: BorderSide(color: primaryColor, width: 1),
+          bottom: BorderSide(color: primaryColor),
+          left: BorderSide(color: primaryColor),
         ),
       ),
       child: Padding(
@@ -65,19 +64,19 @@ class ManagerOrderTimelineLeft extends StatelessWidget {
   }
 
   List<Widget> _buildTimeline(Timeline timeline) {
-    DateTime time = timeline == Timeline.BEFORE
+    DateTime time = timeline == Timeline.before
         ? _assetTimelineSettingsModel.availableStartTimeline
         : _assetTimelineSettingsModel.availableEndTimeline;
 
     DateTime nowTmp = _time;
-    List<Widget> timelineWidgets = [];
-    if (timeline == Timeline.BEFORE) {
+    final List<Widget> timelineWidgets = [];
+    if (timeline == Timeline.before) {
       while (nowTmp.isAfter(time)) {
         timelineWidgets.add(_buildSingleTime(time));
         time = time.add(
             Duration(minutes: _assetTimelineSettingsModel.differenceInMinutes));
       }
-    } else if (timeline == Timeline.AFTER) {
+    } else if (timeline == Timeline.after) {
       while (nowTmp.isBefore(time)) {
         nowTmp = nowTmp.add(
             Duration(minutes: _assetTimelineSettingsModel.differenceInMinutes));

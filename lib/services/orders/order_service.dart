@@ -21,7 +21,8 @@ class OrderService {
   static OrderService get singleton => _singleton;
 
   Future<OrderModel> getOrderById(String? oid) async {
-    DocumentSnapshot documentSnapshot = await _ordersCollection.doc(oid).get();
+    final DocumentSnapshot documentSnapshot =
+        await _ordersCollection.doc(oid).get();
     final data = documentSnapshot.data()! as Map<String, dynamic>;
     return OrderModel.fromJson(data);
   }
@@ -30,10 +31,9 @@ class OrderService {
     return _ordersCollection.doc(oid);
   }
 
-  Future<void> updateOrderStatusToProcessing(oid) async {
-    _ordersCollection
-        .doc(oid)
-        .update({'status': EnumToString.convertToString(OrderStatus.PROCESSING)});
+  Future<void> updateOrderStatusToProcessing(String oid) async {
+    _ordersCollection.doc(oid).update(
+        {'status': EnumToString.convertToString(OrderStatus.processing)});
   }
 
   void updateOrder(OrderModel order) {
@@ -45,13 +45,13 @@ class OrderService {
         GenericResponseModel('Order update successfully.'),
       );
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
   Future<void> removeAllOrders() async {
     final docs = (await _ordersCollection.get()).docs;
-    for (QueryDocumentSnapshot doc in docs) {
+    for (final QueryDocumentSnapshot doc in docs) {
       await doc.reference.delete();
     }
   }
@@ -59,25 +59,28 @@ class OrderService {
   Stream<QuerySnapshot> get processingOrderClient {
     return _ordersCollection
         .where('clientID', isEqualTo: AuthenticationService.uid)
-        .where('status', isNotEqualTo: EnumToString.convertToString(OrderStatus.RECEIVED))
+        .where('status',
+            isNotEqualTo: EnumToString.convertToString(OrderStatus.received))
         .snapshots();
   }
 
   Stream<QuerySnapshot> get pastOrdersClient {
     return _ordersCollection
         .where('clientID', isEqualTo: AuthenticationService.uid)
-        .where('status', isEqualTo: EnumToString.convertToString(OrderStatus.RECEIVED))
+        .where('status',
+            isEqualTo: EnumToString.convertToString(OrderStatus.received))
         .snapshots();
   }
 
   Future<int?> getNextHumanNumberForOrder() async {
     int? humanNumber = 1;
-    QuerySnapshot query =
+    final QuerySnapshot query =
         await _ordersCollection.orderBy('humanNumber').limitToLast(1).get();
 
     /// After 99 order's increment's is reset
-    if (query.docs.isNotEmpty && query.docs.first['humanNumber'] < 99) {
-      humanNumber = query.docs.first['humanNumber'] + 1;
+
+    if (query.docs.isNotEmpty && query.docs.first['humanNumber'] < 99 as bool) {
+      humanNumber = query.docs.first['humanNumber'] + 1 as int;
     }
     return humanNumber;
   }

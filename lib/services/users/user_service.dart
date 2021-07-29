@@ -16,15 +16,17 @@ class UserService {
   static UserService get singleton => _singleton;
 
   Future<List<UserModel>> fetchAllEmployees() async {
-    List<UserModel> userList = [];
-    QuerySnapshot querySnapshot = await _usersCollection
-        .where('typeAccount', isEqualTo: EnumToString.convertToString(UserType.EMPLOYEE))
+    final List<UserModel> userList = [];
+    final QuerySnapshot querySnapshot = await _usersCollection
+        .where('typeAccount',
+            isEqualTo: EnumToString.convertToString(UserType.employee))
         .get();
-    querySnapshot.docs.forEach((userDoc) {
 
+    for (final QueryDocumentSnapshot userDoc in querySnapshot.docs) {
       final data = userDoc.data()! as Map<String, dynamic>;
       userList.add(UserModel.fromJson(data));
-    });
+    }
+
     return userList;
   }
 
@@ -33,12 +35,11 @@ class UserService {
   }
 
   void addUser(String uid) {
-    DocumentReference doc = _usersCollection.doc(uid);
+    final DocumentReference doc = _usersCollection.doc(uid);
     final data = {
       'uid': uid,
-      'typeAccount': UserType.CLIENT,
+      'typeAccount': UserType.client,
     };
     doc.set(data);
   }
-
 }

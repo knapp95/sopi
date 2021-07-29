@@ -10,27 +10,28 @@ import 'package:sopi/ui/widgets/client/basket/basket_button_widget.dart';
 class ProductItemDialog extends StatefulWidget {
   final ProductItemModel product;
 
-  ProductItemDialog(this.product);
+  const ProductItemDialog(this.product, {Key? key}) : super(key: key);
 
   @override
-  _ProductItemDialogState createState() =>
-      _ProductItemDialogState(this.product);
+  _ProductItemDialogState createState() => _ProductItemDialogState();
 }
 
 class _ProductItemDialogState extends State<ProductItemDialog> {
   final FieldBuilderFactory _formFactory = FieldBuilderFactory();
-  ProductItemModel _product;
+  late ProductItemModel _product;
 
-  _ProductItemDialogState(this._product);
+  _ProductItemDialogState();
 
   @override
   void initState() {
+    _product = widget.product;
     _formFactory.data = _product;
     super.initState();
   }
 
   void _addToBasket() {
-    BasketModel _basket = Provider.of<BasketModel>(Get.context!, listen: false);
+    final BasketModel _basket =
+        Provider.of<BasketModel>(Get.context!, listen: false);
     if (_basket.products.containsKey(_product.pid)) {
       _basket.products[_product.pid]!.count =
           _basket.products[_product.pid]!.count! + _product.count!;
@@ -50,11 +51,12 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
         reverse: true,
         child: Column(
           children: [
-            _product.imageUrl != null
-                ? Image.network(_product.imageUrl!, fit: BoxFit.cover)
-                : Image.asset(
-                    'assets/images/no_photo.png',
-                  ),
+            if (_product.imageUrl != null)
+              Image.network(_product.imageUrl!, fit: BoxFit.cover)
+            else
+              Image.asset(
+                'assets/images/no_photo.png',
+              ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -63,13 +65,13 @@ class _ProductItemDialogState extends State<ProductItemDialog> {
                   Text(_product.name!),
                   Text(
                     _product.description!,
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                   ),
                   formSizedBoxHeight,
                   _formFactory.buildNumberPicker(
                     fieldName: 'count',
                     max: 10,
-                    value: _product.count,
+                    value: _product.count!,
                     onChangedHandler: (_) => setState(() {}),
                   ),
                   _formFactory.buildTextField(

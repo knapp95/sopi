@@ -37,9 +37,6 @@ class AssetService {
   Future<void> updateDoc(String? aid, Map<String, dynamic> data) async =>
       _assetsCollection.doc(aid).update(data);
 
-
   Future<void> removeDoc(String? aid) async =>
       _assetsCollection.doc(aid).delete();
-
-
 }
