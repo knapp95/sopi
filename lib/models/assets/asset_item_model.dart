@@ -26,6 +26,7 @@ class AssetItemModel {
   String? aid;
   String? name;
   String? imagePath;
+
   @ColorSerializer()
   Color color = randomColor;
   @JsonKey(ignore: true)
@@ -126,44 +127,41 @@ class AssetItemModel {
     _orderService.updateOrder(order);
   }
 
-  /// Add product to queque as WAITING, if queue don't have PROCESSING product set it
-  Future<void> addProductsFromOrderToQueue(String oid,
-      DateTime theLatestAssetEnd, List<OrderProductModel> products) async {
-    int totalPrepareTime = products.fold(0,
-        (previousValue, element) => previousValue + element.totalPrepareTime);
-    for (final OrderProductModel product in products) {
-      final AssetProductModel assetProductModel = AssetProductModel.fromOrder(
-        product.name,
-        product.pid,
-        oid,
-        product.totalPrepareTime,
-      );
-      if (processingProduct == null) {
-        assetProductModel.status = AssetEnumStatus.processing;
-      }
-      assetProductModel.plannedStartProcessingDate =
-          getPlannedStartProcessingDate(theLatestAssetEnd, totalPrepareTime);
-
-      totalPrepareTime = totalPrepareTime - product.totalPrepareTime;
-      queueProducts.add(assetProductModel);
-      await updateQueueProducts();
+  Future<void> addProductToQueue(AssetProductModel assetProduct) async {
+    if (processingProduct == null) {
+      assetProduct.status = AssetEnumStatus.processing;
     }
+    queueProducts.add(assetProduct);
   }
 
-  DateTime getPlannedStartProcessingDate(
-      DateTime theLatestAssetEnd, int totalPrepareTime) {
-    late DateTime plannedStartProcessingDate;
+  DateTime calculatePlannedStartProcessingDate(
+      int productsNewOrderPrepareMinutes, DateTime theLastAssetProcessingEnd) {
     if (maxWaitingTime == null) {
-      plannedStartProcessingDate = queueProducts.isNotEmpty
-          ? queueProducts.last.plannedEndProcessingDate
-          : DateTime.now();
+      return lastPlannedEndProcessingDate;
     } else {
-      plannedStartProcessingDate = theLatestAssetEnd.add(
-        Duration(minutes: -totalPrepareTime),
-      );
+      final delayPlannedMinutes = calculateDelayPlannedMinutes(theLastAssetProcessingEnd, productsNewOrderPrepareMinutes);
+      final plannedMinutes = productsNewOrderPrepareMinutes + delayPlannedMinutes;
+      return theLastAssetProcessingEnd.add(Duration(minutes: - plannedMinutes));
     }
-    return plannedStartProcessingDate;
   }
+
+  int calculateDelayPlannedMinutes(DateTime theLastAssetEnd, int productsNewOrderPrepareMinutes) {
+    final availableMinutesToAssignment =
+        theLastAssetEnd.difference(lastPlannedEndProcessingDate).inMinutes;
+    final  notAssignmentMinutes = availableMinutesToAssignment - productsNewOrderPrepareMinutes;
+    final delayPlannedMinutes = maxWaitingTime! > notAssignmentMinutes ? notAssignmentMinutes : maxWaitingTime!;
+    return delayPlannedMinutes;
+  }
+
+
+  int get totalPrepareTime => queueProducts.isEmpty
+      ? 0
+      : queueProducts.fold(0,
+          (previousValue, element) => previousValue + element.totalPrepareTime);
+
+  DateTime get lastPlannedEndProcessingDate => queueProducts.isEmpty
+      ? DateTime.now()
+      : queueProducts.last.plannedEndProcessingDate;
 
   Future<void> updateQueueProducts() async {
     final List<dynamic> queueProductsJson = [];

@@ -6,6 +6,7 @@ import 'package:sopi/models/assets/asset_item_model.dart';
 import 'package:sopi/models/assets/asset_model.dart';
 import 'package:sopi/models/orders/order_model.dart';
 import 'package:sopi/models/orders/products/order_product_model.dart';
+import 'package:sopi/models/products/enums/product_enum_type.dart';
 import 'package:sopi/models/products/product_item_model.dart';
 import 'package:sopi/models/products/products_model.dart';
 import 'package:sopi/services/assets/asset_service.dart';
@@ -28,7 +29,7 @@ class OrderFactory {
   Future<void> generateOrders(int ordersCount) async {
     List<ProductItemModel> products = [];
     for (int i = 0; i < ordersCount; i++) {
-      final int productsCount = Random().nextInt(6) + 1;
+      final int productsCount = Random().nextInt(8) + 1;
 
       if (products.isEmpty) {
         final ProductsModel _productsModel =
@@ -37,6 +38,7 @@ class OrderFactory {
         products = _productsModel.products;
       }
       products.shuffle();
+
       final List<ProductItemModel> randomProducts =
           products.length > productsCount
               ? products.sublist(0, productsCount)
@@ -44,10 +46,12 @@ class OrderFactory {
       double summaryPrice = 0.0;
       final List<OrderProductModel> randomProductsOrder = [];
       for (final ProductItemModel product in randomProducts) {
-        randomProductsOrder.add(OrderProductModel.fromProduct(product));
-        summaryPrice += product.count! * product.price!;
+        if (product.type == ProductType.burger ||
+            product.type == ProductType.pasta) {
+          randomProductsOrder.add(OrderProductModel.fromProduct(product));
+          summaryPrice += product.count! * product.price!;
+        }
       }
-
       await createOrder(randomProductsOrder, summaryPrice);
     }
   }
@@ -71,33 +75,23 @@ class OrderFactory {
     return humanNumber;
   }
 
-  Future<void> addNewOrderToProcess(OrderModel newOrder) async {
-    await _assets.fetchAssets();
 
-    final List<AssetItemModel> assetExistsInOrder =
-        _assets.getAssetExistsInOrder(newOrder);
-    final DateTime theLatestAssetEnd = await _assets
-        .findTheLatestAssetEndIncludeOrder(newOrder, assetExistsInOrder);
-    for (final AssetItemModel asset in assetExistsInOrder) {
-      final List<OrderProductModel> productsByType =
-          newOrder.getProductsForType(asset.assignedProductType);
-      await asset.addProductsFromOrderToQueue(
-          newOrder.oid, theLatestAssetEnd, productsByType);
-    }
+  Future<void> addNewOrderToProcess(OrderModel newOrder) async {
+    final RequiredOrderInformation requiredOrderInformation =
+        await _assets.findTheLastAssetEndIncludeOrder(newOrder);
+    await _assets.addNewOrderToProcess(newOrder, requiredOrderInformation);
   }
 
   Future<void> completeOrderProduct(
       String? oid, OrderProductModel orderProductModel) async {
-    await _assets.fetchAssets();
     final AssetItemModel assignedAsset =
-        _assets.findAssetByProductType(orderProductModel.type);
+        await _assets.findAssetByProductType(orderProductModel.type);
     assignedAsset.completeProcessingProduct();
   }
 
   /// Clear assigned orders in assets, and all orders collection
   Future<void> clearDataFactory() async {
-    await _assets.fetchAssets();
-    for (final AssetItemModel asset in _assets.assets) {
+    for (final AssetItemModel asset in await _assets.assets()) {
       final data = {
         'queueProducts': [],
       };

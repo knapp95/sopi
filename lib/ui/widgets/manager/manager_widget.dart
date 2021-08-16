@@ -3,7 +3,6 @@ import 'package:sopi/ui/shared/app_colors.dart';
 import 'package:sopi/ui/widgets/common/account/account_widget.dart';
 import 'package:sopi/ui/widgets/manager/company/manager_company_widget.dart';
 import 'package:sopi/ui/widgets/manager/orders/manager_order_widget.dart';
-import 'package:sopi/ui/widgets/manager/statistics/statistics_widget.dart';
 
 class ManagerWidget extends StatefulWidget {
   const ManagerWidget({Key? key}) : super(key: key);
@@ -51,7 +50,6 @@ class _ManagerWidgetState extends State<ManagerWidget> {
     const List<Widget> children = [
       ManagerOrderWidget(),
       ManagerCompanyWidget(),
-      StatisticsWidget(),
       AccountWidget()
     ];
     return PageView(
@@ -76,12 +74,6 @@ class _ManagerWidgetState extends State<ManagerWidget> {
           Icons.business,
         ),
         label: 'Company',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(
-          Icons.pie_chart,
-        ),
-        label: 'Statistics',
       ),
       const BottomNavigationBarItem(
         icon: Icon(

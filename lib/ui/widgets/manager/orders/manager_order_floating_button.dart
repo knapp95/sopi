@@ -41,7 +41,7 @@ class _ManagerOrderFloatingButtonState
       icon: Icons.settings,
       color: Colors.blue,
     ));
-    for (final count in [15, 10, 2]) {
+    for (final count in [15, 10, 4]) {
       allItems.add(
         GenericItemModel(
           funHandler: () => _orderFactory.generateOrders(count),

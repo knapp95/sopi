@@ -40,18 +40,18 @@ class _AuthorizationWidgetState extends State<AuthorizationWidget> {
     switch (_authMode) {
       case AuthMode.singIn:
         {
+          // responseMessage = await context.read<AuthenticationService>().signIn(
+          //       email: 'client@wp.pl',
+          //       password: 'client123',
+          //     );
           responseMessage = await context.read<AuthenticationService>().signIn(
-                email: 'client@wp.pl',
-                password: 'client123',
+                email: 'kamil@wp.pl',
+                password: 'kamil123',
               );
-          // responseMessage = await context.read<AuthenticationService>().signIn(
-          //       email: 'kamil@wp.pl',
-          //       password: 'kamil123',
-          //     );
-          // responseMessage = await context.read<AuthenticationService>().signIn(
-          //       email: 'manager@wp.pl',
-          //       password: 'manager123',
-          //     );
+          responseMessage = await context.read<AuthenticationService>().signIn(
+                email: 'manager@wp.pl',
+                password: 'manager123',
+              );
         }
         break;
       case AuthMode.singUp:

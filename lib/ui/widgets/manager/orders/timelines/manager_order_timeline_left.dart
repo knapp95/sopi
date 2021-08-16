@@ -26,12 +26,9 @@ class ManagerOrderTimelineLeft extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ..._buildTimeline(Timeline.before),
-          Container(
-            color: primaryColor,
-            child: _buildSingleTime(
-              _time,
-              Colors.white,
-            ),
+          _buildSingleTime(
+            _time,
+            true,
           ),
           ..._buildTimeline(Timeline.after),
         ],
@@ -39,25 +36,45 @@ class ManagerOrderTimelineLeft extends StatelessWidget {
     );
   }
 
-  Widget _buildSingleTime(DateTime time, [Color? fontColor]) {
+  Widget _buildSingleTime(DateTime time, [bool timeIsNow = false]) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: primaryColor),
           left: BorderSide(color: primaryColor),
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          formatDateToString(
-            time,
-            format: 'HH:mm',
-          ),
-          style: TextStyle(
-            color: fontColor ?? Colors.grey,
-            fontWeight: FontWeight.bold,
-          ),
+        padding: const EdgeInsets.only(bottom: 16.0),
+        child: Row(
+          children: [
+            Container(
+              color: primaryColor,
+              width: 15,
+              height: 1,
+            ),
+            Padding(
+              padding: timeIsNow
+                  ? EdgeInsets.zero
+                  : const EdgeInsets.only(right: 12.0),
+              child: Row(
+                children: [
+                  if (timeIsNow)
+                    const Icon(Icons.arrow_forward_ios,
+                        size: 12, color: primaryColor),
+                  Text(
+                    formatDateToString(
+                      time,
+                      format: 'HH:mm',
+                    ),
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

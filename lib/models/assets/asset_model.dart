@@ -15,8 +15,6 @@ import 'timeline/asset_timeline_settings_model.dart';
 class AssetModel with ChangeNotifier {
   final _assetService = AssetService.singleton;
   final _settingsService = SettingsService.singleton;
-  bool isInit = false;
-  List<AssetItemModel> assets = [];
   AssetTimelineSettingsModel? assetTimelineSettings;
 
   Future<void> fetchAssetsTimelineSettings() async {
@@ -30,21 +28,26 @@ class AssetModel with ChangeNotifier {
     }
   }
 
-  Future<void> fetchAssets() async {
+  Future<List<AssetItemModel>> assets() async {
+    final List<AssetItemModel> assets = [];
     try {
       final docs = await _assetService.getDocs();
-      final List<AssetItemModel> assets = [];
+
       for (final QueryDocumentSnapshot doc in docs) {
         final data = doc.data()! as Map<String, dynamic>;
         final asset = AssetItemModel.fromJson(data);
         assets.add(asset);
       }
-      this.assets = assets;
-      isInit = true;
-      notifyListeners();
     } catch (e) {
       rethrow;
     }
+    return assets;
+  }
+
+  Future<AssetItemModel> getAsset(String? aid) async {
+    final DocumentSnapshot asset = await _assetService.getDoc(aid).get();
+    final data = asset.data()! as Map<String, dynamic>;
+    return AssetItemModel.fromJson(data);
   }
 
   static Future<List<String>> getAvailableTypesImagePath(
@@ -60,39 +63,88 @@ class AssetModel with ChangeNotifier {
     return imagePaths;
   }
 
-  AssetItemModel findAssetByProductType(ProductType? productType) {
-    return assets
+  Future<AssetItemModel> findAssetByProductType(
+      ProductType? productType) async {
+    return (await assets())
         .firstWhere((asset) => asset.assignedProductType == productType);
   }
 
-  List<AssetItemModel> getAssetExistsInOrder(OrderModel orderModel) {
-    return assets
-        .where((assetItem) =>
-            orderModel.checkProductsContainsType(assetItem.assignedProductType))
-        .toList();
-  }
-
-  Future<DateTime> findTheLatestAssetEndIncludeOrder(OrderModel order,
-      [List<AssetItemModel>? assetExistsInOrder]) async {
-    await fetchAssets();
-    assetExistsInOrder ??= getAssetExistsInOrder(order);
-
-    DateTime theLatestAssetEnd = DateTime.now();
-    for (final asset in assetExistsInOrder) {
-      DateTime assetPlannedEnd = asset.queueProducts.isNotEmpty
-          ? asset.queueProducts.last.plannedEndProcessingDate
-          : DateTime.now();
-      final List<OrderProductModel> productsByType =
-          order.getProductsForType(asset.assignedProductType);
-      final int assignedProductsTime =
-          productsByType.fold(0, (sum, item) => sum + item.totalPrepareTime);
-      assetPlannedEnd =
-          assetPlannedEnd.add(Duration(minutes: assignedProductsTime));
-      if (theLatestAssetEnd.isBefore(assetPlannedEnd)) {
-        theLatestAssetEnd = assetPlannedEnd;
+  Future<Map<ProductType, List<AssetItemModel>>> getAssetsLinesExistsInOrder(
+      OrderModel orderModel) async {
+    final Map<ProductType, List<AssetItemModel>> assetsLinesExistsInOrder = {};
+    for (final AssetItemModel assetItem in await assets()) {
+      if (orderModel.checkProductsContainsType(assetItem.assignedProductType)) {
+        assetsLinesExistsInOrder.update(assetItem.assignedProductType, (value) {
+          value.add(assetItem);
+          return value;
+        }, ifAbsent: () => [assetItem]);
       }
     }
-    return theLatestAssetEnd;
+    return assetsLinesExistsInOrder;
+  }
+
+  Future<RequiredOrderInformation> findTheLastAssetEndIncludeOrder(
+      OrderModel order) async {
+    final Map<ProductType, List<AssetItemModel>> assetsLinesExistsInOrder =
+        await getAssetsLinesExistsInOrder(order);
+    DateTime theLastAssetPlannedEnd = DateTime.now();
+    final Map<String, List<AssetProductModel>> productsFromOrderGroupedByAid = {};
+
+    for (final entry in assetsLinesExistsInOrder.entries) {
+      final productType = entry.key;
+      final assetsLines = entry.value;
+      final List<OrderProductModel> productsByType =
+          order.getProductsForType(productType);
+      productsByType
+          .sort((a, b) => b.totalPrepareTime.compareTo(a.totalPrepareTime));
+      for (final orderProduct in productsByType) {
+        final AssetItemModel theFirstAssetPlannedEnd =
+            AssetModel.sortAssetsLinesByPlannedEndProcessing(assetsLines).first;
+
+        final assetProduct =
+            AssetProductModel.fromOrder(order.oid, orderProduct);
+        productsFromOrderGroupedByAid.update(theFirstAssetPlannedEnd.aid!,
+            (value) {
+          value.add(assetProduct);
+          return value;
+        }, ifAbsent: () => [assetProduct]);
+
+        assetProduct.plannedStartProcessingDate =
+            theFirstAssetPlannedEnd.lastPlannedEndProcessingDate;
+        await theFirstAssetPlannedEnd.addProductToQueue(assetProduct);
+      }
+      final AssetItemModel theLastAssetFromThisTypeAPlannedEnd =
+          AssetModel.sortAssetsLinesByPlannedEndProcessing(assetsLines).last;
+      if (theLastAssetPlannedEnd.isBefore(
+          theLastAssetFromThisTypeAPlannedEnd.lastPlannedEndProcessingDate)) {
+        theLastAssetPlannedEnd =
+            theLastAssetFromThisTypeAPlannedEnd.lastPlannedEndProcessingDate;
+      }
+    }
+    return RequiredOrderInformation(
+        productsFromOrderGroupedByAid, theLastAssetPlannedEnd);
+  }
+
+  Future<void> addNewOrderToProcess(OrderModel order,
+      RequiredOrderInformation requiredOrderInformation) async {
+    for (final entry
+        in requiredOrderInformation.productsFromOrderGroupedByAid.entries) {
+      final aid = entry.key;
+      final assignedOrderProducts = entry.value;
+      final asset = await _assetService.getAssetDoc(aid);
+      int totalPrepareTime = assignedOrderProducts.fold(
+          0,
+          (int previousValue, element) =>
+              previousValue + element.totalPrepareTime);
+      for (final assetProduct in assignedOrderProducts) {
+        assetProduct.plannedStartProcessingDate =
+            asset.calculatePlannedStartProcessingDate(
+                totalPrepareTime, requiredOrderInformation.theLastAssetEnd);
+        totalPrepareTime = totalPrepareTime - assetProduct.totalPrepareTime;
+        asset.addProductToQueue(assetProduct);
+      }
+      asset.updateQueueProducts();
+    }
   }
 
   static List<AssetProductModel> getAllQueueProductsInAssetsForEmployee(
@@ -105,4 +157,21 @@ class AssetModel with ChangeNotifier {
     }
     return queueAllProductsInAssetsForEmployee;
   }
+
+  static List<AssetItemModel> sortAssetsLinesByPlannedEndProcessing(
+      List<AssetItemModel> assetsLines) {
+    assetsLines.sort((first, second) {
+      return first.lastPlannedEndProcessingDate
+          .compareTo(second.lastPlannedEndProcessingDate);
+    });
+    return assetsLines;
+  }
+}
+
+class RequiredOrderInformation {
+  final Map<String, List<AssetProductModel>> productsFromOrderGroupedByAid;
+  final DateTime theLastAssetEnd;
+
+  RequiredOrderInformation(
+      this.productsFromOrderGroupedByAid, this.theLastAssetEnd);
 }

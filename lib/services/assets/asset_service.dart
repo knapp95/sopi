@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sopi/models/assets/asset_item_model.dart';
 
 import '../authentication/authentication_service.dart';
 
@@ -30,8 +31,14 @@ class AssetService {
     return _assetsCollection.snapshots();
   }
 
-  DocumentReference getDoc(String? pid) {
-    return _assetsCollection.doc(pid);
+  DocumentReference getDoc(String? aid) {
+    return _assetsCollection.doc(aid);
+  }
+
+  Future<AssetItemModel> getAssetDoc(String aid) async {
+    final DocumentSnapshot doc = await getDoc(aid).get();
+    final data = doc.data()! as Map<String, dynamic>;
+    return AssetItemModel.fromJson(data);
   }
 
   Future<void> updateDoc(String? aid, Map<String, dynamic> data) async =>

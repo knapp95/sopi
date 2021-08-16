@@ -16,8 +16,9 @@ class ClientOrderProcessingItemWidget extends StatelessWidget {
       : super(key: key);
 
   Future<String> get processingEndDate async {
-    final DateTime processingEndDateTmp =
-        await _assets.findTheLatestAssetEndIncludeOrder(orderProcessing);
+    final RequiredOrderInformation requiredOrderInformation =
+        await _assets.findTheLastAssetEndIncludeOrder(orderProcessing);
+    final processingEndDateTmp = requiredOrderInformation.theLastAssetEnd;
     final String processingEndDate = formatDateToString(
       processingEndDateTmp,
       format: 'HH:mm',

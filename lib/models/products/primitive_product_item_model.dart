@@ -1,6 +1,7 @@
 import 'enums/product_enum_type.dart';
 
 class PrimitiveProductItemModel {
+
   String? pid;
   String? name;
   ProductType? type;
